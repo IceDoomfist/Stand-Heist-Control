@@ -5,6 +5,10 @@
 
 **Download is available in the Repository** of [Stand mod menu](https://stand.gg): `Stand > Lua Scripts > Repository > Heist Control`, will be kept latest version of HC.
 
+## External Links
+
+[Discord Server](https://icedoomfist.com/Link/HC_Discord)   [Official Website](https://icedoomfist.com/Stand_Heist_Control)
+
 
 ## Introduction
 
