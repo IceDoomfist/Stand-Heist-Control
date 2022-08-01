@@ -1,10 +1,10 @@
 # Heist Control (HC) for Stand
 
-### Download
+## Download
 
 Download is available in Stand mod menu: Stand > Lua Scripts > Repository > Heist Control, will be kept latest version of HC.
 
-### Introduction
+## Introduction
 
 Developed and maintenced by me since Aug, 2021.
 A Lua Script only completely compatible with [Stand mod menu](https://stand.gg) .
