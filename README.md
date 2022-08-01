@@ -7,7 +7,7 @@
 
 ## External Links
 
-[Discord Server](https://icedoomfist.com/Link/HC_Discord)   [Official Website](https://icedoomfist.com/Stand_Heist_Control)
+[Discord Server](https://icedoomfist.com/Link/HC_Discord) & [Official Website](https://icedoomfist.com/Stand_Heist_Control)
 
 
 ## Introduction
