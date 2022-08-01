@@ -13,3 +13,7 @@ Originally from [HC for 2T1](https://github.com/jhowkNx/Heist-Control-v2) and [M
 But, I've not used all codes of 2T1 HC and Master Unlocker, trying to make unique features not exist in 2T1 one.
 
 HC focuses helping play heists in the GTA:O, provides some extra options for unlocks.
+
+## Credits
+
+Of Course, [jhowkNx](https://github.com/jhowkNx/) who allowed me to use his Lua codes.
