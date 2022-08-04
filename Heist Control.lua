@@ -20,7 +20,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.0.3"
+        local HCVersion = "V 3.0.4"
         local BasedGTAO = 1.61
 
     ---
@@ -42,6 +42,7 @@
         local GermanDir = LangFolderDir .. "German.txt"
         local JapaneseDir = LangFolderDir .. "Japanese.txt"
         local KoreanDir = LangFolderDir .. "Korean.txt"
+        local PortugueseDir = LangFolderDir .. "Portuguese.txt"
         local RussianDir = LangFolderDir .. "Russian.txt"
         local SpanishDir = LangFolderDir .. "Spanish.txt"
             
@@ -291,6 +292,8 @@
                 WRITE_SETTING("Language", "German - Deutsch")
             elseif lang.get_current() == "ko" then
                 WRITE_SETTING("Language", "Korean - 한국어")
+            elseif lang.get_current() == "pt" then    
+                WRITE_SETTING("Language", "Portuguese - Português")
             elseif lang.get_current() == "ru" then
                 WRITE_SETTING("Language", "Russian - русский")
             elseif lang.get_current() == "es" then
@@ -313,6 +316,7 @@
             GermanDir,
             JapaneseDir,
             KoreanDir,
+            PortugueseDir,
             RussianDir,
             SpanishDir,
         }
@@ -342,6 +346,8 @@
             LOAD_LANG(JapaneseDir)
         elseif READ_SETTING("Language") == "Korean - 한국어" then
             LOAD_LANG(KoreanDir)
+        elseif READ_SETTING("Language") == "Portuguese - Português" then
+            LOAD_LANG(PortugueseDir)
         elseif READ_SETTING("Language") == "Russian - русский" then
             LOAD_LANG(RussianDir)
         elseif READ_SETTING("Language") == "Spanish - Español" then
@@ -468,24 +474,24 @@
 
         function IA_MENU_OPEN()
             PAD._SET_CONTROL_NORMAL(0, 244, 1)
-            util.yield(30)
+            util.yield(200)
         end
         function IA_MENU_UP(Num)
             for i = 1, Num do
                 PAD._SET_CONTROL_NORMAL(0, 172, 1)
-                util.yield(30)
+                util.yield(200)
             end
         end
         function IA_MENU_DOWN(Num)
             for i = 1, Num do
                 PAD._SET_CONTROL_NORMAL(0, 173, 1)
-                util.yield(30)
+                util.yield(200)
             end
         end
         function IA_MENU_ENTER(Num)
             for i = 1, Num do
                 PAD._SET_CONTROL_NORMAL(0, 176, 1)
-                util.yield(30)
+                util.yield(200)
             end
         end
 
@@ -4520,37 +4526,37 @@
                 function CP_PRESS_D(Num)
                     for i = 1, Num do
                         PAD._SET_CONTROL_NORMAL(0, 218, 1) 
-                        util.yield(30)
+                        util.yield(120)
                     end
                 end
                 function CP_PRESS_E(Num)
                     for i = 1, Num do
                         PAD._SET_CONTROL_NORMAL(0, 206, 1) 
-                        util.yield(30)
-                    end
-                end
-                function CP_PRESS_Q(Num)
-                    for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 205, 1) 
-                        util.yield(30)
+                        util.yield(120)
                     end
                 end
                 function CP_PRESS_ENTER(Num)
                     for i = 1, Num do
                         PAD._SET_CONTROL_NORMAL(0, 201, 1) 
-                        util.yield(30)
+                        util.yield(120)
                     end
                 end
                 function CP_PRESS_ARROW_UP(Num)
                     for i = 1, Num do
                         PAD._SET_CONTROL_NORMAL(0, 188, 1) 
-                        util.yield(30)
+                        util.yield(120)
                     end
                 end
                 function CP_PRESS_ARROW_DOWN(Num)
                     for i = 1, Num do
                         PAD._SET_CONTROL_NORMAL(0, 187, 1) 
-                        util.yield(30)
+                        util.yield(120)
+                    end
+                end
+                function CP_PRESS_BACKSPACE(Num)
+                    for i = 1, Num do
+                        PAD._SET_CONTROL_NORMAL(2, 202, 1) 
+                        util.yield(120)
                     end
                 end
 
@@ -4632,31 +4638,25 @@
                     while not HUD.IS_WARNING_MESSAGE_ACTIVE() do -- "Are you sure you want to launch this Job on your own?"
                         util.yield()
                     end
+                    util.yield(1000)
                     PAD._SET_CONTROL_NORMAL(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL"
-                    util.yield(3000)
+                    util.yield(8000)
                     
-                    CP_PRESS_ENTER(3)
-                    CP_PRESS_Q(1)
-                    CP_PRESS_E(1)
+                    CP_PRESS_ENTER(2)
+                    CP_PRESS_BACKSPACE(1)
                     CP_PRESS_ARROW_DOWN(1)
                     CP_PRESS_ENTER(1)
-                    CP_PRESS_ARROW_DOWN(3)
+                    CP_PRESS_ARROW_UP(1)
                     CP_PRESS_ENTER(1)
-                    CP_PRESS_Q(1)
-                    CP_PRESS_E(1)
-                    CP_PRESS_ARROW_DOWN(2)
+                    CP_PRESS_BACKSPACE(1)
+                    CP_PRESS_ARROW_DOWN(1)
                     CP_PRESS_ENTER(2)
-                    CP_PRESS_Q(1)
-                    CP_PRESS_E(1)
-                    CP_PRESS_ARROW_DOWN(3)
+                    CP_PRESS_BACKSPACE(1)
+                    CP_PRESS_ARROW_DOWN(1)
                     CP_PRESS_ENTER(2)
-                    CP_PRESS_Q(1)
-                    CP_PRESS_E(1)
-                    CP_PRESS_ARROW_DOWN(4)
+                    CP_PRESS_BACKSPACE(1)
+                    CP_PRESS_ARROW_DOWN(1)
                     CP_PRESS_ENTER(2)
-                    CP_PRESS_Q(1)
-                    CP_PRESS_E(1)
-
                     CP_PRESS_D(1)
                     CP_PRESS_ENTER(1)
                     
@@ -4666,7 +4666,7 @@
                     util.yield(1000)
                 
                     CP_PRESS_ENTER(1)
-                    util.yield(3000)
+                    util.yield(2000)
                 
                     while GET_INT_LOCAL("fm_mission_controller_2020", 2754) ~= 1 do
                         util.yield()
@@ -4680,7 +4680,7 @@
                     util.yield(1000)
 
                     menu.trigger_commands("hcinsfincp")
-                    util.yield(3000)
+                    util.yield(5000)
                 
                     menu.trigger_commands("go solopublic")
                     menu.trigger_commands("hccpquick off")
@@ -5774,6 +5774,7 @@
             { "German - Deutsch", {"german"} },
             { "Japanese - 日本語", {"japanese"} },
             { "Korean - 한국어", {"korean"} },
+            { "Portuguese - Português", {"portuguese"}},
             { "Russian - русский", {"russian"} },
             { "Spanish - Español", {"spanish"} },
             -- { "Turkish - Türkçe", {"turkish"} },
@@ -5912,6 +5913,7 @@
                 menu.action(CREDITS, "Hibanana", {}, TRANSLATE("Maintains HC's translation") .. ": German - Deutsch", function(); end)
                 menu.action(CREDITS, "Greensky445", {}, TRANSLATE("Maintains HC's translation") .. ": Japanese - 日本語", function(); end)
                 menu.action(CREDITS, "IceDoomfist", {}, TRANSLATE("Maintains HC's translation") .. ": Korean - 한국어", function(); end)
+                menu.action(CREDITS, "Pedro9558", {}, TRANSLATE("Maintains HC's translation") .. ": Portuguese - Português", function(); end)
                 menu.action(CREDITS, "Sega", {}, TRANSLATE("Maintains HC's translation") .. ": Russian - русский", function(); end)
                 menu.action(CREDITS, "zigmazero", {}, TRANSLATE("Maintains HC's translation") .. ": Spanish - Español", function(); end)
                 -- menu.action(CREDITS, "Emre", {}, TRANSLATE("Maintains HC's translation") .. ": Turkish - Türkçe", function(); end)
