@@ -10,7 +10,7 @@
 
 - [Discord Server](https://icedoomfist.com/Link/HC_Discord)
 - [Official Website](https://icedoomfist.com/Stand_Heist_Control)
-- [Official YT Channel](https://www.youtube.com/channel/UCXD5Iz2Oe4cVoym71m2tfKQ)
+- [Official Youtube Channel](https://www.youtube.com/channel/UCXD5Iz2Oe4cVoym71m2tfKQ)
 
 
 ## Main Features
