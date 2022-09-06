@@ -23,7 +23,8 @@ Originally from [HC for 2T1](https://github.com/jhowkNx/Heist-Control-v2) and [M
 
 But, I've not used all codes of 2T1 HC and Master Unlocker, trying to make unique features not exist in 2T1 one.
 
-Note that some options and codes of 2T1 HC was coded by me to improve it, not only using its code.
+Note that some options and codes of 2T1 HC and 2T1 Master Unlocker were coded by me to improve it, not only using its code.
+For examples, `Check compatibility with current GTA Online`, `Instant Finish for Air Cargo`, `Request Services`, `Remove Money via Ballistic Armor`, `Some options of Mini Game Hack`.
 
 
 ## Credits
