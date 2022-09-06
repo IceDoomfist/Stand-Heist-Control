@@ -27,8 +27,7 @@
 
 Developed and maintenced by me since Aug, 2021.
 
-One of the oldest and never have been discontinued with the [Wiriscript](https://github.com/nowiry/WiriScript) in the Stand Lua Scripts Community.
-Only completely compatible with [Stand mod menu](https://stand.gg)
+One of the oldest and never have been discontinued with the [Wiriscript](https://github.com/nowiry/WiriScript) in the [Stand](https://stand.gg) Lua Scripts Community.
 
 HC focuses helping play heists in the GTA:O, provides some extra options for unlocks and useful tools for heists.
 
