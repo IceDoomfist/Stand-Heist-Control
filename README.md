@@ -1,9 +1,9 @@
 # Heist Control (HC) for Stand
 
 
-## Download
+## Installation
 
-- **Download is available in the Repository** of [Stand mod menu](https://stand.gg): `Stand > Lua Scripts > Repository > Heist Control`, will be kept latest version of HC.
+- **Installation is available in the Repository** of [Stand mod menu](https://stand.gg): `Stand > Lua Scripts > Repository > Heist Control`, will be kept latest version of HC.
 - How To Install: [Youtube Video](https://www.youtube.com/watch?v=UQpFb6hzIqo)
 
 ## External Links
