@@ -10,6 +10,17 @@
 [Discord Server](https://icedoomfist.com/Link/HC_Discord) & [Official Website](https://icedoomfist.com/Stand_Heist_Control)
 
 
+## Main Features
+
+> - Official translations in 9 languages (EN, ZH, FR, DE, JP, KO, PT, RU, ES)
+- Extra Cayo, Casino, Classic, LS Tuner, Agency Heist Options
+- AFK Money [Method: Auto Cayo Bot, Auto Rig Slot Machines, etc]
+- Instant Finish Heists and Others
+- Skip Hacking Process
+- Custom Stat Editor & Reader
+- Tons of other features
+
+
 ## Introduction
 
 Developed and maintenced by me since Aug, 2021.
