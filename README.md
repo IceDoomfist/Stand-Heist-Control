@@ -1,4 +1,4 @@
-# Heist Control (HC) for Stand
+# Heist Control (HC)
 
 
 ## Installation
