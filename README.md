@@ -43,4 +43,8 @@ Note that some options and codes of 2T1 HC and 2T1 Master Unlocker were coded by
 ## Credits
 
 - [jhowkNx](https://github.com/jhowkNx/) who allowed me to use his Lua codes. Thanks to him a lot for keeping share codes each other.
+<<<<<<< HEAD
 - [UnknownCheats](https://www.unknowncheats.me/forum/grand-theft-auto-v) where let me know useful stats, global and local variables.
+=======
+- [UnknownCheats](https://www.unknowncheats.me/forum/grand-theft-auto-v) where let me know useful stats, global and local variables.
+>>>>>>> e2dece63e75f10dbdeaad28e5cac61e87562d2e3
