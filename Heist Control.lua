@@ -20,7 +20,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.0.5"
+        local HCVersion = "V 3.0.6"
         local BasedGTAO = 1.61
 
     ---
@@ -460,14 +460,14 @@
         end
 
         function FORCE_CLOUD_SAVE()
-            STATS.STAT_SAVE(0, 0, 3, 0) -- Same as menu.trigger_commands("forcecloudsave"), Credit goes to https://github.com/jonaaa20/RecoverySuite
+            STATS.STAT_SAVE(0, 0, 3, 0) -- Same as menu.trigger_commands("forcecloudsave"), https://github.com/jonaaa20/RecoverySuite
             util.yield(1500)
             util.arspinner_enable()
             util.yield(4500)
             util.arspinner_disable()
         end
 
-        function IA_MENU_OPEN()
+        function IA_MENU_OPEN_OR_CLOSE()
             PAD._SET_CONTROL_NORMAL(0, 244, 1)
             util.yield(200)
         end
@@ -573,6 +573,7 @@
     --- General Settings
 
         menu.trigger_commands("clearnotifications")
+        menu.trigger_commands("nocasinoregionlock on")
 
         INT_MIN = -2147483648
         INT_MAX = 2147483647
@@ -627,6 +628,7 @@
         local DOOMS_HEIST = menu.list(menu.my_root(), TRANSLATE("Doomsday Heist"), {"hcdooms"}, "", function(); end)
         local CLASSIC_HEISTS = menu.list(menu.my_root(), TRANSLATE("Classic Heist"), {"hcclassic"}, "", function(); end)
         local LS_ROBBERY = menu.list(menu.my_root(), TRANSLATE("LS Tuners Robbery"), {"hcls"}, "", function(); end)
+        local ULP_MISSIONS = menu.list(menu.my_root(), "ULP Missions", {"hculp"}, "", function(); end)
         local TH_CONTRACT = menu.list(menu.my_root(), TRANSLATE("The Contract: Agency"), {"hcagc"}, "", function(); end)
         local MASTER_UNLOCKR = menu.list(menu.my_root(), TRANSLATE("Master Unlocker"), {"hcmu"}, "", function(); end)
         local TOOLS = menu.list(menu.my_root(), TRANSLATE("Tools"), {"hctool"}, "", function(); end)
@@ -3218,6 +3220,41 @@
 ---
 
 
+--- ULP Missions
+
+    menu.divider(ULP_MISSIONS, "ULP Missions")
+
+        local UlpMissionsTable = {
+            "Intelligence",
+            "Counterintelligence",
+            "Extraction",
+            "Asset Seizure",
+            "Operation Paper Trail",
+            "Cleanup",
+        }
+        for i = 1, #UlpMissionsTable do
+            menu.action(ULP_MISSIONS, UlpMissionsTable[i], {}, "", function()
+                STAT_SET_INT("ULP_MISSION_CURRENT", i - 1)
+                STAT_SET_INT("ULP_MISSION_PROGRESS", 127)
+            end)
+        end
+
+    ---
+
+    menu.divider(ULP_MISSIONS, TRANSLATE("Others"))
+
+        menu.toggle_loop(ULP_MISSIONS, TRANSLATE("Skip Hacking"), {}, "[" .. "ULP Missions" .. " - " .. "Counterintelligence" .. "]", function() -- Thanks for coding this, Pedro9558#3559
+            SET_INT_LOCAL("fm_mission_controller_2020", 972 + 135, 3)
+        end)
+        menu.action(ULP_MISSIONS, "Teleport To IAA Headquarters", {}, "", function()
+            TELEPORT(101.595, -662.923, 45.093)
+        end)
+
+    ---
+
+---
+
+
 --- The Contract: Agency
 
     local CONTRACT_VIP = menu.list(TH_CONTRACT, TRANSLATE("VIP Contract: Dr.Dre"), {}, TRANSLATE("The feature to be worked properly, you may need to log out of F.Clinton & Partner"), function(); end)
@@ -4156,12 +4193,16 @@
                     SET_INT_GLOBAL(262145 + 24666, 0) -- Data Sweep, 724724668
                     SET_INT_GLOBAL(262145 + 24667, 0) -- Targeted Data, 846317886
                     SET_INT_GLOBAL(262145 + 24668, 0) -- Diamond Shopping, 443623246
+                    SET_INT_GLOBAL(262145 + 24670, 0) -- Collectors Pieces, -1203647122, https://www.unknowncheats.me/forum/3496393-post32.html
+                    SET_INT_GLOBAL(262145 + 24671, 0) -- Deal Breaker, -1963126951, https://www.unknowncheats.me/forum/3496393-post32.html
                 end, function()
                     SET_INT_GLOBAL(262145 + 24664, 300000)
                     SET_INT_GLOBAL(262145 + 24665, 1800000)
                     SET_INT_GLOBAL(262145 + 24666, 1800000)
                     SET_INT_GLOBAL(262145 + 24667, 1800000)
                     SET_INT_GLOBAL(262145 + 24668, 1800000)
+                    SET_INT_GLOBAL(262145 + 24670, 600000)
+                    SET_INT_GLOBAL(262145 + 24671, 600000)
                 end)
 
                 menu.toggle_loop(TUNABLES_CD, TRANSLATE("Launch Kosatka Missiles"), {"hccoolmissile"}, IsWorking(false), function()
@@ -4170,6 +4211,12 @@
                 end, function()
                     SET_INT_GLOBAL(262145 + 30175, 60000)
                     SET_INT_GLOBAL(262145 + 30176, 4000)
+                end)
+
+                menu.toggle_loop(TUNABLES_CD, "CEO Vehicles", {"hccoolceoveh"}, IsWorking(false), function() -- Credit goes to Professor#4478's Kiddions Lua
+                    SET_INT_GLOBAL(262145 + 12829, 0) -- 2092239066
+                end, function()
+                    SET_INT_GLOBAL(262145 + 12829, 120000)
                 end)
 
             ---
@@ -4390,6 +4437,46 @@
                 SET_INT_GLOBAL(262145 + 21599, 15000)
                 SET_INT_GLOBAL(262145 + 21600, 15000)
             end)
+
+            menu.toggle_loop(TUNABLES_RSU, "Changing Appearance", {}, IsWorking(false), function() -- Tbh, an idea from Kiddions mod menu, but, found by me in decompiled script
+                SET_INT_GLOBAL(262145 + 19155, 0) -- 1533055729, am_pi_menu.c, 0, "PIM_FREE", (0 + iVar6), bVar1, 0, 0, 0
+            end, function()
+                SET_INT_GLOBAL(262145 + 19155, 100000)
+            end)
+
+            menu.toggle_loop(TUNABLES_RSU, "Renaming CEO/MC", {}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/grand-theft-auto-v/500059-globals-locals-discussion-read-page-1-a-2.html#post3496393
+                SET_INT_GLOBAL(262145 + 15946, 0) -- 1901455739
+                SET_INT_GLOBAL(262145 + 16824, 0) -- -89259989
+                SET_INT_GLOBAL(262145 + 18073, 0) -- -1069516318
+            end, function()
+                SET_INT_GLOBAL(262145 + 15946, 50000)
+                SET_INT_GLOBAL(262145 + 16824, 5000)
+                SET_INT_GLOBAL(262145 + 18073, 50000)
+            end)
+
+            menu.toggle_loop(TUNABLES_RSU, "CEO Abilities" .. " & ".. "CEO Vehicles", {}, IsWorking(false), function() -- Credit goes to Professor#4478's Kiddions Lua
+                SET_PACKED_INT_GLOBAL(12839, 12848, 0) -- 51567061, -1972817298
+                SET_PACKED_INT_GLOBAL(16023, 16028, 0) -- -1451871600, 1289619793
+                SET_INT_GLOBAL(262145 + 15945, 0) -- -939028485
+                SET_INT_GLOBAL(262145 + 19347, 0) -- 2052581897
+                SET_INT_GLOBAL(262145 + 19349, 0) -- -1333531254
+            end, function()
+                SET_PACKED_INT_GLOBAL(12840, 12842, 5000) -- 15263926, -400440420
+                SET_PACKED_INT_GLOBAL(16026, 16028, 5000) -- -679448434, 1289619793
+                SET_INT_GLOBAL(262145 + 12839, 20000) -- 51567061
+                SET_INT_GLOBAL(262145 + 12843, 25000) -- -1560965224
+                SET_INT_GLOBAL(262145 + 12844, 1000) -- 2096833423
+                SET_INT_GLOBAL(262145 + 12845, 1500) -- -688609610
+                SET_INT_GLOBAL(262145 + 12846, 1000) -- 153241568
+                SET_INT_GLOBAL(262145 + 12847, 12000) -- 813006152
+                SET_INT_GLOBAL(262145 + 12848, 15000) -- -1972817298
+                SET_INT_GLOBAL(262145 + 15945, 5000) -- -939028485
+                SET_INT_GLOBAL(262145 + 16023, 10000) -- -1451871600
+                SET_INT_GLOBAL(262145 + 16024, 7000) -- 650824488
+                SET_INT_GLOBAL(262145 + 16025, 9000) -- 253623806
+                SET_INT_GLOBAL(262145 + 19347, 5000) -- 2052581897
+                SET_INT_GLOBAL(262145 + 19349, 10000) -- -1333531254
+            end)
             
         ---
 
@@ -4462,16 +4549,10 @@
 
         local TUNABLES_OTH = menu.list(TUNABLES, TRANSLATE("Others"), {}, "", function(); end)
 
-            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Single MC Vehicle Sell"), {"hcsinglemcveh"}, IsWorking(true) .. TRANSLATE("Makes always number of MC business selling's vehicle is one."), function() -- Credit goes to https://github.com/Tgamer500/YiffWarePWLua/blob/main/YiffWarePW.lua
+            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Single MC Vehicle Sell"), {"hcsinglemcveh"}, IsWorking(true) .. TRANSLATE("Makes always number of MC business selling's vehicle is one."), function() -- https://github.com/Tgamer500/YiffWarePWLua/blob/main/YiffWarePW.lua
                 if GET_INT_LOCAL("gb_biker_contraband_sell", 696 + 17) ~= 0 then
                     SET_INT_LOCAL("gb_biker_contraband_sell", 696 + 17, 0)
                 end
-            end)
-
-            menu.toggle_loop(TUNABLES_OTH, "Change Appearance for Free", {}, IsWorking(true) .. "Makes can change appearance for free in the Interaction Menu.", function() -- Tbh, an idea from Kiddions mod menu, but, found by me in decompiled script
-                SET_INT_GLOBAL(262145 + 19155, 0) -- 1533055729, am_pi_menu.c, 0, "PIM_FREE", (0 + iVar6), bVar1, 0, 0, 0
-            end, function()
-                SET_INT_GLOBAL(262145 + 19155, 100000)
             end)
 
             menu.toggle_loop(TUNABLES_OTH, "Refill Snacks & Armours Automatically", {}, "", function()
@@ -4489,20 +4570,39 @@
             end)
 
             menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Make One Snack Full Health"), {}, IsWorking(true) .. TRANSLATE("Whatever you use a snack, will make you full health."), function()
-                SET_FLOAT_GLOBAL(262145 + 112, 100) -- Ps & Qs, joaat("PSANDQS_HEALTH_REPLENISH_MULTIPLIER")
-                SET_FLOAT_GLOBAL(262145 + 113, 100) -- Egochaser, joaat("EGOCHASER_HEALTH_REPLENISH_MULTIPLIER"
-                SET_FLOAT_GLOBAL(262145 + 114, 100) -- Meteorite, joaat("METEORITE_HEALTH_REPLENISH_MULTIPLIER")
-                SET_FLOAT_GLOBAL(262145 + 115, 100) -- Redwood, joaat("REDWOOD_HEALTH_DEPLETE_MULTIPLIER")
-                SET_FLOAT_GLOBAL(262145 + 116, 100) -- eCola, joaat("ORANGOTANG_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 112, 99999) -- Ps & Qs, joaat("PSANDQS_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 113, 99999) -- Egochaser, joaat("EGOCHASER_HEALTH_REPLENISH_MULTIPLIER"
+                SET_FLOAT_GLOBAL(262145 + 114, 99999) -- Meteorite, joaat("METEORITE_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 115, 99999) -- Redwood, joaat("REDWOOD_HEALTH_DEPLETE_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 116, 99999) -- eCola, joaat("ORANGOTANG_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 117, 99999) -- joaat("BOURGEOIX_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 118, 99999) -- 1405423594
+            end, function()
+                SET_FLOAT_GLOBAL(262145 + 112, 1)
+                SET_FLOAT_GLOBAL(262145 + 113, 1)
+                SET_FLOAT_GLOBAL(262145 + 114, 1)
+                SET_FLOAT_GLOBAL(262145 + 115, 1)
+                SET_FLOAT_GLOBAL(262145 + 116, 1)
+                SET_FLOAT_GLOBAL(262145 + 117, 1)
+                SET_FLOAT_GLOBAL(262145 + 118, 1)
             end)
 
-            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Infinite Stone Hatchet Power"), {}, IsWorking(false), function()
-                SET_INT_GLOBAL(262145 + 25330, 999999) -- Duration, 927295469
-                SET_INT_GLOBAL(262145 + 25331, 999999) -- Added Duration per Kill, 1080926656
+            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Infinite Stone Hatchet Power"), {}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3484239-post11.html
+                SET_FLOAT_GLOBAL(262145 + 25325, 99999) -- Weapon Defense, 2117353658
+                SET_FLOAT_GLOBAL(262145 + 25328, 99999) -- Health Recharge Multiplier, 847150217
+                SET_FLOAT_GLOBAL(262145 + 25329, 99999) -- Health Recharge Limit, 1172828143
+                SET_INT_GLOBAL(262145 + 25330, 99999) -- Duration, 927295469
+                SET_INT_GLOBAL(262145 + 25331, 99999) -- Added Duration per Kill, 1080926656
                 SET_INT_GLOBAL(262145 + 25332, 0) -- Cooldown, 972932785
+            end, function()
+                SET_FLOAT_GLOBAL(262145 + 25325, 0.5)
+                SET_FLOAT_GLOBAL(262145 + 25328, 2)
+                SET_FLOAT_GLOBAL(262145 + 25329, 1)
+                SET_INT_GLOBAL(262145 + 25330, 12000)
+                SET_INT_GLOBAL(262145 + 25331, 6000)
+                SET_INT_GLOBAL(262145 + 25332, 60000)
             end)
         
-
             menu.action(TUNABLES_OTH, TRANSLATE("7 Years GTAO Playtime"), {}, TRANSLATE("Make your account like played GTAO 7 years."), function()
                 STAT_SET_INT("MP_PLAYING_TIME", 0)
                 STAT_SET_INCREMENT("MP_PLAYING_TIME", (60 * 60 * 24 * 365 * 7) * 1000)
@@ -4517,8 +4617,11 @@
             STAT_SET_PACKED_BOOL(9461, true) -- Makes you have the Ballistic Armor
 
             menu.trigger_commands("nopimenugrey on")
+            if util.is_interaction_menu_open() then
+                IA_MENU_OPEN_OR_CLOSE()
+            end
             SET_INT_GLOBAL(2789741, 85)
-            IA_MENU_OPEN()
+            IA_MENU_OPEN_OR_CLOSE()
             IA_MENU_ENTER(1)
 
             NOTIFY("Because this feature works via requesting the Ballistic Armor, so, it'll be dropped nearby soon.")
@@ -4591,16 +4694,6 @@
                     end
                 end
 
-                function IsExistsPipe()
-                    local IsExists = false
-                    for k, ent in pairs(entities.get_all_objects_as_handles()) do
-                        if ENTITY.GET_ENTITY_MODEL(ent) == -1297635988 then
-                            IsExists = true
-                        end
-                    end
-                    return IsExists
-                end
-
             ---
 
             local NumberOfPlayedCP = 0
@@ -4637,7 +4730,7 @@
                         util.yield()
                     end
 
-                    SET_INT_LOCAL("heist_island_planning", 1523, 2) -- Restarts Kosatka PC, From https://github.com/atomikfr/CayoPericoHeistAssistant
+                    SET_INT_LOCAL("heist_island_planning", 1523, 2) -- Restarts Kosatka PC to apply stats, From https://github.com/atomikfr/CayoPericoHeistAssistant
                     util.yield(1000)
                 
                     while GET_INT_GLOBAL(2678393 + 1865) ~= 1 do -- fmmc_launcher.c, If not ready to set planning board
@@ -4716,6 +4809,7 @@
                 
                     menu.trigger_commands("go solopublic")
                     menu.trigger_commands("hccpquick off")
+                    
                     while not HelpMsgBeingDisplayed("QUIT_RS_ALL") do
                         util.yield()
                     end
@@ -4741,7 +4835,7 @@
             end)
 
             NumberOfSpin = 0
-            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Rig Slot Machine"), {"hcautorig"}, IsWorking(false), function() -- Credit goes to https://github.com/jonaaa20/RecoverySuite
+            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Rig Slot Machine"), {"hcautorig"}, IsWorking(false), function() -- https://github.com/jonaaa20/RecoverySuite
                 if NumberOfSpin == 0 then
                     PAD._SET_CONTROL_NORMAL(2, 204, 1) -- Press Tab to Bet Max
                     util.yield(100)
@@ -4757,6 +4851,8 @@
                         end
                         NumberOfSpin = NumberOfSpin + 1
                     end
+
+                    PAD._SET_CONTROL_NORMAL(2, 208, 1) -- Press Tab to Bet Max
                     
                     SET_INT_LOCAL("CASINO_SLOTS", 1631, 8) -- Set as rigging is done
 
@@ -4764,7 +4860,7 @@
                         util.yield()
                     end
                     SET_INT_LOCAL("CASINO_SLOTS", 3394 + 1 + players.user() * 11 + 10, 6) -- Skipping animations
-
+                   
                     util.yield(menu.get_value(COOLDOWN_RIG_SLOT) * 1000)
                 end
             end, function()
@@ -4790,7 +4886,7 @@
                 local Pos = HUD.GET_BLIP_COORDS(Blip)
                 TELEPORT(Pos.x, Pos.y, Pos.z)
 
-                local Hash = 1663218586 -- T20
+                local Hash = util.joaat("t20")
                 STREAMING.REQUEST_MODEL(Hash)
                 while not STREAMING.HAS_MODEL_LOADED(Hash) do
                     util.yield()
@@ -4829,8 +4925,11 @@
                 end
 
                 menu.trigger_commands("nopimenugrey on")
+                if util.is_interaction_menu_open() then
+                    IA_MENU_OPEN_OR_CLOSE()
+                end
                 SET_INT_GLOBAL(2789741, 29)
-                IA_MENU_OPEN()
+                IA_MENU_OPEN_OR_CLOSE()
                 IA_MENU_DOWN(8)
                 IA_MENU_ENTER(2)
 
@@ -4858,8 +4957,11 @@
                 end
 
                 menu.trigger_commands("nopimenugrey on")
+                if util.is_interaction_menu_open() then
+                    IA_MENU_OPEN_OR_CLOSE()
+                end
                 SET_INT_GLOBAL(2789741, 29)
-                IA_MENU_OPEN()
+                IA_MENU_OPEN_OR_CLOSE()
                 IA_MENU_UP(2)
                 IA_MENU_ENTER(2)
 
@@ -4887,18 +4989,27 @@
 
         menu.divider(INSTANT_FINISH, "Heists")
 
-            menu.action(INSTANT_FINISH, "Cayo / Tuners / Agency", {"hcinsfincp"}, IsWorking(false), function() -- Done Cayo Perico Heist Instantly: https://www.unknowncheats.me/forum/3472329-post13554.html
-                util.request_script_host("fm_mission_controller_2020")
+            menu.action(INSTANT_FINISH, "Cayo / Tuners / ULP / Agency", {"hcinsfincp"}, IsWorking(false) .. "Note that not working on ULP Missions - Superyatch", function() -- Done Cayo Perico Heist Instantly: https://www.unknowncheats.me/forum/3472329-post13554.html
+                menu.trigger_commands("scripthost")
 
                 SET_INT_LOCAL("fm_mission_controller_2020", 31554 + 6843, 51338752)
                 SET_INT_LOCAL("fm_mission_controller_2020", 31554 + 8218, 50)
             end)
 
-            menu.action(INSTANT_FINISH, "Casino Aggressive / Doomsday / Classic", {"hcinsfincah"}, IsWorking(false), function()
-                util.request_script_host("fm_mission_controller")
+            menu.action(INSTANT_FINISH, "Casino Aggressive / Classic", {"hcinsfincah"}, IsWorking(false), function()
+                menu.trigger_commands("scripthost")
+                
+                SET_INT_LOCAL("fm_mission_controller", 19679 + 1741, 151)
+                SET_INT_LOCAL("fm_mission_controller", 19679 + 2686, 10000000)
+                SET_INT_LOCAL("fm_mission_controller", 27440 + 859, 99999)
+                SET_INT_LOCAL("fm_mission_controller", 31554 + 69, 99999)
+                SET_INT_LOCAL("fm_mission_controller", 31554 + 97, 79)
+            end)
+
+            menu.action(INSTANT_FINISH, "Doomsday", {"hcinsfindooms"}, IsWorking(false), function()
+                menu.trigger_commands("scripthost")
 
                 SET_INT_LOCAL("fm_mission_controller", 19679, 12)
-                SET_INT_LOCAL("fm_mission_controller", 19679 + 2686, 10000000)
                 SET_INT_LOCAL("fm_mission_controller", 28298 + 1, 99999)
                 SET_INT_LOCAL("fm_mission_controller", 31554 + 69, 99999)
             end)
@@ -4906,6 +5017,10 @@
         ---
 
         menu.divider(INSTANT_FINISH, TRANSLATE("Others"))
+
+            menu.action(INSTANT_FINISH, TRANSLATE("Bunker"), {"hcinsfinbk"}, IsWorking(true) .. "[Selling Only]", function() -- https://www.unknowncheats.me/forum/3521137-post39.html
+                SET_INT_LOCAL("gb_gunrunning", 1203 + 774, 0)
+            end)
 
             menu.action(INSTANT_FINISH, "Headhunter", {"hcinsfinhh"}, "", function()
                 local Blip = HUD.GET_FIRST_BLIP_INFO_ID(432) -- Thanks to Sapphire#6031 helping me code this
@@ -4920,14 +5035,14 @@
                 util.set_local_player_wanted_level(0, false)
             end)
 
-            menu.action(INSTANT_FINISH, "Sightseer", {"hcinsfinss"}, IsWorking(false), function()
-                SET_INT_LOCAL("gb_sightseer", 247 + 1 + NETWORK.PARTICIPANT_ID_TO_INT() * 6 + 5, 3) -- https://www.unknowncheats.me/forum/3488056-post24.html
+            menu.action(INSTANT_FINISH, "Sightseer", {"hcinsfinss"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3488056-post24.html
+                SET_INT_LOCAL("gb_sightseer", 247 + 1 + NETWORK.PARTICIPANT_ID_TO_INT() * 6 + 5, 3)
             end)
 
-            menu.action(INSTANT_FINISH, "Air Cargo", {"hcinsfinac"}, "", function()
-                SET_INT_LOCAL("gb_smuggler", 1926 + 1035, GET_INT_LOCAL("gb_smuggler", 1926 + 1078)) -- https://www.unknowncheats.me/forum/3513482-post37.html
+            menu.action(INSTANT_FINISH, "Air Cargo", {"hcinsfinac"}, IsWorking(true) .. "[Selling Only]", function() -- https://www.unknowncheats.me/forum/3513482-post37.html
+                SET_INT_LOCAL("gb_smuggler", 1926 + 1035, GET_INT_LOCAL("gb_smuggler", 1926 + 1078))
             end)
-
+            
         ---
 
     ---
@@ -5275,7 +5390,7 @@
 
         menu.divider(NEAR_PED_CAM, TRANSLATE("Cams"))
 
-            menu.toggle_loop(NEAR_PED_CAM, TRANSLATE("Delete"), {"hcdelcam"}, "[" .. TRANSLATE("Cayo Perico Heist") .. " & " .. TRANSLATE("Diamond Casino Heist") .. "]", function()
+            menu.action(NEAR_PED_CAM, TRANSLATE("Delete"), {"hcdelcam"}, "[" .. TRANSLATE("Cayo Perico Heist") .. " & " .. TRANSLATE("Diamond Casino Heist") .. "]", function()
                 for k, ent in pairs(entities.get_all_objects_as_handles()) do
                     local Cams = {
                         -1233322078,
@@ -5373,6 +5488,15 @@
         end)
         menu.action(REQ_SERVICE, TRANSLATE("Ballistic Armor"), {"hcreqminigun"}, IsWorking(false), function()
             SET_INT_GLOBAL(2815059 + 884, 1) -- freemode.c, (!NETWORK::NETWORK_IS_SCRIPT_ACTIVE("AM_AMMO_DROP", PLAYER::PLAYER_ID(), true, 0))
+        end)
+        menu.action(REQ_SERVICE, "LJT's Airstrike", {"hcreqairstrike"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
+            SET_INT_GLOBAL(2815059 + 4455, 1) -- am_contact_requests.c
+        end)
+        menu.action(REQ_SERVICE, "Ammunation Supply", {"hcreqsupply"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
+            SET_INT_GLOBAL(2815059 + 874, 1) -- am_contact_requests.c
+        end)
+        menu.action(REQ_SERVICE, "Boat Pickup", {"hcreqboatpickup"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
+            SET_INT_GLOBAL(2815059 + 875, 1) -- am_contact_requests.c
         end)
 
     ---
@@ -5510,7 +5634,7 @@
 
                 menu.divider(PLAYTIME_EDITOR, TRANSLATE("Method"))
 
-                    IS_TIME_SET_METHOD = menu.toggle(PLAYTIME_EDITOR, TRANSLATE("Use Adding Playtime"), {}, TRANSLATE("Enabled: Use adding playtime method") .. "\n" .. TRANSLATE("- Add from your current playtime") .. "\n\n" .. TRANSLATE("Disabled: Use setting playtime method") .. "\n" .. TRANSLATE("- Set equal you will set time") .. "\n\n" .. TRANSLATE("Note that set method supports up to only 24.8 days, but add method supports up to 50K days"), function(); end)
+                    IS_TIME_ADDING_METHOD = menu.toggle(PLAYTIME_EDITOR, TRANSLATE("Use Adding Playtime"), {}, TRANSLATE("Enabled: Use adding playtime method") .. "\n" .. TRANSLATE("- Add from your current playtime") .. "\n\n" .. TRANSLATE("Disabled: Use setting playtime method") .. "\n" .. TRANSLATE("- Set equal you will set time") .. "\n\n" .. TRANSLATE("Note that set method supports up to only 24.8 days, but add method supports up to 50K days"), function(); end)
 
                 ---
                 
@@ -5525,7 +5649,7 @@
                 menu.divider(PLAYTIME_EDITOR, TRANSLATE("Set Stat"))
 
                     menu.action(PLAYTIME_EDITOR, TRANSLATE("Total Playtime"), {}, "", function()
-                        if menu.get_value(IS_TIME_SET_METHOD) then
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
                             STAT_SET_INT("TOTAL_PLAYING_TIME", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
                         else
                             STAT_SET_INCREMENT("TOTAL_PLAYING_TIME", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
@@ -5535,7 +5659,7 @@
                         FORCE_CLOUD_SAVE()
                     end)
                     menu.action(PLAYTIME_EDITOR, TRANSLATE("GTA:O Playtime"), {}, "", function()
-                        if menu.get_value(IS_TIME_SET_METHOD) then
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
                             STAT_SET_INT("MP_PLAYING_TIME", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
                         else
                             STAT_SET_INCREMENT("MP_PLAYING_TIME", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
@@ -5545,7 +5669,7 @@
                         FORCE_CLOUD_SAVE()
                     end)
                     menu.action(PLAYTIME_EDITOR, TRANSLATE("Deathmatches"), {}, "", function()
-                        if menu.get_value(IS_TIME_SET_METHOD) then
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
                             STAT_SET_INT("MPPLY_TOTAL_TIME_SPENT_DEATHMAT", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
                         else
                             STAT_SET_INCREMENT("MPPLY_TOTAL_TIME_SPENT_DEATHMAT", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
@@ -5555,7 +5679,7 @@
                         FORCE_CLOUD_SAVE()
                     end)
                     menu.action(PLAYTIME_EDITOR, TRANSLATE("Races"), {}, "", function()
-                        if menu.get_value(IS_TIME_SET_METHOD) then
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
                             STAT_SET_INT("MPPLY_TOTAL_TIME_SPENT_RACES", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
                         else
                             STAT_SET_INCREMENT("MPPLY_TOTAL_TIME_SPENT_RACES", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
@@ -5565,7 +5689,7 @@
                         FORCE_CLOUD_SAVE()
                     end)
                     menu.action(PLAYTIME_EDITOR, TRANSLATE("Creator"), {}, "", function()
-                        if menu.get_value(IS_TIME_SET_METHOD) then
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
                             STAT_SET_INT("MPPLY_TOTAL_TIME_MISSION_CREATO", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
                         else
                             STAT_SET_INCREMENT("MPPLY_TOTAL_TIME_MISSION_CREATO", menu.get_value(PLAYTIME_DAY) * 86400000 + menu.get_value(PLAYTIME_HOUR) * 3600000 + menu.get_value(PLAYTIME_MIN) * 60000)
@@ -5797,6 +5921,23 @@
             PAD._SET_CONTROL_NORMAL(0, 237, 1)
             util.yield(50)
         end)
+
+        menu.action(TOOLS_OTH, "Motion Skip", {}, "a.k.a Pause Menu Glitch", function()
+            TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
+        end)
+
+        menu.action_slider(TOOLS_OTH, "Skips Conversation With NPCs", {}, "", {
+            "All",
+            "One Line",
+        }, function(Index)
+            if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
+                if Index == 1 then
+                    AUDIO.STOP_SCRIPTED_CONVERSATION(false)
+                elseif Index == 2 then
+                    AUDIO.SKIP_TO_NEXT_SCRIPTED_CONVERSATION_LINE()
+                end
+            end
+        end)
         
     ---
 
@@ -5822,7 +5963,7 @@
         }, function(Index, Name)
             menu.show_warning(HC_LANG, CLICK_MENU, TRANSLATE("Would you like to restart HC now?"), function()
                 WRITE_SETTING("Language", Name)
-                util.stop_script()
+                util.restart_script()
             end)
         end)
 

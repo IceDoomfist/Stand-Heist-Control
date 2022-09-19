@@ -28,7 +28,7 @@ Custom Payout = Custom Percentage
 You didn't input the value. Please input it! = You didn't specify the value. Please specify it!
 Enable = Enable
 Sucessfully set! = Successfully set!
-Would you like to restart HC now? = Would you like to restart HC now?
+# Would you like to restart HC now? = Would you like to restart HC now?
 Others = Others
 Good bye, thank you for using HC! :D = Good bye, thank you for using HC! :D
 
