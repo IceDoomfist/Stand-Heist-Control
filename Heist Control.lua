@@ -20,8 +20,8 @@
 
     --- Important
 
-        local HCVersion = "V 3.0.6"
-        local BasedGTAO = 1.61
+        local HCVersion = "V 3.0.7"
+        local BasedGTAO = 1.63
 
     ---
 
@@ -50,9 +50,6 @@
 
     --- Core Functions
 
-        function MP_INDEX()
-            return "MP" .. util.get_char_slot() .. "_"
-        end
         function IS_MPPLY(Stat)
             local Stats = {
                 "MP_PLAYING_TIME",
@@ -72,7 +69,7 @@
         end
         function ADD_MP_INDEX(Stat)
             if not IS_MPPLY(Stat) then
-                Stat = MP_INDEX() .. Stat
+                Stat = "MP" .. util.get_char_slot() .. "_" .. Stat
             end
             return Stat
         end
@@ -572,8 +569,11 @@
 
     --- General Settings
 
-        menu.trigger_commands("clearnotifications")
-        menu.trigger_commands("nocasinoregionlock on")
+        util.execute_in_os_thread(function()
+            menu.trigger_commands("clearnotifications")
+            menu.trigger_commands("nocasinoregionlock on")
+            menu.trigger_commands("noidlekick on")
+        end)
 
         INT_MIN = -2147483648
         INT_MAX = 2147483647
@@ -581,7 +581,8 @@
         if SCRIPT_MANUAL_START then
             SHOW_IMG("HC Banner.png", 4)
 
-            if BasedGTAO ~= tonumber(NETWORK._GET_ONLINE_VERSION()) then
+            local GTAO_VER = NETWORK._GET_ONLINE_VERSION()
+            if BasedGTAO ~= tonumber(GTAO_VER) then
                 local State = ""
                 if IsWorking(false) ~= "" then
                     State = "\n\n" .. "Except [NOT WORKING] features should work!"
@@ -589,7 +590,7 @@
                     State = "\n\n" .. "But, all features of HC should work!"
                 end
 
-                NOTIFY(TRANSLATE("Coded GTAO Version:") .. " " .. BasedGTAO .. "\n" .. TRANSLATE("Current GTAO Version:") .. " " .. tonumber(NETWORK._GET_ONLINE_VERSION()) .. State)
+                NOTIFY(TRANSLATE("Coded GTAO Version:") .. " " .. BasedGTAO .. "\n" .. TRANSLATE("Current GTAO Version:") .. " " .. tonumber(GTAO_VER) .. State)
             end
         end
 
@@ -3597,27 +3598,27 @@
         local CRIMINAL_DLC = menu.list(DLC_UNLOCKER, "The Criminal Enterprises DLC", {}, "", function(); end) -- https://www.unknowncheats.me/forum/3492512-post53.html
             
             menu.action(CRIMINAL_DLC, "Jackets / Sweaters / Hoodies / Shirts", {}, IsWorking(false), function()
-                SET_PACKED_INT_GLOBAL(32817, 32824, 1)
-                SET_PACKED_INT_GLOBAL(32840, 32845, 1)
+                SET_PACKED_INT_GLOBAL(32817, 32824, 1) -- -1967834023, -1263992372
+                SET_PACKED_INT_GLOBAL(32840, 32845, 1) -- -206691492, -1577621449
             end)
             menu.action(CRIMINAL_DLC, "Pants / Caps / Hats", {}, IsWorking(false), function()
-                SET_INT_GLOBAL(262145 + 32823, 1)
-                SET_PACKED_INT_GLOBAL(32827, 32829, 1)
-                SET_PACKED_INT_GLOBAL(32846, 32847, 1)
-                SET_PACKED_INT_GLOBAL(32898, 32911, 1)
-                SET_PACKED_INT_GLOBAL(33559, 33567, 1)
+                SET_INT_GLOBAL(262145 + 32823, 1) -- -339902614
+                SET_PACKED_INT_GLOBAL(32827, 32829, 1) -- 638571354, 96152168
+                SET_PACKED_INT_GLOBAL(32846, 32847, 1) -- -2120678580, -1003907171
+                SET_PACKED_INT_GLOBAL(32898, 32911, 1) -- 191276118, -1484490421
+                SET_PACKED_INT_GLOBAL(33559, 33567, 1) -- 466041728, ???
             end)
             menu.action(CRIMINAL_DLC, "Earphones / Masks / Tech Demon", {}, IsWorking(false), function()
-                SET_INT_GLOBAL(262145 + 32839, 1)
-                SET_PACKED_INT_GLOBAL(32912, 32923, 1)
-                SET_PACKED_INT_GLOBAL(32832, 32837, 1)
-                SET_PACKED_INT_GLOBAL(32852, 32860, 1)
-                SET_PACKED_INT_GLOBAL(32864, 32867, 1)
-                SET_PACKED_INT_GLOBAL(32868, 32893, 1)
+                SET_INT_GLOBAL(262145 + 32839, 1) -- 505550305
+                SET_PACKED_INT_GLOBAL(32912, 32923, 1) -- -889497715, -1162924007
+                SET_PACKED_INT_GLOBAL(32832, 32837, 1) -- 1096886904, -359187968
+                SET_PACKED_INT_GLOBAL(32852, 32860, 1) -- 190205845, -171130807
+                SET_PACKED_INT_GLOBAL(32864, 32867, 1) -- 1424509866, -1677619307
+                SET_PACKED_INT_GLOBAL(32868, 32893, 1) -- -1285035231, -1792568167
             end)
             menu.action(CRIMINAL_DLC, "Shoes (Sliders) / Tiger", {}, IsWorking(false), function()
-                SET_PACKED_INT_GLOBAL(32894, 32897, 1)
-                SET_PACKED_INT_GLOBAL(32924, 32947, 1)
+                SET_PACKED_INT_GLOBAL(32894, 32897, 1) -- 467678514, 169972145
+                SET_PACKED_INT_GLOBAL(32924, 32947, 1) -- 245491514, -141827484
             end)
             
         ---
@@ -4205,6 +4206,14 @@
                     SET_INT_GLOBAL(262145 + 24671, 600000)
                 end)
 
+                menu.toggle_loop(TUNABLES_CD, "Spin Lucky Wheel", {"hccoolluckywheel"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3531489-post51.html
+                    SET_INT_GLOBAL(262145 + 27185, 1) -- -312420223
+                    SET_INT_GLOBAL(262145 + 27184, 1) -- 9960150
+
+                    STATS.STAT_SET_INT(709606456, 0, true) -- freemode_init.c, for MP0_
+                    STATS.STAT_SET_INT(873784076, 0, true) -- freemode_init.c, for MP1_
+                end)
+
                 menu.toggle_loop(TUNABLES_CD, TRANSLATE("Launch Kosatka Missiles"), {"hccoolmissile"}, IsWorking(false), function()
                     SET_INT_GLOBAL(262145 + 30175, 0) -- 729164624
                     SET_INT_GLOBAL(262145 + 30176, 99999) -- 1968456272
@@ -4575,8 +4584,8 @@
                 SET_FLOAT_GLOBAL(262145 + 114, 99999) -- Meteorite, joaat("METEORITE_HEALTH_REPLENISH_MULTIPLIER")
                 SET_FLOAT_GLOBAL(262145 + 115, 99999) -- Redwood, joaat("REDWOOD_HEALTH_DEPLETE_MULTIPLIER")
                 SET_FLOAT_GLOBAL(262145 + 116, 99999) -- eCola, joaat("ORANGOTANG_HEALTH_REPLENISH_MULTIPLIER")
-                SET_FLOAT_GLOBAL(262145 + 117, 99999) -- joaat("BOURGEOIX_HEALTH_REPLENISH_MULTIPLIER")
-                SET_FLOAT_GLOBAL(262145 + 118, 99999) -- 1405423594
+                SET_FLOAT_GLOBAL(262145 + 117, 99999) -- Bourgeoix, joaat("BOURGEOIX_HEALTH_REPLENISH_MULTIPLIER")
+                SET_FLOAT_GLOBAL(262145 + 118, 99999) -- Sprunk, 1405423594
             end, function()
                 SET_FLOAT_GLOBAL(262145 + 112, 1)
                 SET_FLOAT_GLOBAL(262145 + 113, 1)
@@ -4620,7 +4629,7 @@
             if util.is_interaction_menu_open() then
                 IA_MENU_OPEN_OR_CLOSE()
             end
-            SET_INT_GLOBAL(2789741, 85)
+            SET_INT_GLOBAL(2789741, 85) -- Renders Ballistic Equipment Services screen of the Interaction Menu
             IA_MENU_OPEN_OR_CLOSE()
             IA_MENU_ENTER(1)
 
@@ -4649,6 +4658,18 @@
             NumberOfLoss = 1
             menu.slider(AFK_MONEY, TRANSLATE("Ratio of Jackpot and Loss"), {"hcrigratio"}, "", 1, 100, 1, 1, function(Value)
                 NumberOfLoss = Value
+            end)
+
+        ---
+
+        menu.divider(AFK_MONEY, TRANSLATE("Others"))
+
+            menu.action(AFK_MONEY, "Teleport to the Lucky Wheel", {}, "If this doesn't work properly, please press again. It'll fix the situation.", function() -- If anyone know a better method to do this, please let me know.
+                for i = 1, 3 do
+                    SET_HEADING(5)
+                    TELEPORT(1110.269, 229.11899, -49.63585)
+                    util.yield(500)
+                end
             end)
 
         ---
@@ -4699,6 +4720,16 @@
             local NumberOfPlayedCP = 0
             menu.toggle_loop(AFK_MONEY, "Auto Cayo Bot", {}, IsWorking(true) .. "Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs.", function() -- An idea and source code from Raid Control for X-Force, but almost tweaked by me.
                 if NumberOfPlayingCP >= NumberOfPlayedCP then
+                    if not util.is_interaction_menu_open() then
+                        IA_MENU_OPEN_OR_CLOSE()
+                    end
+                    while GET_INT_GLOBAL(2797056 + 1 + (0 * 66) + 1 + GET_INT_LOCAL("am_pi_menu", 230)) ~= 35 do -- am_pi_menu.c
+                        NOTIFY("Make sure your spawning position is 'Last Location'. Otherwise, will not proceed." .. "\n" .. "You can set it on Interaction Menu.")
+                        util.yield()
+                    end
+                    util.yield()
+                    IA_MENU_OPEN_OR_CLOSE()
+
                     if players.get_boss(players.user()) == -1 then
                         menu.trigger_commands("ceostart")
                     end
@@ -4785,7 +4816,7 @@
                     CP_PRESS_D(1)
                     CP_PRESS_ENTER(1)
                     
-                    while GET_INT_GLOBAL(1835497) ~= 1 do -- fmmc_launcher.c
+                    while GET_INT_GLOBAL(1835497) ~= 1 do -- Tbh, idk what this mean? If anyone know then please let me know. fmmc_launcher.c
                         util.yield()
                     end
                     util.yield(1000)
@@ -4853,7 +4884,6 @@
                     end
 
                     PAD._SET_CONTROL_NORMAL(2, 208, 1) -- Press Tab to Bet Max
-                    
                     SET_INT_LOCAL("CASINO_SLOTS", 1631, 8) -- Set as rigging is done
 
                     while GET_INT_LOCAL("CASINO_SLOTS", 3394 + 1 + players.user() * 11 + 10) ~= 3 do
@@ -4866,6 +4896,16 @@
             end, function()
                 menu.trigger_commands("rigslotmachines off")
                 NumberOfSpin = 0
+            end)
+
+            menu.toggle_loop(AFK_MONEY, "Auto Lucky Wheel", {"hcautoluckywheel"}, IsWorking(true) .. "Let you earn 25K chips per 3 seconds automatically.", function()
+                menu.trigger_commands("rigluckywheel off")
+                menu.trigger_commands("hccoolluckywheel on")
+                util.yield(1500)
+
+                SET_INT_LOCAL("casino_lucky_wheel", 273 + 14, 15) -- Changes reward to 25,000 Chips
+                SET_INT_LOCAL("casino_lucky_wheel", 273 + 45, 11) -- Rigging state: done
+                util.yield(1500)
             end)
 
             menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Black Jack"), {"hcautoblackjack"}, "", function() -- Thanks to allow me to use the code, jerry123#4508
@@ -4902,7 +4942,6 @@
                 entities.delete_by_handle(Veh)
 
                 STAT_SET_INT("MPPLY_TIMETRIAL_COMPLETED_WEEK", -1)
-                STAT_SET_INT("MPPLY_RCTTCOMPLETEDWEEK", -1)
                 menu.trigger_commands("hctimercustom off")
                 util.yield(500)
                 menu.trigger_commands("hctimertime " .. menu.get_value(COOLDOWN_TIME_TRIAL))
@@ -4928,7 +4967,7 @@
                 if util.is_interaction_menu_open() then
                     IA_MENU_OPEN_OR_CLOSE()
                 end
-                SET_INT_GLOBAL(2789741, 29)
+                SET_INT_GLOBAL(2789741, 29) -- Renders VIP Work screen of the Interaction Menu
                 IA_MENU_OPEN_OR_CLOSE()
                 IA_MENU_DOWN(8)
                 IA_MENU_ENTER(2)
@@ -4960,7 +4999,7 @@
                 if util.is_interaction_menu_open() then
                     IA_MENU_OPEN_OR_CLOSE()
                 end
-                SET_INT_GLOBAL(2789741, 29)
+                SET_INT_GLOBAL(2789741, 29) -- Renders VIP Work screen of the Interaction Menu
                 IA_MENU_OPEN_OR_CLOSE()
                 IA_MENU_UP(2)
                 IA_MENU_ENTER(2)
@@ -4989,7 +5028,7 @@
 
         menu.divider(INSTANT_FINISH, "Heists")
 
-            menu.action(INSTANT_FINISH, "Cayo / Tuners / ULP / Agency", {"hcinsfincp"}, IsWorking(false) .. "Note that not working on ULP Missions - Superyatch", function() -- Done Cayo Perico Heist Instantly: https://www.unknowncheats.me/forum/3472329-post13554.html
+            menu.action(INSTANT_FINISH, "Cayo / Tuners / ULP / Agency", {"hcinsfincp"}, IsWorking(true) .. TRANSLATE("[Locally]") .. "\n\n" .. "Note that not working on ULP Missions - Superyatch", function() -- Done Cayo Perico Heist Instantly: https://www.unknowncheats.me/forum/3472329-post13554.html
                 menu.trigger_commands("scripthost")
 
                 SET_INT_LOCAL("fm_mission_controller_2020", 31554 + 6843, 51338752)
@@ -5083,7 +5122,8 @@
                 menu.divider(TIMER_POS, "Stand")
 
                     menu.action(TIMER_POS, "Stand", {}, "", function()
-                        menu.trigger_commands("infotextpos")
+                        local Ref = menu.ref_by_command_name("infotextpos")
+                        menu.focus(Ref)
                     end)
 
                 ---
@@ -5095,9 +5135,11 @@
                 { "Stand" },
             }, function(Index)
                 if Index == 1 then
-                    menu.trigger_commands("hctimercolor")
+                    local Ref = menu.ref_by_command_name("hctimercolor")
+                    menu.focus(Ref)
                 elseif Index == 2 then
-                    menu.trigger_commands("hud")
+                    local Ref = menu.ref_by_command_name("hud")
+                    menu.focus(Ref)
                 end
             end)
 
@@ -5469,34 +5511,25 @@
 
     ---
 
-    local REQ_SERVICE = menu.list(TOOLS, TRANSLATE("Request Services"), {}, "", function(); end) -- All from decompiled scripts found by me except credited one
+    local REQ_SERVICE = menu.list(TOOLS, TRANSLATE("Request Services"), {}, "", function(); end)
 
-        menu.action(REQ_SERVICE, TRANSLATE("MOC"), {"hcreqmoc"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("MOC"), {"hcreqmoc"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 913, 1) -- freemode.c, (var uParam0, var uParam1, int* iParam2, int* iParam3, int iParam4, int* iParam5, int* iParam6)
         end)
-        menu.action(REQ_SERVICE, TRANSLATE("Avenger"), {"hcreqavenger"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("Avenger"), {"hcreqavenger"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 921, 1) -- freemode.c, Var112 = { OBJECT::_GET_OBJECT_OFFSET_FROM_COORDS(Param2, fParam5, 0f, -7,5f, 1f) };
         end)
-        menu.action(REQ_SERVICE, TRANSLATE("Terrobyte"), {"hcreqterrobyte"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("Terrobyte"), {"hcreqterrobyte"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 925, 1) -- freemode.c, (var uParam0, var uParam1, int* iParam2, int* iParam3, int iParam4, int* iParam5, int* iParam6)
         end)
-        menu.action(REQ_SERVICE, TRANSLATE("Kosatka"), {"hcreqkosatka"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("Kosatka"), {"hcreqkosatka"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 933, 1) -- freemode.c, (var uParam0, var uParam1, int* iParam2, int* iParam3, int iParam4, int* iParam5, int* iParam6)
         end)
-        menu.action(REQ_SERVICE, TRANSLATE("Dingy"), {"hcreqdingy"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("Dingy"), {"hcreqdingy"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 945, 1) -- freemode.c, (var uParam0, var uParam1, int* iParam2, int* iParam3, int iParam4, int* iParam5, int* iParam6)
         end)
-        menu.action(REQ_SERVICE, TRANSLATE("Ballistic Armor"), {"hcreqminigun"}, IsWorking(false), function()
+        menu.action(REQ_SERVICE, TRANSLATE("Ballistic Armor"), {"hcreqminigun"}, IsWorking(false), function() -- https://www.unknowncheats.me/forum/3442776-post4.html
             SET_INT_GLOBAL(2815059 + 884, 1) -- freemode.c, (!NETWORK::NETWORK_IS_SCRIPT_ACTIVE("AM_AMMO_DROP", PLAYER::PLAYER_ID(), true, 0))
-        end)
-        menu.action(REQ_SERVICE, "LJT's Airstrike", {"hcreqairstrike"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
-            SET_INT_GLOBAL(2815059 + 4455, 1) -- am_contact_requests.c
-        end)
-        menu.action(REQ_SERVICE, "Ammunation Supply", {"hcreqsupply"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
-            SET_INT_GLOBAL(2815059 + 874, 1) -- am_contact_requests.c
-        end)
-        menu.action(REQ_SERVICE, "Boat Pickup", {"hcreqboatpickup"}, IsWorking(false), function() -- https://github.com/Primexz/GTA-Monopol_ModMenu
-            SET_INT_GLOBAL(2815059 + 875, 1) -- am_contact_requests.c
         end)
 
     ---
@@ -5761,11 +5794,15 @@
 
             menu.divider(STAT_EDITOR, TRANSLATE("Modify Stat"))
 
-                menu.text_input(STAT_EDITOR, TRANSLATE("Stat Name"), {"hceditname"}, TRANSLATE("Note: MP0_ or MP1_ will be selected by HC automatically, therefore don't write it."), function(Input)
-                    EditStatName = string.upper(Input)
-                end)
-                menu.text_input(STAT_EDITOR, TRANSLATE("Stat Value"), {"hceditvalue"}, "", function(Input)
-                    EditStatValue = Input
+                STAT_EDITOR_NAME = menu.text_input(STAT_EDITOR, TRANSLATE("Stat Name"), {"hceditname"}, TRANSLATE("Note: MP0_ or MP1_ will be selected by HC automatically, therefore don't write it."), function(); end)
+                STAT_EDITOR_VALUE = menu.text_input(STAT_EDITOR, TRANSLATE("Stat Value"), {"hceditvalue"}, "", function(); end)
+
+                util.create_tick_handler(function()
+                    local MenuValue = menu.get_value(STAT_EDITOR_NAME)
+                    local UpperValue = string.upper(MenuValue)
+                    if MenuValue ~= UpperValue then
+                        menu.trigger_commands("hceditname " .. UpperValue)
+                    end
                 end)
 
             ---
@@ -5783,51 +5820,51 @@
             menu.divider(STAT_EDITOR, TRANSLATE("Set Stat"))
 
                 menu.action(STAT_EDITOR, "Integer", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "NO_BOUGHT_YUM_SNACKS\n" .. TRANSLATE("Stat Value") .. ": " .. "30", function()
-                    if EditStatName == nil or EditStatValue == nil then
+                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        STAT_SET_INT(EditStatName, EditStatValue)
-                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(EditStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. EditStatValue)
+                        STAT_SET_INT(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
+                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
 
                 menu.action(STAT_EDITOR, "Float", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "PLAYER_MENTAL_STATE\n" .. TRANSLATE("Stat Value") .. ": " .. "100.0", function()
-                    if EditStatName == nil or EditStatValue == nil then
+                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        STAT_SET_FLOAT(EditStatName, EditStatValue)
-                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(EditStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. EditStatValue)
+                        STAT_SET_FLOAT(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
+                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
 
                 menu.action(STAT_EDITOR, "Boolean", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CL_RACE_MODDED_CAR\n" .. TRANSLATE("Stat Value") .. ": " .. "true or false", function()
-                    if EditStatName == nil or EditStatValue == nil then
+                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        STAT_SET_BOOL(EditStatName, EditStatValue)
-                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(EditStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. EditStatValue)
+                        STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
+                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
 
                 menu.action(STAT_EDITOR, "String", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_NAME\n" .. TRANSLATE("Stat Value") .. ": " .. "STRING", function()
-                    if EditStatName == nil or EditStatValue == nil then
+                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        STAT_SET_STRING(EditStatName, EditStatValue)
-                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(EditStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. EditStatValue)
+                        STAT_SET_STRING(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
+                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
 
                 menu.action(STAT_EDITOR, "Date", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_DATE_CREATED\n" .. TRANSLATE("Stat Value") .. ": " .. "Year: 1970, Month: 1, Day: 1", function()
-                    if EditStatName == nil then
+                    if menu.get_value(STAT_EDITOR_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        STAT_SET_DATE(EditStatName, menu.get_value(DATE_YEAR), menu.get_value(DATE_MONTH), menu.get_value(DATE_DAY), menu.get_value(DATE_HOUR), menu.get_value(DATE_MIN))
-                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(EditStatName) .. "\n" .. "Year: " .. menu.get_value(DATE_YEAR) .. "\n" .. "Month: " .. menu.get_value(DATE_MONTH) .. "\n" .."Day: " .. menu.get_value(DATE_DAY) .. "\n" .. "Hour: " .. menu.get_value(DATE_HOUR) .. "\n" .. "Min: " .. menu.get_value(DATE_MIN))
+                        STAT_SET_DATE(menu.get_value(STAT_EDITOR_NAME), menu.get_value(DATE_YEAR), menu.get_value(DATE_MONTH), menu.get_value(DATE_DAY), menu.get_value(DATE_HOUR), menu.get_value(DATE_MIN))
+                        NOTIFY(TRANSLATE("Sucessfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. "Year: " .. menu.get_value(DATE_YEAR) .. "\n" .. "Month: " .. menu.get_value(DATE_MONTH) .. "\n" .."Day: " .. menu.get_value(DATE_DAY) .. "\n" .. "Hour: " .. menu.get_value(DATE_HOUR) .. "\n" .. "Min: " .. menu.get_value(DATE_MIN))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
@@ -5840,8 +5877,14 @@
 
             menu.divider(STAT_READER, TRANSLATE("Modify Stat"))
 
-                menu.text_input(STAT_READER, TRANSLATE("Stat Name"), {"hcreadername"}, "", function(Input)
-                    ReaderStatName = string.upper(Input)
+                STAT_READER_NAME = menu.text_input(STAT_READER, TRANSLATE("Stat Name"), {"hcreadername"}, "", function(); end)
+
+                util.create_tick_handler(function()
+                    local MenuValue = menu.get_value(STAT_READER_NAME)
+                    local UpperValue = string.upper(MenuValue)
+                    if MenuValue ~= UpperValue then
+                        menu.trigger_commands("hcreadername " .. UpperValue)
+                    end
                 end)
 
             ---
@@ -5855,56 +5898,56 @@
             menu.divider(STAT_READER, TRANSLATE("Read Stat"))
 
                 menu.action(STAT_READER, "Integer", {}, "", function()
-                    if ReaderStatName == nil then
+                    if menu.get_value(STAT_READER_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(ReaderStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_INT(ReaderStatName))
+                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_INT(menu.get_value(STAT_READER_NAME)))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_INT(ReaderStatName))
+                            util.copy_to_clipboard(STAT_GET_INT(menu.get_value(STAT_READER_NAME)))
                         end
                     end
                 end)
 
                 menu.action(STAT_READER, "Float", {}, "", function()
-                    if ReaderStatName == nil then
+                    if menu.get_value(STAT_READER_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(ReaderStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_FLOAT(ReaderStatName))
+                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_FLOAT(menu.get_value(STAT_READER_NAME)))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_FLOAT(ReaderStatName))
+                            util.copy_to_clipboard(STAT_GET_FLOAT(menu.get_value(STAT_READER_NAME)))
                         end
                     end
                 end)
 
                 menu.action(STAT_READER, "Bool", {}, "", function()
-                    if ReaderStatName == nil then
+                    if menu.get_value(STAT_READER_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(ReaderStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_BOOL(ReaderStatName))
+                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_BOOL(menu.get_value(STAT_READER_NAME)))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_BOOL(ReaderStatName))
+                            util.copy_to_clipboard(STAT_GET_BOOL(menu.get_value(STAT_READER_NAME)))
                         end
                     end
                 end)
 
                 menu.action(STAT_READER, "String", {}, "", function()
-                    if ReaderStatName == nil then
+                    if menu.get_value(STAT_READER_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(ReaderStatName) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_STRING(ReaderStatName))
+                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_STRING(menu.get_value(STAT_READER_NAME)))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_STRING(ReaderStatName))
+                            util.copy_to_clipboard(STAT_GET_STRING(menu.get_value(STAT_READER_NAME)))
                         end
                     end
                 end)
 
                 menu.action(STAT_READER, "Date", {}, "", function()
-                    if ReaderStatName == nil then
+                    if menu.get_value(STAT_READER_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't input the value. Please input it!"))
                     else
-                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(ReaderStatName) .. "\n" .. "Year: " .. STAT_GET_DATE(ReaderStatName, "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(ReaderStatName, "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(ReaderStatName, "Day") .. "\n" .. "Hour: " .. STAT_GET_DATE(ReaderStatName, "Hour") .. "\n" .. "Min: " .. STAT_GET_DATE(ReaderStatName, "Min"))
+                        NOTIFY(TRANSLATE("Sucessfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. "Year: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Day") .. "\n" .. "Hour: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hour") .. "\n" .. "Min: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Min"))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard("Year: " .. STAT_GET_DATE(ReaderStatName, "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(ReaderStatName, "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(ReaderStatName, "Day") .. "\n" .. "Hour: " .. STAT_GET_DATE(ReaderStatName, "Hour") .. "\n" .. "Min: " .. STAT_GET_DATE(ReaderStatName, "Min"))
+                            util.copy_to_clipboard("Year: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Day") .. "\n" .. "Hour: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hour") .. "\n" .. "Min: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Min"))
                         end
                     end
                 end)
