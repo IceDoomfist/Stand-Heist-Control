@@ -1,11 +1,10 @@
 --[[
 
     Developed and maintenanced by IceDoomfist#0001: https://icedoomfist.com/My_Profile/
-    Stand Heist Control is based by Heist Control V2 & Master Unlocker Lua Scripts for 2T1
-    Thanks to allow me to use your code, jhowkNx: https://github.com/jhowkNx
+    Stand Heist Control contains some global, local variables and stats from Heist Control V2 & Master Unlocker Lua Scripts for 2T1 or UnknownCheats: https://www.unknowncheats.me/forum/grand-theft-auto-v/
+    Thanks for allowing me to use your code, jhowkNx: https://github.com/jhowkNx
     We're keeping connecion friendly, and sharing info like stats, global or local variables and codes each other.
 
-    Almost global, local variables and stats from jhowNx and UnknownCheats: https://www.unknowncheats.me/forum/grand-theft-auto-v/
     Note that this lua script contains code from other lua scripts & public menus.
     I tried to credit all, if something is missed, really sorry about that.
     This script is only compatible with Stand Lua API: https://stand.gg/help/lua-api-documentation
@@ -20,7 +19,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.0.9"
+        local HCVersion = "V 3.1.0"
         local BasedGTAO = 1.64
 
     ---
@@ -31,6 +30,8 @@
         local ImgFolderDir = HCFolderDir .. "Image\\"
         local SettingFolderDir = HCFolderDir .. "Setting\\"
         local LangFolderDir = HCFolderDir .. "Language\\"
+
+        local NativeDir = filesystem.scripts_dir() .. "lib\\natives-1672190175.lua"
 
         local SettingDir = SettingFolderDir .. "Setting.txt"
         local LogDir = SettingFolderDir .. "Log.txt"
@@ -87,7 +88,7 @@
             STATS.STAT_SET_STRING(util.joaat(ADD_MP_INDEX(Stat)), Value, true)
         end
         function STAT_SET_DATE(Stat, Year, Month, Day, Hour, Min)
-            local DatePTR = memory.alloc(7*8) -- Thanks to help memory stuffs, aaronlink127#0127
+            local DatePTR = memory.alloc(7*8) -- Thanks for helping memory stuffs, aaronlink127#0127
             memory.write_int(DatePTR, Year)
             memory.write_int(DatePTR+8, Month)
             memory.write_int(DatePTR+16, Day)
@@ -187,9 +188,32 @@
 
     ---
 
+    --- Log Functions
+
+        if not filesystem.exists(LogDir) then
+            local open = io.open(LogDir, "w+")
+            open:write("")
+            open:close()
+        end
+        function LOG(Message)
+            local open = io.open(LogDir, "a+")
+            open:write(os.date("[%m/%d/%Y %I:%M:%S %p]") .. " " .. Message .. "\n")
+            open:close()
+        end
+        
+        function ERROR_LOG(ErrorMsg)
+            LOG("Heist Control Version: " .. HCVersion)
+            LOG("[Heist Control - ERROR] " .. ErrorMsg .. "\n")
+            util.toast("[ Heist Control - ERROR ]" .. "\n\n" .. ErrorMsg)
+            util.yield()
+            util.stop_script()
+        end
+
+    ---
+
     --- Native and Folders
 
-        util.require_natives("natives-1660775568")
+        util.require_natives("natives-1672190175")
 
         AllFolders = {
             HCFolderDir,
@@ -201,6 +225,10 @@
             if not filesystem.exists(AllFolders[i]) then
                 filesystem.mkdir(AllFolders[i])
             end
+        end
+
+        if not filesystem.exists(NativeDir) then
+            ERROR_LOG(TRANSLATE("Native file for HC doesn't exist.") .. "\n\n" .. TRANSLATE("Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' feature or download the native file manually from somewhere!"))
         end
 
     ---
@@ -254,29 +282,6 @@
 
     ---
 
-    --- Log Functions
-
-        if not filesystem.exists(LogDir) then
-            local open = io.open(LogDir, "w+")
-            open:write("")
-            open:close()
-        end
-        function LOG(Message)
-            local open = io.open(LogDir, "a+")
-            open:write(os.date("[%m/%d/%Y %I:%M:%S %p]") .. " " .. Message .. "\n")
-            open:close()
-        end
-        
-        function ERROR_LOG(ErrorMsg)
-            LOG("Heist Control Version: " .. HCVersion)
-            LOG("[Heist Control - ERROR] " .. ErrorMsg .. "\n")
-            util.toast("[ Heist Control - ERROR ]" .. "\n\n" .. ErrorMsg)
-            util.yield()
-            util.stop_script()
-        end
-
-    ---
-
     --- Language Settings
 
         if READ_SETTING("Language") == "Unknown" then -- When execute HC for first time
@@ -321,7 +326,7 @@
                     if filesystem.exists(Dir) then
                         SelectedLangDir = Dir
                     else
-                        ERROR_LOG(TO_LANG_NAME(TranslationDirs[i]) .. " language file for HC doesn't exist." .. "\n\n" .. "Please install HC properly again!")
+                        ERROR_LOG(TO_LANG_NAME(TranslationDirs[i]) .. " " .. TRANSLATE("language file for HC doesn't exist.") .. "\n\n" .. TRANSLATE("Please install HC properly again!"))
                     end
                 end
             end
@@ -424,10 +429,10 @@
 
         function IS_WORKING(IsAddNewLine)
             local State = "" -- If global and local variables have been changed due to the GTAO update then
-            local GTAO_VER = NETWORK._GET_ONLINE_VERSION()
+            local GTAO_VER = tonumber(NETWORK.GET_ONLINE_VERSION())
             if util.is_session_started() then
                 if GET_INT_LOCAL("freemode", 3618) ~= util.joaat("lr_prop_carkey_fob") then -- freemode.c, joaat("lr_prop_carkey_fob")
-                    State = "[NOT WORKING]\n- This feature isn't working due to the latest GTA Online patch: " .. GTAO_VER .. ". Please download the lastest version of Heist Control or wait for Heist Control's developer patching."
+                    State = TRANSLATE("[NOT WORKING]") .. "\n" .. TRANSLATE("- This feature isn't working due to the latest GTA Online patch:") .. " " .. GTAO_VER .. ", " .. TRANSLATE("Please download the lastest version of Heist Control or wait for Heist Control's developer patching.")
                     if IsAddNewLine then
                         State = State .. "\n\n"
                     end
@@ -450,6 +455,14 @@
             return HUD.END_TEXT_COMMAND_IS_THIS_HELP_MESSAGE_BEING_DISPLAYED(0)
         end
 
+        function REMOVE_OBJECT_BY_HASH(Hash)
+            for _, ent in pairs(entities.get_all_objects_as_handles()) do
+                if ENTITY.GET_ENTITY_MODEL(ent) == Hash then
+                    entities.delete_by_handle(ent)
+                end
+            end
+        end
+
         function IS_PED_PLAYER(Ped)
             if PED.GET_PED_TYPE(Ped) >= 4 then
                 return false
@@ -467,24 +480,24 @@
         end
 
         function IA_MENU_OPEN_OR_CLOSE()
-            PAD._SET_CONTROL_NORMAL(0, 244, 1)
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 244, 1)
             util.yield(200)
         end
         function IA_MENU_UP(Num)
             for i = 1, Num do
-                PAD._SET_CONTROL_NORMAL(0, 172, 1)
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 172, 1)
                 util.yield(200)
             end
         end
         function IA_MENU_DOWN(Num)
             for i = 1, Num do
-                PAD._SET_CONTROL_NORMAL(0, 173, 1)
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 173, 1)
                 util.yield(200)
             end
         end
         function IA_MENU_ENTER(Num)
             for i = 1, Num do
-                PAD._SET_CONTROL_NORMAL(0, 176, 1)
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 176, 1)
                 util.yield(200)
             end
         end
@@ -498,7 +511,7 @@
             util.register_file(ImgFolderDir .. "Logo.ytd")
         else
             if READ_SETTING("Notification Sort") == "In-Game" and READ_SETTING("Notification Icon") == "HC Logo" then
-                ERROR_LOG("HC Logo for In-Game notification doesn't exist." .. "\n\n" .. "How to fix: Install HC via Heist Control Installer.exe")
+                ERROR_LOG(TRANSLATE("HC Logo for In-Game notification doesn't exist.") .. "\n\n" .. TRANSLATE("Please re-enable 'Stand > Lua Scripts > Repository > Heist Control' to fix!"))
             end
         end
 
@@ -553,7 +566,7 @@
                         util.yield()
                     end
                     util.BEGIN_TEXT_COMMAND_THEFEED_POST(Message)
-                    HUD._THEFEED_SET_NEXT_POST_BACKGROUND_COLOR(NotiColor)
+                    HUD.THEFEED_SET_BACKGROUND_COLOR_FOR_NEXT_POST(NotiColor)
                     HUD.END_TEXT_COMMAND_THEFEED_POST_MESSAGETEXT(NotiIcon, NotiIcon, true, 1, TRANSLATE("Heist Control"), "~c~" .. TRANSLATE("Notification"))
                     HUD.END_TEXT_COMMAND_THEFEED_POST_TICKER(true, false)
                 else
@@ -583,16 +596,16 @@
         if SCRIPT_MANUAL_START then
             SHOW_IMG("HC Banner.png", 4)
 
-            local GTAO_VER = NETWORK._GET_ONLINE_VERSION()
-            if BasedGTAO ~= tonumber(GTAO_VER) then
+            local LastestGTAO = tonumber(NETWORK.GET_ONLINE_VERSION())
+            if BasedGTAO ~= LastestGTAO then
                 local State = ""
                 if IS_WORKING(false) ~= "" then
-                    State = "\n\n" .. "Except [NOT WORKING] features should work!"
+                    State = "\n\n" .. TRANSLATE("Except [NOT WORKING] features should work!")
                 else
-                    State = "\n\n" .. "But, all features of HC should work!"
+                    State = "\n\n" .. TRANSLATE("But, all features of HC should work!")
                 end
 
-                NOTIFY(TRANSLATE("Coded GTAO Version:") .. " " .. BasedGTAO .. "\n" .. TRANSLATE("Current GTA Online Version:") .. " " .. tonumber(GTAO_VER) .. State)
+                NOTIFY(TRANSLATE("Coded GTA Online Version:") .. " " .. BasedGTAO .. "\n" .. TRANSLATE("Current GTA Online Version:") .. " " .. LastestGTAO .. State)
             end
         end
 
@@ -631,7 +644,7 @@
         local DOOMS_HEIST = menu.list(menu.my_root(), TRANSLATE("Doomsday Heist"), {"hcdooms"}, "", function(); end)
         local CLASSIC_HEISTS = menu.list(menu.my_root(), TRANSLATE("Classic Heist"), {"hcclassic"}, "", function(); end)
         local LS_ROBBERY = menu.list(menu.my_root(), TRANSLATE("LS Tuners Robbery"), {"hcls"}, "", function(); end)
-        local ULP_MISSIONS = menu.list(menu.my_root(), "ULP Missions", {"hculp"}, "", function(); end)
+        local ULP_MISSIONS = menu.list(menu.my_root(), TRANSLATE("ULP Missions"), {"hculp"}, "", function(); end)
         local TH_CONTRACT = menu.list(menu.my_root(), TRANSLATE("The Contract: Agency"), {"hcagc"}, "", function(); end)
         local MASTER_UNLOCKR = menu.list(menu.my_root(), TRANSLATE("Master Unlocker"), {"hcmu"}, "", function(); end)
         local TOOLS = menu.list(menu.my_root(), TRANSLATE("Tools"), {"hctool"}, "", function(); end)
@@ -1437,7 +1450,7 @@
 
         menu.toggle_loop(PERICO_ADV, TRANSLATE("Skip Cutting The Sewer Grill"), {}, IS_WORKING(true) .. "Use with Cayo Perico Heist > Custom Teleport > Island > Drainage Pipe!", function() 
             if IS_HELP_MSG_DISPLAYED("UT_WELD_PROMPT") then -- "~s~Press ~INPUT_CONTEXT~ to cut through the grill."
-                PAD._SET_CONTROL_NORMAL(2, 51, 1)
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 51, 1)
             elseif GET_INT_LOCAL("fm_mission_controller_2020", 26746) == 4 then -- Local from https://www.unknowncheats.me/forum/3389282-post1.html  
                 SET_INT_LOCAL("fm_mission_controller_2020", 26746, 6)
             end
@@ -1474,11 +1487,7 @@
         end)
 
         menu.action(PERICO_ADV, TRANSLATE("Remove The Drainage Pipe"), {"hccprempipe"}, "", function() -- Thanks to help me to code, Sapphire#6031
-            for k, ent in pairs(entities.get_all_objects_as_handles()) do
-                if ENTITY.GET_ENTITY_MODEL(ent) == -1297635988 then
-                    entities.delete_by_handle(ent)
-                end
-            end
+            REMOVE_OBJECT_BY_HASH(-1297635988)
         end)
     
     ---
@@ -1511,11 +1520,11 @@
 
     menu.list_action(PERICO_HEIST, TRANSLATE("Primary Target"), {"hccppritar"}, "", {
         { TRANSLATE("Sapphire Panther"), {"panther"} },
-        { "Madrazo Files", {"file"} },
-        { "Pink Diamond", {"diamond"} },
-        { "Bearer Bonds", {"bearer"} },
+        { TRANSLATE("Madrazo Files"), {"file"} },
+        { TRANSLATE("Pink Diamond"), {"diamond"} },
+        { TRANSLATE("Bearer Bonds"), {"bearer"} },
         { TRANSLATE("Ruby Necklace"), {"ruby"} },
-        { "Tequila", {"tequila"} },
+        { TRANSLATE("Tequila"), {"tequila"} },
     }, function(Index)
         if Index == 1 then
             STAT_SET_INT("H4CNF_TARGET", 5)
@@ -1533,11 +1542,11 @@
     end)
 
     menu.list_action(PERICO_HEIST, TRANSLATE("Secondary Target"), {"hccpsectar"}, TRANSLATE("When using this method, the percentage and final payment will be random!"), {
-        { "Mixed Loot", {"mixed"} },
-        { "Cash", {"cash"} },
-        { "Weed", {"weed"} },
-        { "Coke", {"coke"} },
-        { "Gold", {"gold"} },
+        { TRANSLATE("Mixed Loot"), {"mixed"} },
+        { TRANSLATE("Cash"), {"cash"} },
+        { TRANSLATE("Weed"), {"weed"} },
+        { TRANSLATE("Coke"), {"coke"} },
+        { TRANSLATE("Gold"), {"gold"} },
         { TRANSLATE("Remove All Secondary Targets"), {"remall"} },
     }, function(Index)
         if Index == 1 then
@@ -1688,13 +1697,13 @@
     end)
 
     menu.list_action(PERICO_HEIST, TRANSLATE("Compound Loot"), {"hccpcomloot"}, "", {
-        { "Mixed Loot", {"mixed"} },
-        { "Cash", {"cash"} },
-        { "Weed", {"weed"} },
-        { "Coke", {"coke"} },
-        { "Gold", {"gold"} },
-        { "Paint", {"paint"} },
-        { "Remove Paint [Only]", {"rempaint"} },
+        { TRANSLATE("Mixed Loot"), {"mixed"} },
+        { TRANSLATE("Cash"), {"cash"} },
+        { TRANSLATE("Weed"), {"weed"} },
+        { TRANSLATE("Coke"), {"coke"} },
+        { TRANSLATE("Gold"), {"gold"} },
+        { TRANSLATE("Paint"), {"paint"} },
+        { TRANSLATE("Remove Paint (Only)"), {"rempaint"} },
         { TRANSLATE("Remove All Secondary Targets"), {"remall"} },
     }, function(Index)
         if Index == 1 then
@@ -1832,9 +1841,9 @@
     end)
 
     menu.list_action(PERICO_HEIST, TRANSLATE("Equipment's Spawn Location"), {"hccpequip"}, TRANSLATE("- Guard Clothing") .. "\n" .. TRANSLATE("- Bolt Cutters"), { 
-        { "Airport", {"airport"} },
-        { "Docks", {"dock"} },
-        { "Compound", {"compound"} },
+        { TRANSLATE("Airport"), {"airport"} },
+        { TRANSLATE("Docks"), {"dock"} },
+        { TRANSLATE("Compound"), {"compound"} },
     }, function(Index)
         if Index == 1 then
             STAT_SET_INT("H4CNF_GRAPPEL", 2022)
@@ -1855,11 +1864,11 @@
     end)
 
     menu.list_action(PERICO_HEIST, TRANSLATE("Supply Truck Location"), {"hccptruck"}, "", {
-        { "Airport", {"airport"} },
-        { "North Dock", {"ndock"} },
-        { "Main Dock [East]", {"edock"} },
-        { "Main Dock [West]", {"wdock"} },
-        { "Compound", {"compound"} },
+        { TRANSLATE("Airport"), {"airport"} },
+        { TRANSLATE("North Dock"), {"ndock"} },
+        { TRANSLATE("Main Dock (East)"), {"edock"} },
+        { TRANSLATE("Main Dock (West)"), {"wdock"} },
+        { TRANSLATE("Compound"), {"compound"} },
     }, function(Index)
         STAT_SET_INT("H4CNF_TROJAN", Index)
     end)
@@ -2484,8 +2493,8 @@
             AccessPoint = 2 
         end
         menu.list_select(CASINO_BOARD1, TRANSLATE("P.O.I And Access Points"), {"hccahpoi"}, TRANSLATE("Change your session to apply!"), {
-            { "Scope(d)", {"scope"} },
-            { "Unscope(d)", {"unscope"} },
+            { TRANSLATE("Scope(d)"), {"scope"} },
+            { TRANSLATE("Unscope(d)"), {"unscope"} },
         }, AccessPoint, function(Index)
             if Index == 1 then
                 STAT_SET_INT("H3OPT_POI", -1)
@@ -2631,10 +2640,10 @@
             end
         end)
 
-        menu.click_slider(CASINO_BOARD2, TRANSLATE("Security Pass Level"), {"hccahcard"}, "", 0, 2, 2, 1, function(Value)
+        menu.slider(CASINO_BOARD2, TRANSLATE("Security Pass Level"), {"hccahcard"}, "", 0, 2, 2, 1, function(Value)
             STAT_SET_INT("H3OPT_KEYLEVELS", Value)
         end)
-        menu.click_slider(CASINO_BOARD2, TRANSLATE("Guards Strength Level"), {"hccahguard"}, TRANSLATE("0 - Strongest Guards") .. "\n" .. TRANSLATE("3 - Weakest Guards"), 0, 3, 3, 1, function(Value)
+        menu.slider(CASINO_BOARD2, TRANSLATE("Guards Strength Level"), {"hccahguard"}, TRANSLATE("0 - Strongest Guards") .. "\n" .. TRANSLATE("3 - Weakest Guards"), 0, 3, 3, 1, function(Value)
             STAT_SET_INT("H3OPT_DISRUPTSHIP", Value)
         end)
 
@@ -2644,7 +2653,7 @@
 
         menu.divider(CASINO_BOARD3, TRANSLATE("Remove Drills"))
 
-            menu.action(CASINO_BOARD3, TRANSLATE("Silent & Sneaky and Aggressive Approach"), {"hccahremsilaggdrill"}, "", function()
+            menu.action(CASINO_BOARD3, TRANSLATE("Silent, Sneaky and Aggressive Approach"), {"hccahremsilaggdrill"}, "", function()
                 STAT_SET_INT("H3OPT_BITSET0", -8849)
             end)
             menu.action(CASINO_BOARD3, TRANSLATE("BigCon Approach"), {"hccahrembigdrill"}, "", function()
@@ -2775,7 +2784,7 @@
             STAT_SET_BOOL("HELP_JB7002", true)
         end)
 
-        menu.action(CASINO_MORE, TRANSLATE("Remove Heist Cooldown"), {}, "Note that this doesn't bypass server-side cooldown time, just bypassing payment.", function()
+        menu.action(CASINO_MORE, TRANSLATE("Remove Heist Cooldown"), {}, TRANSLATE("Note that this doesn't bypass server-side cooldown time, just bypassing payment."), function()
             STAT_SET_INT("H3_COMPLETEDPOSIX", -1)
             STAT_SET_INT("MPPLY_H3_COOLDOWN", -1)
         end)
@@ -2787,7 +2796,7 @@
             STAT_SET_BOOL("VCM_FLOW_CS_FIN_SEEN", true)
         end)
 
-        menu.action(CASINO_MORE, TRANSLATE("Set Heist to Default [Reset]"), {"hccahreset"}, "", function()
+        menu.action(CASINO_MORE, TRANSLATE("Set Heist to Default (Reset)"), {"hccahreset"}, "", function()
             STAT_SET_INT("H3_LAST_APPROACH", 0)
             STAT_SET_INT("H3OPT_APPROACH", 0)
             STAT_SET_INT("H3_HARD_APPROACH", 0)
@@ -2836,7 +2845,7 @@
 
     local TELEPORT_DOOMS = menu.list(DOOMS_HEIST, TRANSLATE("Custom Teleport"), {}, "", function(); end)
 
-        menu.action(TELEPORT_DOOMS, "Heist Screen on Facility", {}, "Make sure you are in the your facility.", function()
+        menu.action(TELEPORT_DOOMS, TRANSLATE("Heist Screen on Facility"), {}, TRANSLATE("Make sure you are in the your facility."), function()
             TELEPORT(350.69284, 4872.308, -60.794243)
             SET_HEADING(-50)
         end)
@@ -2966,6 +2975,10 @@
         SET_INT_LOCAL("fm_mission_controller", 1510, 2) -- For ACT I, Setup: Server Farm (Lester)
     end)
 
+    menu.action(DOOMS_HEIST, TRANSLATE("Remove EMP Mines"), {}, TRANSLATE("(ACT III, Setup - Air Defense)"), function()
+        REMOVE_OBJECT_BY_HASH(3711724380)
+    end)
+
     menu.action(DOOMS_HEIST, TRANSLATE("Unlock All Doomsday Heists"), {}, "", function()
         STAT_SET_INT("GANGOPS_HEIST_STATUS", -1)
         STAT_SET_INT("GANGOPS_HEIST_STATUS", -229384)
@@ -3015,7 +3028,7 @@
         STAT_SET_INT("GANGOPS_FM_MISSION_PROG", -1)
     end)
 
-    menu.action(DOOMS_HEIST, TRANSLATE("Set Heist to Default [Reset]"), {"hcdoomsreset"}, TRANSLATE("Change your session to apply!"), function()
+    menu.action(DOOMS_HEIST, TRANSLATE("Set Heist to Default (Reset)"), {"hcdoomsreset"}, TRANSLATE("Change your session to apply!"), function()
         STAT_SET_INT("GANGOPS_FLOW_MISSION_PROG", 240)
         STAT_SET_INT("GANGOPS_HEIST_STATUS", 0)
         STAT_SET_INT("GANGOPS_FLOW_NotifyS", 1557)
@@ -3057,7 +3070,7 @@
             menu.toggle_loop(FLEECA_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3455828-post8.html
                 SET_INT_LOCAL("fm_mission_controller", 11757 + 24, 7)
             end)
-            menu.toggle_loop(FLEECA_HEIST, "Skip Drilling", {}, "", function() -- https://www.unknowncheats.me/forum/3485435-post19.html
+            menu.toggle_loop(FLEECA_HEIST, TRANSLATE("Skip Drilling"), {}, "", function() -- https://www.unknowncheats.me/forum/3485435-post19.html
                 SET_FLOAT_LOCAL("fm_mission_controller", 10058 + 11, 100)
             end)
 
@@ -3225,15 +3238,15 @@
 
 --- ULP Missions
 
-    menu.divider(ULP_MISSIONS, "ULP Missions")
+    menu.divider(ULP_MISSIONS, TRANSLATE("ULP Missions"))
 
         local UlpMissionsTable = {
-            "Intelligence",
-            "Counterintelligence",
-            "Extraction",
-            "Asset Seizure",
-            "Operation Paper Trail",
-            "Cleanup",
+            TRANSLATE("Intelligence"),
+            TRANSLATE("Counterintelligence"),
+            TRANSLATE("Extraction"),
+            TRANSLATE("Asset Seizure"),
+            TRANSLATE("Operation Paper Trail"),
+            TRANSLATE("Cleanup"),
         }
         for i = 1, #UlpMissionsTable do
             menu.action(ULP_MISSIONS, UlpMissionsTable[i], {}, "", function()
@@ -3246,10 +3259,10 @@
 
     menu.divider(ULP_MISSIONS, TRANSLATE("Others"))
 
-        menu.toggle_loop(ULP_MISSIONS, TRANSLATE("Skip The Hacking Process"), {}, "(" .. "ULP Missions" .. " - " .. "Counterintelligence" .. ")", function() -- Thanks for coding this, Pedro9558#3559
+        menu.toggle_loop(ULP_MISSIONS, TRANSLATE("Skip The Hacking Process"), {}, "(" .. TRANSLATE("ULP Missions") .. " - " .. TRANSLATE("Counterintelligence") .. ")", function() -- Thanks for coding this, Pedro9558#3559
             SET_INT_LOCAL("fm_mission_controller_2020", 974 + 135, 3)
         end)
-        menu.action(ULP_MISSIONS, "Teleport To IAA Headquarters", {}, "", function()
+        menu.action(ULP_MISSIONS, TRANSLATE("Teleport To IAA Headquarters"), {}, "", function()
             TELEPORT(101.595, -662.923, 45.093)
         end)
 
@@ -3526,7 +3539,7 @@
                 STAT_SET_BOOL("AWD_CONTACT_SPORT", true)
             end)
 
-            menu.action(ARENA_TOOL, TRANSLATE("Arena Wars Clothing"), {}, IS_WORKING(false), function()
+            menu.action(ARENA_TOOL, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(25842, 25909, 1) -- -1782918513, -1597048932
             end)
 
@@ -3543,7 +3556,7 @@
                 STAT_SET_BOOL("AWD_ELEVENELEVEN", true)
             end)
 
-            menu.action(SUMMER2020, TRANSLATE("Unlock Summer DLC Clothing"), {}, IS_WORKING(false), function()
+            menu.action(SUMMER2020, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(29685, 29720, 1) -- -1685644799, 1216916542
             end)
 
@@ -3591,32 +3604,40 @@
 
         ---
 
-        local CRIMINAL_DLC = menu.list(DLC_UNLOCKER, "The Criminal Enterprises DLC", {}, "", function(); end) -- https://www.unknowncheats.me/forum/3492512-post53.html
+        local CRIMINAL_DLC = menu.list(DLC_UNLOCKER, TRANSLATE("The Criminal Enterprises DLC"), {}, "", function(); end) -- https://www.unknowncheats.me/forum/3492512-post53.html
             
-            menu.action(CRIMINAL_DLC, "Jackets / Sweaters / Hoodies / Shirts", {}, IS_WORKING(false), function()
+            menu.action(CRIMINAL_DLC, TRANSLATE("Jackets / Sweaters / Hoodies / Shirts"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(32907, 32914, 1) -- -1967834023, -1263992372
                 SET_PACKED_INT_GLOBAL(32930, 32935, 1) -- -206691492, -1577621449
             end)
-            menu.action(CRIMINAL_DLC, "Pants / Caps / Hats", {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(262145 + 32913, 1) -- -339902614
+            menu.action(CRIMINAL_DLC, TRANSLATE("Pants / Caps / Hats"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(32917, 32919, 1) -- 638571354, 96152168
                 SET_PACKED_INT_GLOBAL(32936, 32937, 1) -- -2120678580, -1003907171
                 SET_PACKED_INT_GLOBAL(32988, 33001, 1) -- 191276118, -1484490421
                 SET_PACKED_INT_GLOBAL(33654, 33662, 1) -- 466041728, Between 197902950 and -1267850277
+                SET_INT_GLOBAL(262145 + 32913, 1) -- -339902614
             end)
-            menu.action(CRIMINAL_DLC, "Earphones / Masks / Tech Demon", {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(262145 + 32929, 1) -- 505550305
+            menu.action(CRIMINAL_DLC, TRANSLATE("Earphones / Masks / Tech Demon"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(33002, 33013, 1) -- -889497715, -1162924007
                 SET_PACKED_INT_GLOBAL(32922, 32927, 1) -- 1096886904, -359187968
                 SET_PACKED_INT_GLOBAL(32942, 32950, 1) -- 190205845, -171130807
                 SET_PACKED_INT_GLOBAL(32954, 32957, 1) -- 1424509866, -1677619307
                 SET_PACKED_INT_GLOBAL(32958, 32983, 1) -- -1285035231, -1792568167
+                SET_INT_GLOBAL(262145 + 32929, 1) -- 505550305
             end)
-            menu.action(CRIMINAL_DLC, "Shoes (Sliders) / Tiger", {}, IS_WORKING(false), function()
+            menu.action(CRIMINAL_DLC, TRANSLATE("Shoes (Sliders) / Tiger"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(32984, 32987, 1) -- 467678514, 169972145
                 SET_PACKED_INT_GLOBAL(33014, 33037, 1) -- 245491514, -141827484
             end)
             
+        ---
+
+        local DRUG_WAR = menu.list(DLC_UNLOCKER, TRANSLATE("Drug War DLC"), {}, "", function(); end)
+
+            menu.action(DRUG_WAR, TRANSLATE("Clothing"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3635453-post69.html
+                SET_PACKED_INT_GLOBAL(33973, 34112, 1) -- 1815209619, -711496356
+            end)
+
         ---
 
     ---
@@ -3807,11 +3828,20 @@
                 STAT_SET_BOOL("SCGW_WON_NO_DEATHS", true)
             end)
 
-            menu.action(ARCADE_TOOL, TRANSLATE("Unlock Arcade Clothing"), {}, IS_WORKING(false), function()
+            menu.action(ARCADE_TOOL, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(28316, 28336, 1) -- 1380945288, -2029732713
             end)
 
         ---
+
+        menu.action(UNLOCKER_BUILDING, TRANSLATE("50 Car Garage"), {}, "", function() -- https://www.unknowncheats.me/forum/3630894-post39.html
+            SET_INT_GLOBAL(262145 + 32688, 0) -- -1033593930
+            SET_INT_GLOBAL(262145 + 32702, 1) -- -57403007
+        end)
+
+        menu.action(UNLOCKER_BUILDING, TRANSLATE("Acid Lab Equipment Upgrade"), {}, "", function() -- https://www.unknowncheats.me/forum/3631045-post2754.html
+            STAT_SET_INT("AWD_CALLME", 10)
+        end)
 
         menu.action(UNLOCKER_BUILDING, TRANSLATE("Unlock Nightclub Awards"), {}, "", function()
             STAT_SET_INT("AWD_DANCE_TO_SOLOMUN", 120)
@@ -3841,11 +3871,11 @@
             STAT_SET_BOOL("AWD_CLUB_COORD", true)
         end)
 
-        menu.action(UNLOCKER_BUILDING, TRANSLATE("Casino Store Ace Masks"), {}, IS_WORKING(true) .. "Make sure click before buying. When you change your session, will be changed to non-unlocked status.", function()
+        menu.action(UNLOCKER_BUILDING, TRANSLATE("Casino Store Ace Masks"), {}, IS_WORKING(true) .. TRANSLATE("Make sure click before buying. When you change your session, will be changed to non-unlocked status."), function()
             SET_PACKED_INT_GLOBAL(27530, 27533, 1) -- -425372143, 1422194221
         end)
 
-        menu.action(UNLOCKER_BUILDING, TRANSLATE("Add Cosmetic Decorations To The Office/MC"), {}, "To apply, sell special crate or vehicle cargo and change your session!", function()
+        menu.action(UNLOCKER_BUILDING, TRANSLATE("Add Cosmetic Decorations To The Office/MC"), {}, TRANSLATE("To apply, sell special crate or vehicle cargo and change your session!"), function()
             STAT_SET_INT("LIFETIME_BUY_COMPLETE", 1000)
             STAT_SET_INT("LIFETIME_BUY_UNDERTAKEN", 1000)
             STAT_SET_INT("LIFETIME_SELL_COMPLETE", 1000)
@@ -3895,6 +3925,10 @@
             SET_PACKED_INT_GLOBAL(30911, 30916, 1) -- -312057690, 265922985
         end)
 
+        menu.action(UNLOCKER_MISSIONS, TRANSLATE("Unlock Taxi Missions"), {}, IS_WORKING(false), function() -- https://github.com/ImSapphire/unlock_drug_war_content/blob/main/unlock_drug_war_content.lua
+            SET_INT_GLOBAL(262145 + 33770, 1) -- -2023007588
+        end)
+
         menu.action(UNLOCKER_MISSIONS, TRANSLATE("Unlock Yacht Missions"), {}, "", function()
             STAT_SET_INT("YACHT_MISSION_PROG", 0)
             STAT_SET_INT("YACHT_MISSION_FLOW", 21845)
@@ -3917,15 +3951,15 @@
         end)
 
         menu.action(UNLOCKER_MISSIONS, TRANSLATE("Skip Lamar Missions To The Last One"), {}, TRANSLATE("Change your session to apply!"), function()
+            STAT_SET_INT("LOWRIDER_FLOW_COMPLETE", 3)
+            STAT_SET_INT("LOW_FLOW_CURRENT_PROG", 9)
+            STAT_SET_INT("LOW_FLOW_CURRENT_CALL", 9)
             STAT_SET_BOOL("LOW_FLOW_CS_DRV_SEEN", true)
             STAT_SET_BOOL("LOW_FLOW_CS_TRA_SEEN", true)
             STAT_SET_BOOL("LOW_FLOW_CS_FUN_SEEN", true)
             STAT_SET_BOOL("LOW_FLOW_CS_PHO_SEEN", true)
             STAT_SET_BOOL("LOW_FLOW_CS_FIN_SEEN", true)
             STAT_SET_BOOL("LOW_BEN_INTRO_CS_SEEN", true)
-            STAT_SET_INT("LOWRIDER_FLOW_COMPLETE", 3)
-            STAT_SET_INT("LOW_FLOW_CURRENT_PROG", 9)
-            STAT_SET_INT("LOW_FLOW_CURRENT_CALL", 9)
         end)
 
     ---
@@ -3957,6 +3991,7 @@
                 SET_PACKED_INT_GLOBAL(25838, 25841, 1) -- joaat("toggle_2018_christmas_eve_gift"), joaat("toggle_2018_christmas_day_gift")
                 SET_PACKED_INT_GLOBAL(28690, 28693, 1) -- joaat("toggle_2019_christmas_eve_gift"), joaat("toggle_2019_christmas_day_gift")
                 SET_PACKED_INT_GLOBAL(31756, 31757, 1) -- 1073486652, -1378428735
+                SET_PACKED_INT_GLOBAL(33915, 33916, 1) -- 645428415, 419754121, https://www.unknowncheats.me/forum/3630405-post34.html (2022)
                 SET_INT_GLOBAL(262145 + 4763, 1) -- joaat("toggle_xmas_content")
                 SET_INT_GLOBAL(262145 + 9185, 1) -- joaat("toggle_gift_to_player_when_logging_on")
                 SET_INT_GLOBAL(262145 + 12713, 1) -- 1247240781
@@ -4006,13 +4041,49 @@
             end
         end)
 
-        menu.action(UNLOCKER_SHIRT_HAT, "Unlock Sasquatch Outfit", {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3492512-post53.html
+        menu.action(UNLOCKER_SHIRT_HAT, TRANSLATE("Unlock Sasquatch Outfit"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3492512-post53.html
             SET_INT_GLOBAL(262145 + 32938, 1) -- -1966279346
         end)
 
         menu.action(UNLOCKER_SHIRT_HAT, TRANSLATE("Unlock 'Don't Cross the Line Tee'"), {}, IS_WORKING(false), function()
             STAT_SET_INT("DCTL_WINS", 500)
             STAT_SET_INT("DCTL_PLAY_COUNT", 750)
+        end)
+
+    ---
+
+    local UNLOCKER_TATTO = menu.list(MASTER_UNLOCKR, TRANSLATE("Tattos"), {}, "", function(); end)
+
+        menu.action(UNLOCKER_TATTO, TRANSLATE("Unlock Some Tattos"), {}, "", function()
+            -- https://www.unknowncheats.me/forum/3252891-post942.html
+            STAT_SET_INT("AWD_CAR_BOMBS_ENEMY_KILLS", 25) -- Trust No One
+            STAT_SET_INT("AWD_HOLD_UP_SHOPS", 19) -- Clown, Clown and Gun, Clown Dual Wield & Clown Dual Wield Dollar
+            STAT_SET_INT("AWD_FMBBETWIN", 50000) -- Hustler
+            STAT_SET_INT("AWD_100_HEADSHOTS", 500) -- Skull
+            STAT_SET_INT("AWD_FM_DM_WINS", 50) -- Burning Heart
+            STAT_SET_INT("AWD_RACES_WON", 50) -- Racing Brunette
+            STAT_SET_INT("AWD_FMREVENGEKILLSDM", 50) -- Dragon and Dagger
+            STAT_SET_INT("AWD_FM_DM_TOTALKILLS", 500) -- Melting Skull
+            STAT_SET_INT("LAP_DANCED_BOUGHT", 25) -- Hottie
+            STAT_SET_INT("AWD_FM_TDM_MVP", 50) -- Grim Reaper
+            STAT_SET_INT("AWD_FMKILLBOUNTY", 25) -- Skull and Sword
+            STAT_SET_INT("SNIPERRFL_ENEMY_KILLS", 100) -- Broken Skull
+            STAT_SET_BOOL("AWD_FMWINEVERYGAMEMODE", true) -- Angel
+            STAT_SET_BOOL("AWD_FMMOSTKILLSSURVIVE", true) -- The Wages of Sin
+            STAT_SET_BOOL("AWD_FMRACEWORLDRECHOLDER", true) -- Racing Blonde
+            STAT_SET_BOOL("AWD_FMATTGANGHQ", true) -- Grim Reaper Smoking Gun
+            STAT_SET_BOOL("AWD_FMKILL3ANDWINGTARACE", true) -- Ride or Die
+            STAT_SET_BOOL("AWD_FMKILLSTREAKSDM", true) -- Flaming Skull
+
+            -- https://www.unknowncheats.me/forum/3647348-post2928.html
+            STAT_SET_INT("KILLS_PLAYERS", 250) -- Blank Scroll
+            STAT_SET_INT("KILLS_PLAYERS", 500) -- Embellished Scroll
+            STAT_SET_INT("KILLS_PLAYERS", 1000) -- Seven Deadly Sins
+            STAT_SET_BOOL("AWD_FMFULLYMODDEDCAR", true) -- Los Santos Customs
+        end)
+
+        menu.action(UNLOCKER_TATTO, TRANSLATE("Alien Tatto (Illuminati)"), {}, TRANSLATE("Change your session to apply!"), function()
+            STAT_SET_INT("TATTOO_FM_CURRENT_32", -1)
         end)
 
     ---
@@ -4056,6 +4127,10 @@
             STAT_SET_BOOL("HELP_CYPHER", true)
         end)
 
+        menu.action(UNLOCKER_VEHICLE, TRANSLATE("Taxi Livery"), {}, TRANSLATE("a.k.a: 'Downtown Cab Co.' livery"), function() -- https://www.unknowncheats.me/forum/3630202-post2734.html
+            STAT_SET_INT("AWD_TAXIDRIVER", 100)
+        end)
+
         menu.action(UNLOCKER_VEHICLE, TRANSLATE("Unlock The Shotaro"), {}, "", function()
             STAT_SET_INT("CRDEADLINE", -1)
         end)
@@ -4064,7 +4139,7 @@
 
     local SPECIAL_WEAPON = menu.list(MASTER_UNLOCKR, TRANSLATE("Weapons"), {}, "", function(); end)
 
-        menu.action(SPECIAL_WEAPON, "Service Carbine", {}, IS_WORKING(false), function()
+        menu.action(SPECIAL_WEAPON, TRANSLATE("Service Carbine"), {}, IS_WORKING(false), function()
             SET_INT_GLOBAL(262145 + 32865, 1) -- 88184590, https://www.unknowncheats.me/forum/3488328-post27.html
         end)
 
@@ -4095,10 +4170,6 @@
         STAT_SET_INT("PROSTITUTES_FREQUENTED", 1000)
     end)
 
-    menu.action(MASTER_UNLOCKR, TRANSLATE("Alien Tatto (Illuminati)"), {}, TRANSLATE("Change your session to apply!"), function()
-        STAT_SET_INT("TATTOO_FM_CURRENT_32", -1)
-    end)
-
     menu.action(MASTER_UNLOCKR, TRANSLATE("Returning Player Bonus"), {}, IS_WORKING(false), function()
         SET_INT_GLOBAL(103635, 1) -- freemode.c, joaat("component_raypistol_varmod_xmas18"), joaat("weapon_raypistol"), -1
         SET_INT_GLOBAL(152523, 2) -- freemode.c, STATS::STAT_GET_INT(joaat("sp_unlock_exclus_content"), &iVar0, -1);
@@ -4109,7 +4180,7 @@
 
 --- Tools
 
-    local TUNABLES = menu.list(TOOLS, TRANSLATE("Tunables"), {}, "", function(); end) -- Almost non-credited global variables from: https://www.unknowncheats.me/forum/3337151-post1560.html
+    local TUNABLES = menu.list(TOOLS, TRANSLATE("Tunables"), {}, "", function(); end) -- Almost not credited global variables from: https://www.unknowncheats.me/forum/3337151-post1560.html
 
         local TUNABLES_CD = menu.list(TUNABLES, TRANSLATE("Remove Cooldowns"), {}, "", function(); end)
 
@@ -4140,17 +4211,17 @@
                 end)
 
                 menu.toggle_loop(TUNABLES_CD, TRANSLATE("Vehicle Cargo"), {"hccoolveh"}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(262145 + 19683, 0) -- -82707601
-                    SET_INT_GLOBAL(262145 + 19684, 0) -- 1 Vehicle, 1001423248
-                    SET_INT_GLOBAL(262145 + 19685, 0) -- 2 Vehicles, 240134765
-                    SET_INT_GLOBAL(262145 + 19686, 0) -- 3 Vehicles, 1915379148
-                    SET_INT_GLOBAL(262145 + 19687, 0) -- 4 Vehicles, -824005590
+                    SET_INT_GLOBAL(262145 + 19314, 0) -- -82707601
+                    SET_INT_GLOBAL(262145 + 19682, 0) -- 1 Vehicle, 1001423248
+                    SET_INT_GLOBAL(262145 + 19683, 0) -- 2 Vehicles, 240134765
+                    SET_INT_GLOBAL(262145 + 19684, 0) -- 3 Vehicles, 1915379148
+                    SET_INT_GLOBAL(262145 + 19685, 0) -- 4 Vehicles, -824005590
                 end, function()
-                    SET_INT_GLOBAL(262145 + 19683, 180000)
-                    SET_INT_GLOBAL(262145 + 19684, 1200000)
-                    SET_INT_GLOBAL(262145 + 19685, 1680000)
-                    SET_INT_GLOBAL(262145 + 19686, 2340000)
-                    SET_INT_GLOBAL(262145 + 19687, 2880000)
+                    SET_INT_GLOBAL(262145 + 19314, 180000)
+                    SET_INT_GLOBAL(262145 + 19682, 1200000)
+                    SET_INT_GLOBAL(262145 + 19683, 1680000)
+                    SET_INT_GLOBAL(262145 + 19684, 2340000)
+                    SET_INT_GLOBAL(262145 + 19685, 2880000)
                 end)
 
                 menu.toggle_loop(TUNABLES_CD, TRANSLATE("Air-Freight Cargo"), {"hccoolair"}, IS_WORKING(false), function()
@@ -4189,9 +4260,11 @@
                     SET_INT_GLOBAL(262145 + 24643, 600000)
                 end)
 
-                menu.toggle_loop(TUNABLES_CD, "Spin Lucky Wheel", {"hccoolluckywheel"}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3531489-post51.html
+                menu.toggle_loop(TUNABLES_CD, TRANSLATE("Spin Lucky Wheel"), {"hccoolluckywheel"}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3531489-post51.html
                     SET_INT_GLOBAL(262145 + 27197, 1) -- -312420223
                     SET_INT_GLOBAL(262145 + 27196, 1) -- 9960150
+                    STATS.STAT_SET_INT(709606456, 0, true) -- freemode_init.c, for MP0_
+                    STATS.STAT_SET_INT(873784076, 0, true) -- freemode_init.c, for MP1_
                 end)
 
                 menu.toggle_loop(TUNABLES_CD, TRANSLATE("Kosatka Missiles"), {"hccoolmissile"}, IS_WORKING(false), function()
@@ -4202,7 +4275,11 @@
                     SET_INT_GLOBAL(262145 + 30188, 4000)
                 end)
 
-                menu.toggle_loop(TUNABLES_CD, "CEO Vehicles", {"hccoolceoveh"}, IS_WORKING(false), function() -- Credit goes to Professor#4478's Kiddions Lua
+                menu.toggle_loop(TUNABLES_CD, TRANSLATE("Dax Job"), {}, TRANSLATE("Note that Dax Job means from cellphone"), function() -- https://www.unknowncheats.me/forum/3629824-post2716.html
+                    STAT_SET_INT("XM22JUGGALOWORKCDTIMER", -1)
+                end)
+
+                menu.toggle_loop(TUNABLES_CD, TRANSLATE("CEO Vehicles"), {"hccoolceoveh"}, IS_WORKING(false), function() -- Credit goes to Professor#4478's Kiddions Lua
                     SET_INT_GLOBAL(262145 + 12832, 0) -- 2092239066
                 end, function()
                     SET_INT_GLOBAL(262145 + 12832, 120000)
@@ -4413,13 +4490,13 @@
                 SET_FLOAT_GLOBAL(262145 + 24496, 0.1)
             end)
 
-            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Buying MC Business Supplies"), {"hcremcostresupmc"}, IS_WORKING(true) .. "Make sure use this before accessing the laptop!", function()
+            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Buying MC Business Supplies"), {"hcremcostresupmc"}, IS_WORKING(true) .. TRANSLATE("Make sure use this before accessing the laptop!"), function()
                 SET_INT_GLOBAL(262145 + 18953, 1000) -- joaat("BIKER_PURCHASE_SUPPLIES_COST_PER_SEGMENT")
             end, function()
                 SET_INT_GLOBAL(262145 + 18953, 15000)
             end)
 
-            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Buying Bunker Supplies"), {"hcremcostresupbunker"}, IS_WORKING(true) .. "Make sure use this before accessing the laptop!", function()
+            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Buying Bunker Supplies"), {"hcremcostresupbunker"}, IS_WORKING(true) .. TRANSLATE("Make sure use this before accessing the laptop!"), function()
                 SET_INT_GLOBAL(262145 + 21555, 1000) -- 970448219
                 SET_INT_GLOBAL(262145 + 21556, 1000) -- 262971166
             end, function()
@@ -4427,13 +4504,13 @@
                 SET_INT_GLOBAL(262145 + 21556, 15000)
             end)
 
-            menu.toggle_loop(TUNABLES_RSU, "Changing Appearance", {}, IS_WORKING(false), function() -- Tbh, an idea from Kiddions mod menu, but, found by me in decompiled script
+            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Changing Appearance"), {}, IS_WORKING(false), function() -- Tbh, an idea from Kiddions mod menu, but, found by me in decompiled script
                 SET_INT_GLOBAL(262145 + 19110, 0) -- 1533055729, am_pi_menu.c, 0, "PIM_FREE", (0 + iVar6), bVar1, 0, 0, 0
             end, function()
                 SET_INT_GLOBAL(262145 + 19110, 100000)
             end)
 
-            menu.toggle_loop(TUNABLES_RSU, "Renaming CEO/MC", {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/grand-theft-auto-v/500059-globals-locals-discussion-read-page-1-a-2.html#post3496393
+            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Renaming CEO/MC"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/grand-theft-auto-v/500059-globals-locals-discussion-read-page-1-a-2.html#post3496393
                 SET_INT_GLOBAL(262145 + 15891, 0) -- 1901455739
                 SET_INT_GLOBAL(262145 + 16769, 0) -- -89259989
                 SET_INT_GLOBAL(262145 + 18025, 0) -- -1069516318
@@ -4443,7 +4520,7 @@
                 SET_INT_GLOBAL(262145 + 18025, 50000)
             end)
 
-            menu.toggle_loop(TUNABLES_RSU, "CEO Abilities" .. " & ".. "CEO Vehicles", {}, IS_WORKING(false), function() -- Credit goes to Professor#4478's Kiddions Lua
+            menu.toggle_loop(TUNABLES_RSU, TRANSLATE("CEO Abilities") .. " & ".. TRANSLATE("CEO Vehicles"), {}, IS_WORKING(false), function() -- Credit goes to Professor#4478's Kiddions Lua
                 SET_PACKED_INT_GLOBAL(12842, 12851, 0) -- 51567061, -1972817298
                 SET_PACKED_INT_GLOBAL(15968, 15973, 0) -- -1451871600, 1289619793
                 SET_INT_GLOBAL(262145 + 15890, 0) -- -939028485
@@ -4469,43 +4546,43 @@
             
         ---
 
-        local TUNABLES_CAH = menu.list(TUNABLES, "Casino Services: Chips" .. " " .. TRANSLATE("(Risky)"), {}, "Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned!", function(); end)
+        local TUNABLES_CAH = menu.list(TUNABLES, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"), {}, TRANSLATE("Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned!"), function(); end)
 
             util.create_tick_handler(function()
                 if IS_WORKING(false) == "" then
                     if GET_INT_GLOBAL(1853910 + 1 + players.user() * 862 + 267 + 384) == 0 then -- Found by me, freemode.c or casino_slots.c
-                        CasinoMembership = "Normal"
+                        CasinoMembership = TRANSLATE("Normal")
                     else
-                        CasinoMembership = "VIP"
+                        CasinoMembership = TRANSLATE("VIP")
                     end
                 else
-                    CasinoMembership = "N/A"
+                    CasinoMembership = TRANSLATE("N/A")
                 end
             end)
 
             local CAHAmount = 0
-            menu.slider(TUNABLES_CAH, "Chips Amount", {"hccahservice"}, "", INT_MIN, INT_MAX, 0, 10000, function(Value)
+            menu.slider(TUNABLES_CAH, TRANSLATE("Chips Amount"), {"hccahservice"}, "", INT_MIN, INT_MAX, 0, 10000, function(Value)
                 CAHAmount = Value
             end)
 
-            menu.divider(TUNABLES_CAH, "Casino Services: Chips" .. " " .. TRANSLATE("(Risky)"))
+            menu.divider(TUNABLES_CAH, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"))
 
-                menu.action(TUNABLES_CAH, "Trade in Chips", {}, IS_WORKING(false), function()
+                menu.action(TUNABLES_CAH, TRANSLATE("Trade in Chips"), {}, IS_WORKING(false), function()
                     SET_INT_GLOBAL(262145 + 26980, CAHAmount) -- 363132936
                 end, function()
                     SET_INT_GLOBAL(262145 + 26980, 1)
                 end)
 
-                menu.action(TUNABLES_CAH, "Max Chips", {}, IS_WORKING(false), function()
-                    if CasinoMembership == "Normal" then
+                menu.action(TUNABLES_CAH, TRANSLATE("Max Chips"), {}, IS_WORKING(false), function()
+                    if CasinoMembership == TRANSLATE("Normal") then
                         SET_INT_GLOBAL(262145 + 26981, CAHAmount) -- -1679646912
-                    elseif CasinoMembership == "VIP" then
+                    elseif CasinoMembership == TRANSLATE("VIP") then
                         SET_INT_GLOBAL(262145 + 26981, CAHAmount)
                     end
                 end, function()
-                    if CasinoMembership == "Normal" then
+                    if CasinoMembership == TRANSLATE("Normal") then
                         SET_INT_GLOBAL(262145 + 26982, 20000) -- 1136733337
-                    elseif CasinoMembership == "VIP" then
+                    elseif CasinoMembership == TRANSLATE("VIP") then
                         SET_INT_GLOBAL(262145 + 26982, 50000)
                     end
                 end)
@@ -4514,21 +4591,21 @@
 
             menu.divider(TUNABLES_CAH, TRANSLATE("Others"))
 
-                menu.toggle_loop(TUNABLES_CAH, "Remove Cooldown Buy Chips", {}, "If you enable this, able to buy over 20K or 50K chips by removing cooldown time.", function()
+                menu.toggle_loop(TUNABLES_CAH, TRANSLATE("Remove Cooldown Buy Chips"), {}, TRANSLATE("If you enable this, able to buy over 20K or 50K chips by removing cooldown time."), function()
                     STAT_SET_INT("MPPLY_CASINO_CHIPS_PUR_GD", 0)
                     STAT_SET_INT("MPPLY_CASINO_CHIPS_PURTIM", 0)
                 end)
 
-                CASINO_MEMBERSHIP = menu.action_slider(TUNABLES_CAH, "Change Membership of Casino", {}, IS_WORKING(true) .. "Your Membership of Casino: " .. CasinoMembership, {
-                    "Normal",
-                    "VIP",
+                CASINO_MEMBERSHIP = menu.action_slider(TUNABLES_CAH, TRANSLATE("Change Membership of Casino"), {}, IS_WORKING(true) .. TRANSLATE("Your Membership of Casino:") .. " " .. CasinoMembership, {
+                    TRANSLATE("Normal"),
+                    TRANSLATE("VIP"),
                 }, function(Index)
                     SET_INT_GLOBAL(1853910 + 1 + players.user() * 862 + 267 + 384, Index - 1)
                     util.yield()
-                    menu.set_help_text(CASINO_MEMBERSHIP, "Your Membership of Casino: " .. CasinoMembership)
+                    menu.set_help_text(CASINO_MEMBERSHIP, TRANSLATE("Your Membership of Casino:") .. " " .. CasinoMembership)
                 end)
 
-                menu.action(TUNABLES_CAH, "Get Visitor Bonus Again", {}, "Change your session to apply!", function()
+                menu.action(TUNABLES_CAH, TRANSLATE("Get Visitor Bonus Again"), {}, TRANSLATE("Change your session to apply!"), function()
                     STAT_SET_INT("MPPLY_CHIPS_COL_TIME", 0)
                 end)
 
@@ -4538,10 +4615,14 @@
 
         local TUNABLES_OTH = menu.list(TUNABLES, TRANSLATE("Others"), {}, "", function(); end)
 
-            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Single MC Vehicle Sell"), {"hcsinglemcveh"}, IS_WORKING(true) .. TRANSLATE("Forces the amount of MC Business' sale vehicles to one. (Only works when you're the leader, and breaks sale missions if you aren't)"), function() -- https://github.com/Tgamer500/YiffWarePWLua/blob/main/YiffWarePW.lua
-                if GET_INT_LOCAL("gb_biker_contraband_sell", 698 + 17) ~= 0 then
-                    SET_INT_LOCAL("gb_biker_contraband_sell", 698 + 17, 0)
+            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Disable Transaction Errors"), {}, IS_WORKING(true) .. TRANSLATE("This can be used to remove transaction errors while you are doing special cargo money loop in Musiness Banager Lua."), function() -- https://github.com/jonaaa20/RecoverySuite
+                if GET_INT_GLOBAL(4536679) == 20 or GET_INT_GLOBAL(4536679) == 4 then
+                    SET_INT_GLOBAL(4536673, 0)
                 end
+            end)
+
+            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Single MC Vehicle Sell"), {"hcsinglemcveh"}, IS_WORKING(true) .. TRANSLATE("Forces the amount of MC Business' sale vehicles to one. (Only works when you're the leader, and breaks sale missions if you aren't)"), function() -- https://github.com/Tgamer500/YiffWarePWLua/blob/main/YiffWarePW.lua
+                SET_INT_LOCAL("gb_biker_contraband_sell", 698 + 17, 0)
             end)
 
             menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Make One Snack Full Health"), {}, IS_WORKING(true) .. TRANSLATE("Whatever you use a snack, will make you full health."), function()
@@ -4580,26 +4661,28 @@
         
             menu.action(TUNABLES_OTH, TRANSLATE("7 Years GTA Online Playtime"), {}, TRANSLATE("Make your account look like you've played GTA Online for 7 years."), function()
                 STAT_SET_INT("MP_PLAYING_TIME", 0)
-                STAT_SET_INCREMENT("MP_PLAYING_TIME", (60 * 60 * 24 * 365 * 7) * 1000) -- Converting seconds to millisecond
+                STAT_SET_INCREMENT("MP_PLAYING_TIME", (60 * 60 * 24 * 365 * 7) * 1000) -- Converting seconds to milliseconds
                 FORCE_CLOUD_SAVE()
             end)
             
         ---
 
         menu.slider(TUNABLES, TRANSLATE("Custom Money Remover"), {"hcmoneyrem"}, IS_WORKING(true) .. TRANSLATE("An Easy Way To Remove GTA Online's banked money"), 0, 2000000000, 5000, 10000, function(Value)
-            SET_INT_GLOBAL(262145 + 20288, Value) -- -156036296, https://www.unknowncheats.me/forum/3276092-post3.html
-            STAT_SET_PACKED_BOOL(15382, true) -- Makes able to buy the Ballistic Armor
-            STAT_SET_PACKED_BOOL(9461, true) -- Makes you have the Ballistic Armor
-
-            menu.trigger_commands("nopimenugrey on")
-            if util.is_interaction_menu_open() then
+            menu.show_warning(TUNABLES, CLICK_MENU, TRANSLATE("Do you sure remove your money?"), function()
+                SET_INT_GLOBAL(262145 + 20288, Value) -- -156036296, https://www.unknowncheats.me/forum/3276092-post3.html
+                STAT_SET_PACKED_BOOL(15382, true) -- Makes able to buy the Ballistic Armor
+                STAT_SET_PACKED_BOOL(9461, true) -- Makes you have the Ballistic Armor
+    
+                menu.trigger_commands("nopimenugrey on")
+                if util.is_interaction_menu_open() then
+                    IA_MENU_OPEN_OR_CLOSE()
+                end
+                SET_INT_GLOBAL(2766485, 85) -- Renders Ballistic Equipment Services screen of the Interaction Menu
                 IA_MENU_OPEN_OR_CLOSE()
-            end
-            SET_INT_GLOBAL(2766485, 85) -- Renders Ballistic Equipment Services screen of the Interaction Menu
-            IA_MENU_OPEN_OR_CLOSE()
-            IA_MENU_ENTER(1)
-
-            NOTIFY("Because this feature works via requesting the Ballistic Armor, so, it'll be dropped nearby soon.")
+                IA_MENU_ENTER(1)
+    
+                NOTIFY(TRANSLATE("Because this feature works via requesting the Ballistic Armor, it'll be dropped nearby soon."))
+            end)
         end)
 
     ---
@@ -4608,7 +4691,7 @@
 
         menu.divider(AFK_MONEY, TRANSLATE("Cooldown Time (Seconds)"))
 
-            COOLDOWN_CAYO_BOT = menu.slider(AFK_MONEY, "Auto Cayo Bot", {"hctimecpbot"}, "", 1200, 86400, 1200, 60, function(); end)
+            COOLDOWN_CAYO_BOT = menu.slider(AFK_MONEY, TRANSLATE("Auto Cayo Bot"), {"hctimecpbot"}, "", 1200, 86400, 1200, 60, function(); end)
             COOLDOWN_TIME_TRIAL = menu.slider(AFK_MONEY, TRANSLATE("Auto Time Trial"), {"hctimetrial"}, "", 1200, 86400, 1200, 60, function(); end)
             COOLDOWN_RIG_SLOT = menu.slider(AFK_MONEY, TRANSLATE("Auto Rig Slot Machine"), {"hctimeautorig"}, "", 1, 86400, 1, 1, function(); end)
 
@@ -4616,8 +4699,15 @@
 
         menu.divider(AFK_MONEY, TRANSLATE("Settings"))
 
+            LUCKY_WHEEL_REWARD = menu.list_select(AFK_MONEY, TRANSLATE("Change Lucky Wheel Reward"), {"hcrigluckywheel"}, TRANSLATE("'15K RP' can be used to increase your crew level."), {
+                { TRANSLATE("25K Chips"), {"chips"} },
+                { TRANSLATE("15K RP"), {"rp"} },
+                { TRANSLATE("Vehicle Discount"), {"discount"} },
+                { TRANSLATE("Clothing"), {"clothing"} },
+            }, 1, function(); end)
+
             NumberOfPlayingCP = 100
-            menu.slider(AFK_MONEY, "How many time to play Auto Cayo Bot", {"hccpbotnum"}, "", 1, 100, 100, 1, function(Value)
+            menu.slider(AFK_MONEY, TRANSLATE("How many time to play Auto Cayo Bot"), {"hccpbotnum"}, "", 1, 100, 100, 1, function(Value)
                 NumberOfPlayingCP = Value
             end)
 
@@ -4630,7 +4720,7 @@
 
         menu.divider(AFK_MONEY, TRANSLATE("Others"))
 
-            menu.action(AFK_MONEY, "Teleport to the Lucky Wheel", {}, "If this doesn't work properly, please press again. It'll fix the situation.", function() -- If anyone know a better method to do this, please let me know.
+            menu.action(AFK_MONEY, TRANSLATE("Teleport to the Lucky Wheel"), {}, TRANSLATE("If this doesn't work properly, please press again."), function() -- If anyone know a better method to do this, please let me know.
                 for i = 1, 3 do
                     SET_HEADING(5)
                     TELEPORT(1110.269, 229.11899, -49.63585)
@@ -4646,37 +4736,37 @@
             
                 function CP_PRESS_D(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 218, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 218, 1) 
                         util.yield(120)
                     end
                 end
                 function CP_PRESS_E(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 206, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 206, 1) 
                         util.yield(120)
                     end
                 end
                 function CP_PRESS_ENTER(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 201, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 201, 1) 
                         util.yield(120)
                     end
                 end
                 function CP_PRESS_ARROW_UP(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 188, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 188, 1) 
                         util.yield(120)
                     end
                 end
                 function CP_PRESS_ARROW_DOWN(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(0, 187, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 187, 1) 
                         util.yield(120)
                     end
                 end
                 function CP_PRESS_BACKSPACE(Num)
                     for i = 1, Num do
-                        PAD._SET_CONTROL_NORMAL(2, 202, 1) 
+                        PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 202, 1) 
                         util.yield(120)
                     end
                 end
@@ -4684,7 +4774,7 @@
             ---
 
             local NumberOfPlayedCP = 0
-            AUTO_CAYO_BOT = menu.toggle_loop(AFK_MONEY, "Auto Cayo Bot", {}, IS_WORKING(true) .. "Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs.", function()
+            AUTO_CAYO_BOT = menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Cayo Bot"), {}, IS_WORKING(true) .. TRANSLATE("Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs."), function()
                 -- An idea and source code from Raid Control for X-Force, but almost tweaked by me.
                 -- Raid Control Auto Cayo Bot Source Code: https://pastebin.com/JKVXcZBz
 
@@ -4694,7 +4784,7 @@
                     end
 
                     if GET_INT_GLOBAL(2774130 + 1 + (0 * 66) + 1 + GET_INT_LOCAL("am_pi_menu", 232)) ~= 37 then -- am_pi_menu.c
-                        NOTIFY("Make sure your spawning position is 'Last Location'" .. "\n" .. "You can set it on Interaction Menu.")
+                        NOTIFY(TRANSLATE("Make sure your spawning position is 'Last Location'") .. "\n" .. TRANSLATE("You can set it on Interaction Menu."))
                         menu.set_value(AUTO_CAYO_BOT, false)
                         return
                     end
@@ -4721,7 +4811,7 @@
                         SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
                     end)
                     if SubBlip == 0 and SubControlBlip == 0 then
-                        NOTIFY("Kosatka has been requested. Wait for a few secs.")
+                        NOTIFY(TRANSLATE("Kosatka has been requested. Wait for a few secs."))
                         menu.trigger_commands("hcreqkosatka")
                         while SubBlip == 0 do
                             util.yield()
@@ -4767,7 +4857,7 @@
                         util.yield()
                     end
                     util.yield(1000)
-                    PAD._SET_CONTROL_NORMAL(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL"
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL", From https://docs.fivem.net/docs/game-references/controls/
                     util.yield(8000)
                     
                     CP_PRESS_ENTER(2)
@@ -4788,7 +4878,7 @@
                     CP_PRESS_D(1)
                     CP_PRESS_ENTER(1)
                     
-                    while GET_INT_GLOBAL(1835499) ~= 1 do -- Waiting for loading screen, fmmc_launcher.c
+                    while GET_INT_GLOBAL(1835499) ~= 1 do -- Waiting for the loading screen, fmmc_launcher.c
                         util.yield()
                     end
                     util.yield(1000)
@@ -4796,7 +4886,7 @@
                     CP_PRESS_ENTER(1)
                     util.yield(2000)
                 
-                    while GET_INT_LOCAL("fm_mission_controller_2020", 2758) ~= 1 do -- Waiting for loading screen 테스트 필요
+                    while GET_INT_LOCAL("fm_mission_controller_2020", 2758) ~= 1 do -- Waiting for the loading screen
                         util.yield()
                     end
                     util.yield(1000)
@@ -4821,7 +4911,7 @@
                     menu.trigger_commands("tpmazehelipad")
                 
                     NumberOfPlayedCP = NumberOfPlayedCP + 1
-                    NOTIFY("Playing one time has been done! Waiting for the cooldown time..." .. "\n\n" .. "How many times you've played after enabled: " .. NumberOfPlayedCP)
+                    NOTIFY(TRANSLATE("Playing one time has been done! Waiting for the cooldown time...") .. "\n\n" .. TRANSLATE("How many times you've played after enabled:") .. " " .. NumberOfPlayedCP)
                     
                     menu.trigger_commands("hctimertime " .. menu.get_value(COOLDOWN_CAYO_BOT))
                     menu.trigger_commands("hctimercustom on")
@@ -4838,9 +4928,9 @@
             end)
 
             local NumberOfSpin = 0
-            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Rig Slot Machine"), {"hcautorig"}, IS_WORKING(true) .. "NOT WORKING NOW - Looking into why this feature isn't working currently. Please wait for the next update." .. "\n\n" .. "Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned!", function() -- https://github.com/jonaaa20/RecoverySuite
+            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Rig Slot Machine"), {"hcautorig"}, IS_WORKING(true) .. TRANSLATE("Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned!"), function() -- https://github.com/jonaaa20/RecoverySuite
                 if NumberOfSpin == 0 then
-                    PAD._SET_CONTROL_NORMAL(2, 204, 1) -- Press Tab to Bet Max
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 204, 1) -- Press Tab to Bet Max
                     util.yield(100)
                 end
 
@@ -4856,8 +4946,8 @@
                         NumberOfSpin = NumberOfSpin + 1
                     end
 
-                    PAD._SET_CONTROL_NORMAL(2, 208, 1) -- Press Tab to Bet Max
-                    SET_INT_LOCAL("casino_slots", 1637, 8) -- Set as rigging is done
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 208, 1) -- Press Tab to Bet Max
+                    SET_INT_LOCAL("casino_slots", 1633, 8) -- Set as rigging is done
 
                     while GET_INT_LOCAL("casino_slots", SpinState) ~= 3 do
                         util.yield()
@@ -4871,12 +4961,20 @@
                 NumberOfSpin = 0
             end)
 
-            menu.toggle_loop(AFK_MONEY, "Auto Lucky Wheel", {"hcautoluckywheel"}, IS_WORKING(true) .. "Let you earn 25K chips per 3 seconds automatically." .. "\n\n" .. "Please use with 'Teleport to the Lucky Wheel' !", function()
+            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Lucky Wheel"), {"hcautoluckywheel"}, IS_WORKING(true) .. TRANSLATE("Let you get the selected lucky wheel reward per 3 seconds automatically.") .. "\n\n" .. TRANSLATE("Please use with 'Teleport to the Lucky Wheel' feature!"), function()
                 menu.trigger_commands("rigluckywheel off")
                 menu.trigger_commands("hccoolluckywheel on")
                 util.yield(1500)
 
-                SET_INT_LOCAL("casino_lucky_wheel", 275 + 14, 15) -- Changes reward to 25,000 Chips
+                local Rewards = {
+                    { 15 },
+                    { 17 },
+                    { 4 },
+                    { 0, 8, 12, 16 },
+                }
+                local Value = menu.get_value(LUCKY_WHEEL_REWARD)
+                local Random = math.random(#Rewards[Value])
+                SET_INT_LOCAL("casino_lucky_wheel", 275 + 14, Rewards[Value][Random]) -- Setting Lucky Wheel Reward
                 SET_INT_LOCAL("casino_lucky_wheel", 275 + 45, 11) -- Rigging state: done
                 util.yield(1500)
             end)
@@ -4887,10 +4985,10 @@
                 end
 
                 if IS_HELP_MSG_DISPLAYED('BJACK_BET') then
-                    PAD._SET_CONTROL_NORMAL(2, 204, 1) -- Max Bet
-                    PAD._SET_CONTROL_NORMAL(2, 201, 1) -- Bet
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 204, 1) -- Max Bet
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Bet
                 else
-                    PAD._SET_CONTROL_NORMAL(2, 203, 1) -- Pass
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 203, 1) -- Pass
                 end
             end)
 
@@ -4908,7 +5006,7 @@
                 local Veh = entities.create_vehicle(Hash, players.get_position(players.user()), CAM.GET_GAMEPLAY_CAM_ROT(0).z)
                 TASK.TASK_WARP_PED_INTO_VEHICLE(players.user_ped(), Veh, -1)
                 STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(Hash)
-                PAD._SET_CONTROL_NORMAL(2, 51, 1) -- Press E to start Time Trial
+                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 51, 1) -- Press E to start Time Trial
                 util.yield(1500)
                 menu.trigger_commands("tpobjective")
                 util.yield(500)
@@ -4930,10 +5028,10 @@
                 menu.trigger_commands("hctimercustom off")
             end)
 
-            menu.toggle_loop(AFK_MONEY, "Auto Headhunter", {"hcautoheadhunter"}, "Also works playing with your associates. Just hire the user to do it." .. "\n\n" .. "If you expect Transaction Error, stop using this feature and have to restart your game to fix it.", function()
+            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Headhunter"), {"hcautoheadhunter"}, TRANSLATE("Also works playing with your associates. Just hire the user to do it.") .. "\n\n" .. TRANSLATE("If you expect Transaction Error, stop using this feature and have to restart your game to fix it."), function()
                 if players.get_boss(players.user()) == -1 then
                     menu.trigger_commands("ceostart")
-                    NOTIFY("Starting CEO... Please wait for a few secs.")
+                    NOTIFY(TRANSLATE("Starting CEO... Please wait for a few secs."))
                     util.yield(5000)
                 end
 
@@ -4951,7 +5049,7 @@
                 menu.trigger_commands("hcinsfinhh")
 
                 menu.trigger_commands("hctimercustom off")
-                NOTIFY("Playing one time has been done! Waiting for the cooldown time...")
+                NOTIFY(TRANSLATE("Playing one time has been done! Waiting for the cooldown time..."))
                 menu.trigger_commands("hctimertime 300")
                 menu.trigger_commands("hctimercustom on")
                 while menu.get_value(TIMER_CUSTOM) do
@@ -4962,7 +5060,7 @@
                 menu.trigger_commands("hctimercustom off")
             end)
 
-            menu.toggle_loop(AFK_MONEY, "Auto Sightseer", {"hcautosightseer"}, IS_WORKING(true) .. "Also works playing with your associates. Just hire the user to do it." .. "\n\n" .. "If you expect Transaction Error, stop using this feature and have to restart your game to fix it.", function()              
+            menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Sightseer"), {"hcautosightseer"}, IS_WORKING(true) .. TRANSLATE("Also works playing with your associates. Just hire the user to do it.") .. "\n\n" .. TRANSLATE("If you expect Transaction Error, stop using this feature and have to restart your game to fix it."), function()              
                 if players.get_boss(players.user()) == -1 then
                     menu.trigger_commands("ceostart")
                     NOTIFY("Starting CEO... Please wait for a few secs.")
@@ -4983,7 +5081,7 @@
                 menu.trigger_commands("hcinsfinss")
 
                 menu.trigger_commands("hctimercustom off")
-                NOTIFY("Playing one time has been done! Waiting for the cooldown time...")
+                NOTIFY(TRANSLATE("Playing one time has been done! Waiting for the cooldown time..."))
                 menu.trigger_commands("hctimertime 300")
                 menu.trigger_commands("hctimercustom on")
                 while menu.get_value(TIMER_CUSTOM) do
@@ -4998,18 +5096,18 @@
 
     ---
 
-    local INSTANT_FINISH = menu.list(TOOLS, "Instant Finish Heists & Others", {"hcinsfin"}, "", function(); end)
+    local INSTANT_FINISH = menu.list(TOOLS, TRANSLATE("Instant Finish Heists & Others"), {"hcinsfin"}, "", function(); end)
 
-        menu.divider(INSTANT_FINISH, "Heists")
+        menu.divider(INSTANT_FINISH, TRANSLATE("Heists"))
 
-            menu.action(INSTANT_FINISH, "Cayo / Tuners / ULP / Agency", {"hcinsfincp"}, IS_WORKING(true) .. TRANSLATE("(Local)") .. "\n\n" .. "Note that not working on ULP Missions - Superyatch", function() -- https://www.unknowncheats.me/forum/3524081-post3.html
+            menu.action(INSTANT_FINISH, TRANSLATE("Cayo / Tuners / ULP / Agency"), {"hcinsfincp"}, IS_WORKING(true) .. TRANSLATE("(Local)") .. "\n\n" .. TRANSLATE("Note that not working on ULP Missions - Superyatch"), function() -- https://www.unknowncheats.me/forum/3524081-post3.html
                 menu.trigger_commands("scripthost")
 
                 SET_INT_LOCAL("fm_mission_controller_2020", 42279 + 1, 51338752)
                 SET_INT_LOCAL("fm_mission_controller_2020", 42279 + 1375 + 1, 50)
             end)
 
-            menu.action(INSTANT_FINISH, "Casino Aggressive / Classic", {"hcinsfincah"}, IS_WORKING(false), function()
+            menu.action(INSTANT_FINISH, TRANSLATE("Casino Aggressive / Classic"), {"hcinsfincah"}, IS_WORKING(false), function()
                 menu.trigger_commands("scripthost")
                 
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 1741, 151)
@@ -5019,7 +5117,7 @@
                 SET_INT_LOCAL("fm_mission_controller", 31585 + 97, 79)
             end)
 
-            menu.action(INSTANT_FINISH, "Doomsday", {"hcinsfindooms"}, IS_WORKING(false), function()
+            menu.action(INSTANT_FINISH, TRANSLATE("Doomsday"), {"hcinsfindooms"}, IS_WORKING(false), function()
                 menu.trigger_commands("scripthost")
 
                 SET_INT_LOCAL("fm_mission_controller", 19707, 12)
@@ -5031,15 +5129,15 @@
 
         menu.divider(INSTANT_FINISH, TRANSLATE("Others"))
 
-            menu.action(INSTANT_FINISH, TRANSLATE("Bunker"), {"hcinsfinbk"}, IS_WORKING(true) .. "(Selling Only)", function() -- https://www.unknowncheats.me/forum/3521137-post39.html
+            menu.action(INSTANT_FINISH, TRANSLATE("Bunker"), {"hcinsfinbk"}, IS_WORKING(true) .. TRANSLATE("(Selling Only)"), function() -- https://www.unknowncheats.me/forum/3521137-post39.html
                 SET_INT_LOCAL("gb_gunrunning", 1205 + 774, 0)
             end)
 
-            menu.action(INSTANT_FINISH, "Air Cargo", {"hcinsfinac"}, IS_WORKING(true) .. "(Selling Only)", function() -- https://www.unknowncheats.me/forum/3513482-post37.html
+            menu.action(INSTANT_FINISH, TRANSLATE("Air Cargo"), {"hcinsfinac"}, IS_WORKING(true) .. TRANSLATE("(Selling Only)"), function() -- https://www.unknowncheats.me/forum/3513482-post37.html
                 SET_INT_LOCAL("gb_smuggler", 1928 + 1035, GET_INT_LOCAL("gb_smuggler", 1928 + 1078))
             end)
 
-            menu.action(INSTANT_FINISH, "Headhunter", {"hcinsfinhh"}, "", function()
+            menu.action(INSTANT_FINISH, TRANSLATE("Headhunter"), {"hcinsfinhh"}, "", function()
                 local Blip = HUD.GET_FIRST_BLIP_INFO_ID(432) -- Thanks to Sapphire#6031 helping me code this
                 while Blip ~= 0 do
                     local Ped = HUD.GET_BLIP_INFO_ID_ENTITY_INDEX(Blip)
@@ -5052,7 +5150,7 @@
                 util.set_local_player_wanted_level(0, false)
             end)
 
-            menu.action(INSTANT_FINISH, "Sightseer", {"hcinsfinss"}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3488056-post24.html
+            menu.action(INSTANT_FINISH, TRANSLATE("Sightseer"), {"hcinsfinss"}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3488056-post24.html
                 SET_INT_LOCAL("gb_sightseer", 249 + 1 + NETWORK.PARTICIPANT_ID_TO_INT() * 6 + 5, 3)
             end)
             
@@ -5379,7 +5477,7 @@
                 end
             end)
 
-            menu.action(NEAR_PED_CAM, "Shoot", {"hcshootped"}, "", function() -- Thanks for coding this, Pedro9558#3559
+            menu.action(NEAR_PED_CAM, TRANSLATE("Shoot"), {"hcshootped"}, "", function() -- Thanks for coding this, Pedro9558#3559
                 for k, ent in pairs(entities.get_all_peds_as_handles()) do
                     if not IS_PED_PLAYER(ent) and not ENTITY.IS_ENTITY_DEAD(ent) then
                         local PedPos = v3.new(ENTITY.GET_ENTITY_COORDS(ent))
@@ -5407,32 +5505,26 @@
         menu.divider(NEAR_PED_CAM, TRANSLATE("Cameras"))
 
             menu.action(NEAR_PED_CAM, TRANSLATE("Delete"), {"hcdelcam"}, "(" .. TRANSLATE("Cayo Perico Heist") .. " & " .. TRANSLATE("Diamond Casino Heist") .. ")", function()
-                for k, ent in pairs(entities.get_all_objects_as_handles()) do
-                    local Cams = {
-                        -1233322078,
-                        168901740,
-                        -1095296451,
-                        -173206916,
-                        -1159421424,
-                        548760764,
-                        -1340405475,
-                        1449155105,
-                        -354221800,
-                        -1884701657,
-                        2090203758,
-                        -1007354661,
-                        -1842407088,
-                        289451089,
-                        3061645218,
-                        -247409812,
-                    }
-
-                    local EntityModel = ENTITY.GET_ENTITY_MODEL(ent)
-                    for i = 1, #Cams do
-                        if EntityModel == Cams[i] then
-                            entities.delete_by_handle(ent)
-                        end
-                    end
+                local Cams = {
+                    -1233322078,
+                    168901740,
+                    -1095296451,
+                    -173206916,
+                    -1159421424,
+                    548760764,
+                    -1340405475,
+                    1449155105,
+                    -354221800,
+                    -1884701657,
+                    2090203758,
+                    -1007354661,
+                    -1842407088,
+                    289451089,
+                    3061645218,
+                    -247409812,
+                }
+                for _, cam in pairs(Cams) do
+                    REMOVE_OBJECT_BY_HASH(cam)
                 end
             end)
 
@@ -5861,16 +5953,16 @@
 
     local TOOLS_OTH = menu.list(TOOLS, TRANSLATE("Others"), {}, "", function(); end)
 
-        menu.toggle_loop(TOOLS_OTH, "Auto Collect Targets", {"hcautocollect"}, "Collects targets via clicking left mouse button. Note that there are some delays before disabling completely.", function()
-            PAD._SET_CONTROL_NORMAL(0, 237, 1)
+        menu.toggle_loop(TOOLS_OTH, TRANSLATE("Auto Collect Targets"), {"hcautocollect"}, TRANSLATE("Collects targets via clicking left mouse button. Note that there are some delays before disabling completely."), function()
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1)
             util.yield(50)
         end)
 
-        menu.action(TOOLS_OTH, "Motion Skip", {}, "a.k.a Pause Menu Glitch", function()
+        menu.action(TOOLS_OTH, TRANSLATE("Motion Skip"), {}, TRANSLATE("a.k.a Pause Menu Glitch"), function()
             TASK.CLEAR_PED_TASKS_IMMEDIATELY(players.user_ped())
         end)
 
-        menu.action_slider(TOOLS_OTH, "Skips Conversation With NPCs", {}, "", {
+        menu.action_slider(TOOLS_OTH, TRANSLATE("Skips Conversation With NPCs"), {}, "", {
             "All",
             "One Line",
         }, function(Index)
@@ -5911,233 +6003,249 @@
             end)
         end)
 
-        --- Still not perfectly working, coding in progress... Already spent over 20 hours for this feature, though... huh
+        HC_LANG_GEN = menu.list(INFOS, TRANSLATE("Generate Translation Template"), {}, "", function(); end)
 
-        -- HC_LANG_GEN = menu.list(INFOS, "Generate Translation Template", {}, "", function(); end)
+            function DIR_TO_LANG_FILE_NAME(Path)
+                local _, i = string.find(Path, "Language\\")
+                local j, _ = string.find(Path, ".txt")
+                local Dir = string.sub(Path, i + 1, j - 1)
+                return Dir
+            end
 
-        --     function DIR_TO_LANG_FILE_NAME(Path)
-        --         local _, i = string.find(Path, "Language\\")
-        --         local j, _ = string.find(Path, ".txt")
-        --         local Dir = string.sub(Path, i + 1, j - 1)
-        --         return Dir
-        --     end
+            menu.divider(HC_LANG_GEN, TRANSLATE("Generate New Translation File"))
 
-        --     menu.divider(HC_LANG_GEN, "Generate New Translation File")
+                TRANS_FILE_NAME = menu.text_input(HC_LANG_GEN, TRANSLATE("Name of The File"), {"hcgennewtrans"}, TRANSLATE("HC will overwrite if name of the file already exists."), function(); end)
 
-        --         TRANS_FILE_NAME = menu.text_input(HC_LANG_GEN, "Name of The File", {"hcgennewtrans"}, "HC will overwrite if name of the file already exists.", function(); end)
+                menu.action(HC_LANG_GEN, TRANSLATE("Generate New Translation File"), {}, TRANSLATE("This action will take a few seconds. Please wait for it patiently, don't press multiple times."), function()
+                    local Name = menu.get_value(TRANS_FILE_NAME)
+                    if Name == "" then
+                        NOTIFY(TRANSLATE("Please input name of the file!"))
+                        return
+                    end
 
-        --         menu.action(HC_LANG_GEN, "Generate New Translation File", {}, "", function()
-        --             local Name = menu.get_value(TRANS_FILE_NAME)
-        --             if Name == "" then
-        --                 NOTIFY("Please input name of the file!")
-        --                 return
-        --             end
+                    menu.trigger_commands("hcupdatetransenglish")
+                    NOTIFY(TRANSLATE("Waiting for updating English.txt..."))
+                    util.yield(5000)
 
-        --             menu.trigger_commands("hcupdatetransenglish")
-        --             NOTIFY("Waiting for updating English.txt...")
-        --             util.yield(3000)
+                    local File = Name .. ".txt"
+                    io.copyto(LangFolderDir .. "English.txt", LangFolderDir .. File)
 
-        --             local File = Name .. ".txt"
-        --             io.copyto(LangFolderDir .. "English.txt", LangFolderDir .. File)
+                    NOTIFY(
+                        File .. ": " .. TRANSLATE("Sucessfully Generated!") .. "\n\n" .. 
+                        TRANSLATE("Directory of the file:") .. " " .. "%AppData%\\Stand\\Lua Scripts\\store\\Heist Control\\Language\\" .. File
+                    )
+                end)
 
-        --             NOTIFY(
-        --                 File .. ": " .. "Sucessfully Generated!" .. "\n\n" .. 
-        --                 "Directory of the file: %AppData%\\Stand\\Lua Scripts\\store\\Heist Control\\Language\\" .. File
-        --             )
-        --         end)
+            ---
 
-        --     ---
+            menu.divider(HC_LANG_GEN, TRANSLATE("Update Translation File"))
 
-        --     menu.divider(HC_LANG_GEN, "Update Translation File")
+                UPDATE_FILE_LIST = menu.list(HC_LANG_GEN, TRANSLATE("Update Translation File"), {}, "", function(); end)
 
-        --         UPDATE_FILE_LIST = menu.list(HC_LANG_GEN, "Update Translation File", {}, "", function(); end)
+                    menu.divider(UPDATE_FILE_LIST, TRANSLATE("Tools"))
 
-        --             menu.divider(UPDATE_FILE_LIST, TRANSLATE("Tools"))
+                        menu.action(UPDATE_FILE_LIST, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
+                            util.restart_script()
+                        end)
 
-        --                 menu.action(UPDATE_FILE_LIST, "Refresh", {}, "Refresh the list via restarting Heist Control.", function()
-        --                     util.restart_script()
-        --                 end)
-
-        --             ---
+                    ---
                     
-        --             menu.divider(UPDATE_FILE_LIST, "Update Translation File")
+                    menu.divider(UPDATE_FILE_LIST, TRANSLATE("Update Translation File"))
 
-        --                 for _, path in ipairs(filesystem.list_files(LangFolderDir)) do
-        --                     menu.action(UPDATE_FILE_LIST, DIR_TO_LANG_FILE_NAME(path), {"hcupdatetrans" .. DIR_TO_LANG_FILE_NAME(path)}, "", function()
-        --                         local Dir = filesystem.scripts_dir() .. SCRIPT_FILENAME
-        --                         local open = io.open(Dir, "r")
-        --                         local CodeTable = {}
-        --                         for i in open:lines() do
-        --                             table.insert(CodeTable, i)
-        --                         end
-        --                         open:close()
+                        for _, path in ipairs(filesystem.list_files(LangFolderDir)) do
+                            menu.action(UPDATE_FILE_LIST, DIR_TO_LANG_FILE_NAME(path), {"hcupdatetrans" .. DIR_TO_LANG_FILE_NAME(path)}, TRANSLATE("This action will take a few seconds. Please wait for it patiently, don't press multiple times."), function() -- Really sorry for shitty spaghetti codes, whatsoever, works perfectly, xD
+                                local Dir = filesystem.scripts_dir() .. SCRIPT_FILENAME
+                                local open = io.open(Dir, "r")
+                                local CodeTable = {}
+                                for i in open:lines() do
+                                    table.insert(CodeTable, i)
+                                end
+                                open:close()
                             
                             
-        --                         local GeneratedCodeTable = {}
-        --                         local StartPos = 1
-        --                         for _, trans in pairs(CodeTable) do
-        --                             while trans:find("TRANSLATE", StartPos) ~= nil do
-        --                                 local CodeBlackListedTexts = {
-        --                                     "TRANSLATE(Text)",
-        --                                     '"TRANSLATE", start',
-        --                                 }
-        --                                 for _, Text in pairs(CodeBlackListedTexts) do
-        --                                     if trans:find(Text) then 
-        --                                         goto outofcodeloop
-        --                                     end
-        --                                 end
+                                local GeneratedCodeTable = {}
+                                local StartPos = 1
+                                for _, trans in pairs(CodeTable) do
+                                    while trans:find("TRANSLATE", StartPos) ~= nil do
+                                        local CodeBlackListedTexts = {
+                                            "TRANSLATE(Text)",
+                                            '"TRANSLATE", start',
+                                        }
+                                        for _, Text in pairs(CodeBlackListedTexts) do
+                                            if trans:find(Text) then 
+                                                goto outofcodeloop
+                                            end
+                                        end
                             
-        --                                 local _, i = trans:find("TRANSLATE", StartPos)
-        --                                 local _, j = trans:find('")', StartPos)
-        --                                 if i and j ~= nil then
-        --                                     local Text = string.sub(trans, i + 3, j - 2)
-        --                                     for _, DuplicatedText in pairs(GeneratedCodeTable) do
-        --                                         if Text == DuplicatedText then 
-        --                                             goto outofcodeloop 
-        --                                         end
-        --                                     end
+                                        local _, i = trans:find("TRANSLATE", StartPos)
+                                        local _, j = trans:find('")', StartPos)
+                                        if i and j ~= nil then
+                                            local Text = string.sub(trans, i + 3, j - 2)
+                                            for _, DuplicatedText in pairs(GeneratedCodeTable) do
+                                                if Text == DuplicatedText then 
+                                                    goto outofcodeloop 
+                                                end
+                                            end
                             
-        --                                     GeneratedCodeTable[#GeneratedCodeTable+1] = Text
-        --                                     StartPos = j + 1
-        --                                 else
-        --                                     goto outofcodeloop
-        --                                 end
-        --                             end
+                                            GeneratedCodeTable[#GeneratedCodeTable+1] = Text
+                                            StartPos = j + 1
+                                        else
+                                            goto outofcodeloop
+                                        end
+                                    end
                                     
-        --                             ::outofcodeloop::
-        --                             StartPos = 1 
-        --                         end
+                                    ::outofcodeloop::
+                                    StartPos = 1 
+                                end
 
                             
+                                local open = io.open(path, "r")
+                                local TransTable = {}
+                                for i in open:lines() do
+                                    table.insert(TransTable, i)
+                                end
+                                open:close()
 
-        --                         local open = io.open(path, "r")
-        --                         local TransTable = {}
-        --                         for i in open:lines() do
-        --                             table.insert(TransTable, i)
-        --                         end
-        --                         open:close()
 
-        --                         local GeneratedTransTable = {}
-        --                         for i = 1, #TransTable do
-        --                             GeneratedTransTable[#GeneratedTransTable+1] = { "", "" } -- english_translation, local_language_ranslation
-        --                         end
+                                local GeneratedTransTable = {}
+                                for _, trans in pairs(TransTable) do
+                                    GeneratedTransTable[#GeneratedTransTable+1] = { nil, nil } -- english_translation, local_language_translation
+                                end
 
-        --                         local TransBlackListedTexts = {
-        --                             "#",
-        --                         }
-        --                         for idx, trans in pairs(TransTable) do
-        --                             if trans:find(" = ") ~= nil then
-        --                                 for _, Text in pairs(TransBlackListedTexts) do
-        --                                     if trans:find(Text) or
-        --                                        trans == ""      or
-        --                                        trans == " "     then
+                                
+                                local BlackListedChars = {
+                                    "#",
+                                }
+                                for idx, trans in pairs(TransTable) do
+                                    if trans:find(" = ") ~= nil then
+                                        for _, Text in pairs(BlackListedChars) do
+                                            if trans:find(Text) or
+                                               trans == ""      or
+                                               trans == " "     then
                                                 
-        --                                        goto outoftransloop
-        --                                     end
-        --                                 end
+                                               goto outoftransloop
+                                            end
+                                        end
                             
-        --                                 local i = trans:find(" = ")
-        --                                 local Text = string.sub(trans, 0, i - 1)
-        --                                 if Text ~= "" then
-        --                                     GeneratedTransTable[idx][1] = Text
-        --                                 end
+                                        local i = trans:find(" = ")
+                                        local Text = string.sub(trans, 0, i - 1)
+                                        GeneratedTransTable[idx][1] = Text
 
-        --                                 local _, i = trans:find(" = ")
-        --                                 local Text = string.sub(trans, i + 1, string.len(trans))
-        --                                 if Text ~= "" then
-        --                                     GeneratedTransTable[idx][2] = Text
-        --                                 end
-        --                             end
+                                        local _, i = trans:find(" = ")
+                                        local Text = string.sub(trans, i + 1, string.len(trans))
+                                        GeneratedTransTable[idx][2] = Text
+                                    end
                             
-        --                             ::outoftransloop::
-        --                         end
+                                    ::outoftransloop::
+                                end
 
                         
                             
-        --                         local ExistsTrans = {} -- In the Lua: Exists, In the translation: Exists
-        --                         local NotExistTrans = {} -- In the Lua: Exists, In the translation: Not Exist
-        --                         local NumberOfExistsTrans = 0
-        --                         local NumberOfNotExistTrans = 0
-        --                         for _, code in pairs(GeneratedCodeTable) do
-        --                             for idx, _ in pairs(GeneratedTransTable) do
-        --                                 local Translation = code .. " = " ..  code
-        --                                 local Test = false
-        --                                 if code == GeneratedTransTable[idx][1] then
-        --                                     Translation = GeneratedTransTable[idx][1] .. " = " .. GeneratedTransTable[idx][2]
-        --                                     ExistsTrans[#ExistsTrans+1] = Translation
-        --                                     Test = true
-        --                                     NumberOfExistsTrans = NumberOfExistsTrans + 1
-        --                                 end
-
-        --                                 if not Test then
-        --                                     NotExistTrans[#NotExistTrans+1] = Translation
-        --                                     NumberOfNotExistTrans = NumberOfNotExistTrans + 1
-        --                                 end
-        --                             end
-        --                         end
+                                local ExistsTrans = {} -- In the Lua: Exists, In the translation: Exists
+                                local NotExistTrans = {} -- In the Lua: Exists, In the translation: Not Exist
+                                local NumberOfExistsTrans = 0
+                                local NumberOfNotExistTrans = 0
+                                for idx, _ in pairs(GeneratedTransTable) do
+                                    if GeneratedTransTable[idx][1] and GeneratedTransTable[idx][2] ~= nil then
+                                        for _, code in pairs(GeneratedCodeTable) do
+                                            if GeneratedTransTable[idx][1] == code then
+                                                ExistsTrans[#ExistsTrans+1] = GeneratedTransTable[idx][1] .. " = " .. GeneratedTransTable[idx][2]
+                                                NumberOfExistsTrans = NumberOfExistsTrans + 1
+                                            end
+                                        end
+                                    end
 
 
-        --                         local FinalTrans = {}
-        --                         local ExistsNoteTrans = { -- "" = Blank, means '\n'
-        --                             "# DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!",
-        --                             "",
-        --                             "# Generated Date: " .. os.date("%Y") .. "/" .. os.date("%m") .. "/" .. os.date("%d") .. " " .. os.date("%I") .. ":" .. os.date("%M") .. ":" .. os.date("%S") .. " " .. os.date("%p"),
-        --                             "# Heist Control Version: " .. tostring(HCVersion),
-        --                             "",
-        --                             "# Thank you for translating Heist Control!",
-        --                             "# You should translate right-side of '=' character.",
-        --                             "# You can use all characters except '=' character.",
-        --                             "# Using '#' character means the line will be ignored.",
-        --                             "# If you want to release your own translation officially, please contact to the developer of Heist Control in its Discord server.",
-        --                             "# Learn more: https://icedoomfist.com/Stand_Heist_Control/How_To_Translate/",
-        --                             "",
-        --                             "",
-        --                         }
-        --                         for _, trans in pairs(ExistsNoteTrans) do
-        --                             FinalTrans[#FinalTrans+1] = trans
-        --                         end
+                                    for _, code in pairs(GeneratedCodeTable) do
+                                        local IsExists1 = false
+                                        for i, _ in pairs(GeneratedTransTable) do
+                                            if code == GeneratedTransTable[i][1] then
+                                                IsExists1 = true
+                                            end
+                                        end
 
-        --                         for idx, trans in pairs(ExistsTrans) do
-        --                             FinalTrans[#FinalTrans+1] = trans
-        --                         end
+                                        if not IsExists1 then
+                                            local Translation = code .. " = " .. code
+                                            local IsExists2 = false
+                                            for _, trans in pairs(NotExistTrans) do
+                                                if Translation == trans then
+                                                    IsExists2 = true
+                                                end
+                                            end
 
-
-        --                         local NotExistNoteTrans = {
-        --                             "",
-        --                             "",
-        --                             "# Start of newly updated translations.",
-        --                             "# Translate them!",
-        --                             "",
-        --                             "",
-        --                         }
-        --                         for _, trans in pairs(NotExistNoteTrans) do
-        --                             FinalTrans[#FinalTrans+1] = trans
-        --                         end
-
-        --                         for _, trans in pairs(NotExistTrans) do
-        --                             FinalTrans[#FinalTrans+1] = trans
-        --                         end
+                                            if not IsExists2 then
+                                                NotExistTrans[#NotExistTrans+1] = Translation
+                                                NumberOfNotExistTrans = NumberOfNotExistTrans + 1
+                                            end
+                                        end
+                                    end
+                                end
 
 
 
-        --                         local open = io.open(path, "w+")
-        --                         open:write("")
-        --                         open:close()
+                                local FinalTrans = {}
+                                local ExistsNoteTrans = { -- "" = Blank, means '\n'
+                                    "# DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!",
+                                    "",
+                                    "# Generated Date: " .. os.date("%Y") .. "/" .. os.date("%m") .. "/" .. os.date("%d") .. " " .. os.date("%I") .. ":" .. os.date("%M") .. ":" .. os.date("%S") .. " " .. os.date("%p"),
+                                    "# Heist Control Version: " .. tostring(HCVersion),
+                                    "",
+                                    "# Thank you for translating Heist Control!",
+                                    "# You should translate right-side of '=' character.",
+                                    "# You can use all characters except '=' character.",
+                                    "# Using '#' character means the line will be ignored.",
+                                    "# If you want to release your own translation officially, please contact to the developer of Heist Control in its Discord server.",
+                                    "# Learn more: https://icedoomfist.com/Stand_Heist_Control/How_To_Translate/",
+                                    "",
+                                    "",
+                                }
+                                for _, trans in pairs(ExistsNoteTrans) do
+                                    FinalTrans[#FinalTrans+1] = trans
+                                end
 
-        --                         for _, trans in pairs(FinalTrans) do
-        --                             local open = io.open(path, "a+")
-        --                             open:write(trans .. "\n")
-        --                             open:close()
-        --                         end
+                                for idx, trans in pairs(ExistsTrans) do
+                                    FinalTrans[#FinalTrans+1] = trans
+                                end
 
-        --                         NOTIFY(
-        --                             DIR_TO_LANG_FILE_NAME(path) .. ".txt: " .. "Sucessfully Updated!" .. "\n\n" ..
-        --                             "- Total number of translations: " .. NumberOfExistsTrans + NumberOfNotExistTrans .. "\n\n" .. 
-        --                             "- Number of not modified translations: " .. NumberOfExistsTrans .. "\n" .. 
-        --                             "- Number of modified (updated) translations: " .. NumberOfNotExistTrans
-        --                         )
-        --                     end)
-        --                 end
+
+                                local NotExistNoteTrans = {
+                                    "",
+                                    "",
+                                    "# Start of newly updated translations.",
+                                    "# Translate them!",
+                                    "",
+                                    "",
+                                }
+                                if NumberOfNotExistTrans ~= 0 then
+                                    for _, trans in pairs(NotExistNoteTrans) do
+                                        FinalTrans[#FinalTrans+1] = trans
+                                    end
+                                end
+
+                                for _, trans in pairs(NotExistTrans) do
+                                    FinalTrans[#FinalTrans+1] = trans
+                                end
+
+
+
+                                local open = io.open(path, "w+")
+                                open:write("")
+                                open:close()
+
+                                for _, trans in pairs(FinalTrans) do
+                                    local open = io.open(path, "a+")
+                                    open:write(trans .. "\n")
+                                    open:close()
+                                end
+
+                                NOTIFY(
+                                    DIR_TO_LANG_FILE_NAME(path) .. ".txt: " .. TRANSLATE("Sucessfully Updated!") .. "\n\n" ..
+                                    TRANSLATE("- Total number of translations:") .. " " .. NumberOfExistsTrans + NumberOfNotExistTrans .. "\n\n" .. 
+                                    TRANSLATE("- Number of not modified translations:") .. " " .. NumberOfExistsTrans .. "\n" .. 
+                                    TRANSLATE("- Number of modified (updated) translations:") .. " " .. NumberOfNotExistTrans
+                                )
+                            end)
+                        end
 
                     ---
 
