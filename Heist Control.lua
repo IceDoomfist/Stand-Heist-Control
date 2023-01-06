@@ -19,7 +19,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.1.0"
+        local HCVersion = "V 3.1.1"
         local BasedGTAO = 1.64
 
     ---
@@ -36,6 +36,7 @@
         local SettingDir = SettingFolderDir .. "Setting.txt"
         local LogDir = SettingFolderDir .. "Log.txt"
 
+        local CustomDir = LangFolderDir .. "Custom.txt"
         local ChineseDir = LangFolderDir .. "Chinese.txt"
         local EnglishDir = LangFolderDir .. "English.txt"
         local FrenchDir = LangFolderDir .. "French.txt"
@@ -187,8 +188,22 @@
         end
 
     ---
+    
+    --- Native, Folders and Log Functions
 
-    --- Log Functions
+        util.require_natives("natives-1672190175")
+
+        AllFolders = {
+            ImgFolderDir,
+            SettingFolderDir,
+            LangFolderDir,
+        }
+        for i = 1, #AllFolders do
+            if not filesystem.exists(AllFolders[i]) then
+                filesystem.mkdirs(AllFolders[i])
+            end
+        end
+
 
         if not filesystem.exists(LogDir) then
             local open = io.open(LogDir, "w+")
@@ -209,26 +224,9 @@
             util.stop_script()
         end
 
-    ---
-
-    --- Native and Folders
-
-        util.require_natives("natives-1672190175")
-
-        AllFolders = {
-            HCFolderDir,
-            ImgFolderDir,
-            SettingFolderDir,
-            LangFolderDir,
-        }
-        for i = 1, #AllFolders do
-            if not filesystem.exists(AllFolders[i]) then
-                filesystem.mkdir(AllFolders[i])
-            end
-        end
 
         if not filesystem.exists(NativeDir) then
-            ERROR_LOG(TRANSLATE("Native file for HC doesn't exist.") .. "\n\n" .. TRANSLATE("Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' feature or download the native file manually from somewhere!"))
+            ERROR_LOG("Native file for HC doesn't exist." .. "\n\n" .. "Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' feature or download the native file manually from somewhere!")
         end
 
     ---
@@ -310,6 +308,7 @@
             return string.sub(LanguageDir, j + 1, k - 1)
         end
         TranslationDirs = {
+            CustomDir,
             ChineseDir,
             EnglishDir,
             FrenchDir,
@@ -326,7 +325,7 @@
                     if filesystem.exists(Dir) then
                         SelectedLangDir = Dir
                     else
-                        ERROR_LOG(TO_LANG_NAME(TranslationDirs[i]) .. " " .. TRANSLATE("language file for HC doesn't exist.") .. "\n\n" .. TRANSLATE("Please install HC properly again!"))
+                        ERROR_LOG(TO_LANG_NAME(TranslationDirs[i]) .. " " .. "language file for HC doesn't exist." .. "\n\n" .. "Please install HC properly again!")
                     end
                 end
             end
@@ -334,7 +333,9 @@
 
         LOAD_LANG(EnglishDir)
         
-        if READ_SETTING("Language") == "Chinese - 中文" then
+        if READ_SETTING("Language") == "Custom" then
+            LOAD_LANG(EnglishDir)
+        elseif READ_SETTING("Language") == "Chinese - 中文" then
             LOAD_LANG(ChineseDir)
         elseif READ_SETTING("Language") == "French - français" then
             LOAD_LANG(FrenchDir)
@@ -5995,7 +5996,6 @@
             { "Portuguese - Português", {"portuguese"}},
             { "Russian - русский", {"russian"} },
             { "Spanish - Español", {"spanish"} },
-            -- { "Turkish - Türkçe", {"turkish"} },
         }, function(Index, Name)
             menu.show_warning(HC_LANG, CLICK_MENU, TRANSLATE("Would you like to restart HC now?"), function()
                 WRITE_SETTING("Language", Name)
@@ -6379,7 +6379,6 @@
 
             menu.divider(CREDITS, TRANSLATE("Translators"))
 
-                menu.action(CREDITS, "Qiusha", {}, TRANSLATE("Maintains HC's translation") .. ": Chinese - 中文", function(); end)
                 menu.action(CREDITS, "Leif.Erickson", {}, TRANSLATE("Maintains HC's translation") .. ": French - français", function(); end)
                 menu.action(CREDITS, "Hibanana", {}, TRANSLATE("Maintains HC's translation") .. ": German - Deutsch", function(); end)
                 menu.action(CREDITS, "Greensky445", {}, TRANSLATE("Maintains HC's translation") .. ": Japanese - 日本語", function(); end)
@@ -6387,7 +6386,6 @@
                 menu.action(CREDITS, "Pedro9558", {}, TRANSLATE("Maintains HC's translation") .. ": Portuguese - Português", function(); end)
                 menu.action(CREDITS, "Sega", {}, TRANSLATE("Maintains HC's translation") .. ": Russian - русский", function(); end)
                 menu.action(CREDITS, "zigmazero", {}, TRANSLATE("Maintains HC's translation") .. ": Spanish - Español", function(); end)
-                -- menu.action(CREDITS, "Emre", {}, TRANSLATE("Maintains HC's translation") .. ": Turkish - Türkçe", function(); end)
 
             ---
 
