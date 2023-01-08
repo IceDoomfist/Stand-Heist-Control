@@ -19,7 +19,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.1.3"
+        local HCVersion = "V 3.1.2"
         local BasedGTAO = 1.64
 
     ---
