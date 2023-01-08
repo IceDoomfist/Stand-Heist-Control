@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 2023/01/06 12:38:58 AM
-# Heist Control Version: V 3.1.0
+# Generated Date: 2023/01/09 01:05:58 AM
+# Heist Control Version: V 3.1.3
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -310,10 +310,6 @@ Credits = Credits
 Let me know about stats info. = Let me know about stat's names
 Translators = Translators
 Maintains HC's translation = Maintains HC's translation
-Native file for HC doesn't exist. = Native file for HC doesn't exist.
-Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' feature or download the native file manually from somewhere! = Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' feature or download the native file manually from somewhere!
-language file for HC doesn't exist. = language file for HC doesn't exist.
-Please install HC properly again! = Please install HC properly again!
 [NOT WORKING] = [NOT WORKING]
 - This feature isn't working due to the latest GTA Online patch: = - This feature isn't working due to the latest GTA Online patch:
 Please download the lastest version of Heist Control or wait for Heist Control's developer patching. = Please download the lastest version of Heist Control or wait for Heist Control's developer patching.
@@ -381,7 +377,6 @@ Force The Final Cutscene = Force The Final Cutscene
 Set Heist To Default (Reset) = Set Heist To Default (Reset)
 Diamonds = Diamonds
 $3.5 Million For All Players = $3.5 Million For All Players
-ALWAYS Choose The Low Level Buyer! = ALWAYS Choose The Low Level Buyer!
 Skip Drilling The Vault Door = Skip Drilling The Vault Door
 Planning Boards (Arcade) = Planning Boards (Arcade)
 Garage Exit (Arcade) = Garage Exit (Arcade)
@@ -480,8 +475,6 @@ Valentine's Day = Valentine's Day
 Unlock Hats And Many Shirts = Unlock Hats And Many Shirts
 Unlock Sasquatch Outfit = Unlock Sasquatch Outfit
 Unlock 'Don't Cross the Line Tee' = Unlock 'Don't Cross the Line Tee'
-Tattos = Tattos
-Unlock Some Tattos = Unlock Some Tattos
 Unlock Some Trade Prices = Unlock Some Trade Prices
 Taxi Livery = Taxi Livery
 a.k.a: 'Downtown Cab Co.' livery = a.k.a: 'Downtown Cab Co.' livery
@@ -523,7 +516,6 @@ Renaming CEO/MC = Renaming CEO/MC
 CEO Abilities = CEO Abilities
 Casino Services: Chips = Casino Services: Chips
 (Risky) = (Risky)
-Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned! = Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned!
 VIP = VIP
 N/A = N/A
 Chips Amount = Chips Amount
@@ -637,3 +629,40 @@ Get Support, Report Bugs and Enjoy Other Stuffs! = Get Support, Report Bugs and 
 Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D = Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D
 If you don't know how to use HC, click me! = If you don't know how to use HC, click me!
 If you want to know what was changed in the latest version, click me! = If you want to know what was changed in the latest version, click me!
+
+
+# Start of newly updated translations.
+# Translate them!
+
+
+When using this method, the percentage and final payment will be random! = When using this method, the percentage and final payment will be random!
+Works On Both: Fingerprint and Keypad = Works On Both: Fingerprint and Keypad
+Choose Masks = Choose Masks
+(Final Heist) = (Final Heist)
+Setup: Server Farm (Lester) = Setup: Server Farm (Lester)
+Will be applied only to you and you have to be the host = Will be applied only to you and you have to be the host
+- Only do this only 1-2 times in less than 24 hours. = - Only do this only 1-2 times in less than 24 hours.
+- Otherwise, you can be banned! = - Otherwise, you can be banned!
+Always keep this option enabled before starting a contract = Always keep this option enabled before starting a contract
+Note: You may need to keep activating to use some of Independence Day's contents. = Note: You may need to keep activating to use some of Independence Day's contents.
+Tattoos = Tattoos
+Unlock Some Tattoos = Unlock Some Tattoos
+WM 29 Pistol = WM 29 Pistol
+a.k.a XM3 Pistol = a.k.a XM3 Pistol
+Ceramic Pistol = Ceramic Pistol
+You try removing banked money amount that more than currently you have. = You try removing banked money amount that more than currently you have.
+All of features use undetected methods but use at own your risk. If you earn too much, you can be banned. = All of features use undetected methods but use at own your risk. If you earn too much, you can be banned.
+Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs. = Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs.
+Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned! = Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned!
+Note that not working on ULP Missions - Superyatch = Note that not working on ULP Missions - Superyatch
+Cooldown time has passed, you can play the heist again! = Cooldown time has passed, you can play the heist again!
+Wallet Money = Wallet Money
+Mins = Mins
+Use at your own risk! Setting certain stats may cause a ban like casino-related stats. = Use at your own risk! Setting certain stats may cause a ban like casino-related stats.
+Years = Years
+Months = Months
+Year = Year
+Month = Month
+Min = Min
+All = All
+One Line = One Line

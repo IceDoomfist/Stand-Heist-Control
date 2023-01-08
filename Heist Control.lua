@@ -19,7 +19,7 @@
 
     --- Important
 
-        local HCVersion = "V 3.1.1"
+        local HCVersion = "V 3.1.3"
         local BasedGTAO = 1.64
 
     ---
@@ -103,8 +103,8 @@
         function STAT_SET_MASKED_INT(Stat, Value1, Value2)
             STATS.STAT_SET_MASKED_INT(util.joaat(ADD_MP_INDEX(Stat)), Value1, Value2, 8, true)
         end
-        function STAT_SET_PACKED_BOOL(Stat, Value)
-            STATS._SET_PACKED_STAT_BOOL(Stat, Value, util.get_char_slot())
+        function SET_PACKED_STAT_BOOL_CODE(Stat, Value)
+            STATS.SET_PACKED_STAT_BOOL_CODE(Stat, Value, util.get_char_slot())
         end
         function STAT_SET_INCREMENT(Stat, Value)
             STATS.STAT_INCREMENT(util.joaat(ADD_MP_INDEX(Stat)), Value, true)
@@ -133,12 +133,12 @@
             return STATS.STAT_GET_STRING(util.joaat(ADD_MP_INDEX(Stat)), -1)
         end
         function STAT_GET_DATE(Stat, Sort)
-            local DatePTR = memory.alloc(7*8)
+            local DatePTR = memory.alloc(7*8) -- Thanks for helping memory stuffs, aaronlink127#0127
             STATS.STAT_GET_DATE(util.joaat(ADD_MP_INDEX(Stat)), DatePTR, 7, true)
             local Add = 0
-            if Sort == "Year" then
+            if Sort == "Years" then
                 Add = 0
-            elseif Sort == "Month" then
+            elseif Sort == "Months" then
                 Add = 8
             elseif Sort == "Days" then
                 Add = 16
@@ -357,7 +357,7 @@
 
     ---
 
-    --- Translation Settings
+    --- Translation Function
 
         local Texts = {}
         local open = io.open(SelectedLangDir, "r+")
@@ -369,21 +369,20 @@
         function TRANSLATE(Text)
             local Translation = ""
             for i = 1, #Texts do
-                local j, k = string.find(Texts[i], " = ")
-                if k ~= nil then
+                local _, j = string.find(Texts[i], " = ")
+                if j ~= nil then
                     if not string.find(Texts[i], "#") then
-                        Translation = string.sub(Texts[i], k + 1)
+                        Translation = string.sub(Texts[i], j + 1)
                     end
                 end
                 
                 if Translation ~= "" then
                     if Texts[i] == Text .. " = " .. Translation then
                         return Translation
-                    elseif i == #Texts then
-                        return Text
-                    end 
-                end 
+                    end
+                end
             end
+            return Text
         end
 
     ---
@@ -430,10 +429,10 @@
 
         function IS_WORKING(IsAddNewLine)
             local State = "" -- If global and local variables have been changed due to the GTAO update then
-            local GTAO_VER = tonumber(NETWORK.GET_ONLINE_VERSION())
+            local Version = tonumber(NETWORK.GET_ONLINE_VERSION())
             if util.is_session_started() then
                 if GET_INT_LOCAL("freemode", 3618) ~= util.joaat("lr_prop_carkey_fob") then -- freemode.c, joaat("lr_prop_carkey_fob")
-                    State = TRANSLATE("[NOT WORKING]") .. "\n" .. TRANSLATE("- This feature isn't working due to the latest GTA Online patch:") .. " " .. GTAO_VER .. ", " .. TRANSLATE("Please download the lastest version of Heist Control or wait for Heist Control's developer patching.")
+                    State = TRANSLATE("[NOT WORKING]") .. "\n" .. TRANSLATE("- This feature isn't working due to the latest GTA Online patch:") .. " " .. Version .. ", " .. TRANSLATE("Please download the lastest version of Heist Control or wait for Heist Control's developer patching.")
                     if IsAddNewLine then
                         State = State .. "\n\n"
                     end
@@ -480,7 +479,7 @@
             util.arspinner_disable()
         end
 
-        function IA_MENU_OPEN_OR_CLOSE()
+        function IA_MENU_OPEN_OR_CLOSE() -- https://docs.fivem.net/docs/game-references/controls/
             PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 244, 1)
             util.yield(200)
         end
@@ -574,7 +573,7 @@
                     util.toast("[ " .. TRANSLATE("Heist Control") .. " - SP ]" .. "\n\n" .. Message)
                 end
             elseif READ_SETTING("Notification Sort") == "No Notification" then
-                -- Nothing Do
+                -- Nothing Does
             else 
                 WRITE_SETTING("Notification Sort", "Stand")
                 util.toast("[ " .. TRANSLATE("Heist Control") .. " ]" .. "\n\n" .. Message)
@@ -1255,7 +1254,7 @@
 
             local CAYO_TELE_VAULT = menu.list(CAYO_TELE_COMPOUND, TRANSLATE("Vault"), {}, "", function(); end)
 
-                CAYO_TELE_VAULT_PRIMARY = menu.action(CAYO_TELE_VAULT, TRANSLATE("Primary Target"), {}, "", function()
+                menu.action(CAYO_TELE_VAULT, TRANSLATE("Primary Target"), {}, "", function()
                     TELEPORT(5006.7, -5756.2, 14.8)
                     SET_HEADING(145)
                 end)
@@ -1959,7 +1958,7 @@
 
         local CASINO_PRESETS_DIAMOND = menu.list(CASINO_PRESETS, TRANSLATE("Diamonds"), {}, TRANSLATE("$3.5 Million For All Players"), function(); end)
 
-            menu.toggle(CASINO_PRESETS_DIAMOND, TRANSLATE("Silent & Sneaky Approach"), {"hccahdiasil"}, IS_WORKING(true) .. TRANSLATE("ALWAYS Choose The Low Level Buyer!"), function(Toggle)
+            menu.toggle(CASINO_PRESETS_DIAMOND, TRANSLATE("Silent & Sneaky Approach"), {"hccahdiasil"}, IS_WORKING(true) .. TRANSLATE("ALWAYS choose Low Level Buyer!"), function(Toggle)
                 DiamondST = Toggle
 
                 if DiamondST then
@@ -2114,7 +2113,7 @@
 
         ---
 
-        local CASINO_PRESETS_GOLD = menu.list(CASINO_PRESETS, TRANSLATE("Gold"), {}, TRANSLATE("$3.5 Millions & For All Players"), function(); end)
+        local CASINO_PRESETS_GOLD = menu.list(CASINO_PRESETS, TRANSLATE("Gold"), {}, TRANSLATE("$3.5 Million For All Players"), function(); end)
 
             menu.toggle(CASINO_PRESETS_GOLD, TRANSLATE("Silent & Sneaky Approach"), {"hccahgoldsil"}, IS_WORKING(true) .. TRANSLATE("ALWAYS choose Low Level Buyer!"), function(Toggle)
                 GoldST = Toggle
@@ -2619,7 +2618,7 @@
             end
         end)
 
-        menu.list_action(CASINO_BOARD2, "Choose Masks", {"hccahmask"}, "", {
+        menu.list_action(CASINO_BOARD2, TRANSLATE("Choose Masks"), {"hccahmask"}, "", {
             { TRANSLATE("Remove Masks"), {"remove"} },
             { TRANSLATE("Geometric Set"), {"geometric"} },
             { TRANSLATE("Hunter Set"), {"hunter"} },
@@ -2972,8 +2971,8 @@
     ---
 
     menu.toggle_loop(DOOMS_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("The Doomsday Scenario ACT III") .. " & " .. TRANSLATE("The Data Breaches ACT I") .. " - " .. TRANSLATE("Setup: Server Farm (Lester)") .. ")", function() -- https://www.unknowncheats.me/forum/3455828-post8.html
-        SET_INT_LOCAL("fm_mission_controller", 1265 + 135, 3) -- For ACT III
         SET_INT_LOCAL("fm_mission_controller", 1510, 2) -- For ACT I, Setup: Server Farm (Lester)
+        SET_INT_LOCAL("fm_mission_controller", 1265 + 135, 3) -- For ACT III
     end)
 
     menu.action(DOOMS_HEIST, TRANSLATE("Remove EMP Mines"), {}, TRANSLATE("(ACT III, Setup - Air Defense)"), function()
@@ -3241,7 +3240,7 @@
 
     menu.divider(ULP_MISSIONS, TRANSLATE("ULP Missions"))
 
-        local UlpMissionsTable = {
+        local UlpMissionsType = {
             TRANSLATE("Intelligence"),
             TRANSLATE("Counterintelligence"),
             TRANSLATE("Extraction"),
@@ -3249,8 +3248,8 @@
             TRANSLATE("Operation Paper Trail"),
             TRANSLATE("Cleanup"),
         }
-        for i = 1, #UlpMissionsTable do
-            menu.action(ULP_MISSIONS, UlpMissionsTable[i], {}, "", function()
+        for i = 1, #UlpMissionsType do
+            menu.action(ULP_MISSIONS, UlpMissionsType[i], {}, "", function()
                 STAT_SET_INT("ULP_MISSION_CURRENT", i - 1)
                 STAT_SET_INT("ULP_MISSION_PROGRESS", 127)
             end)
@@ -4004,7 +4003,7 @@
 
         ---
 
-        menu.toggle_loop(UNLOCKER_ANNIVERSARY, TRANSLATE("Independence Day"), {}, IS_WORKING(false), function()
+        menu.toggle_loop(UNLOCKER_ANNIVERSARY, TRANSLATE("Independence Day"), {}, IS_WORKING(true) .. TRANSLATE("Note: You may need to keep activating to use some of Independence Day's contents."), function()
             SET_PACKED_INT_GLOBAL(8268, 8274, 1) -- joaat("independence_day_deactivate_fireworks_launcher"), joaat("Toggle_activate_Monster_truck") 
             SET_PACKED_INT_GLOBAL(8297, 8303, 1) -- joaat("unlockindependence_beer_hat_1"), joaat("unlockindependence_statue_happiness_shirt")
             SET_INT_GLOBAL(262145 + 8259, 1) -- joaat("toggle_activate_independence_pack")
@@ -4038,7 +4037,7 @@
             SET_INT_GLOBAL(262145 + 25706, 1) -- -1519472948
 
             for i = 31768, 32273 do
-                STAT_SET_PACKED_BOOL(i, 1) -- freemode.c, https://www.unknowncheats.me/forum/3196991-post328.html
+                SET_PACKED_STAT_BOOL_CODE(i, 1) -- freemode.c, https://www.unknowncheats.me/forum/3196991-post328.html
             end
         end)
 
@@ -4053,12 +4052,12 @@
 
     ---
 
-    local UNLOCKER_TATTO = menu.list(MASTER_UNLOCKR, TRANSLATE("Tattos"), {}, "", function(); end)
+    local UNLOCKER_TATTOO = menu.list(MASTER_UNLOCKR, TRANSLATE("Tattoos"), {}, "", function(); end)
 
-        menu.action(UNLOCKER_TATTO, TRANSLATE("Unlock Some Tattos"), {}, "", function()
+        menu.action(UNLOCKER_TATTOO, TRANSLATE("Unlock Some Tattoos"), {}, "", function()
             -- https://www.unknowncheats.me/forum/3252891-post942.html
             STAT_SET_INT("AWD_CAR_BOMBS_ENEMY_KILLS", 25) -- Trust No One
-            STAT_SET_INT("AWD_HOLD_UP_SHOPS", 19) -- Clown, Clown and Gun, Clown Dual Wield & Clown Dual Wield Dollar
+            STAT_SET_INT("AWD_HOLD_UP_SHOPS", 20) -- Clown, Clown and Gun, Clown Dual Wield & Clown Dual Wield Dollar
             STAT_SET_INT("AWD_FMBBETWIN", 50000) -- Hustler
             STAT_SET_INT("AWD_100_HEADSHOTS", 500) -- Skull
             STAT_SET_INT("AWD_FM_DM_WINS", 50) -- Burning Heart
@@ -4083,7 +4082,7 @@
             STAT_SET_BOOL("AWD_FMFULLYMODDEDCAR", true) -- Los Santos Customs
         end)
 
-        menu.action(UNLOCKER_TATTO, TRANSLATE("Alien Tatto (Illuminati)"), {}, TRANSLATE("Change your session to apply!"), function()
+        menu.action(UNLOCKER_TATTOO, TRANSLATE("Alien Tatto (Illuminati)"), {}, TRANSLATE("Change your session to apply!"), function()
             STAT_SET_INT("TATTOO_FM_CURRENT_32", -1)
         end)
 
@@ -4156,6 +4155,14 @@
 
         menu.action(SPECIAL_WEAPON, TRANSLATE("Navy Revolver"), {}, "", function()
             STAT_SET_BOOL("MPPLY_NAVYREVOLVERCOMPLETED", true)
+        end)
+
+        menu.action(SPECIAL_WEAPON, TRANSLATE("WM 29 Pistol"), {}, TRANSLATE("a.k.a XM3 Pistol"), function() -- Thanks for letting me know the code: Ayim#8823
+            SET_PACKED_STAT_BOOL_CODE(36785, true)
+        end)
+
+        menu.action(SPECIAL_WEAPON, TRANSLATE("Ceramic Pistol"), {}, "", function() -- https://www.unknowncheats.me/forum/3439472-post2.html
+            STAT_SET_INT("CAS_HEIST_FLOW", 4096)
         end)
 
         menu.action(SPECIAL_WEAPON, TRANSLATE("Up-N-Atomizer"), {}, IS_WORKING(false), function()
@@ -4547,7 +4554,7 @@
             
         ---
 
-        local TUNABLES_CAH = menu.list(TUNABLES, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"), {}, TRANSLATE("Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned!"), function(); end)
+        local TUNABLES_CAH = menu.list(TUNABLES, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"), {}, "", function(); end)
 
             util.create_tick_handler(function()
                 if IS_WORKING(false) == "" then
@@ -4575,10 +4582,8 @@
                 end)
 
                 menu.action(TUNABLES_CAH, TRANSLATE("Max Chips"), {}, IS_WORKING(false), function()
-                    if CasinoMembership == TRANSLATE("Normal") then
+                    if CasinoMembership == TRANSLATE("Normal") or TRANSLATE("VIP") then
                         SET_INT_GLOBAL(262145 + 26981, CAHAmount) -- -1679646912
-                    elseif CasinoMembership == TRANSLATE("VIP") then
-                        SET_INT_GLOBAL(262145 + 26981, CAHAmount)
                     end
                 end, function()
                     if CasinoMembership == TRANSLATE("Normal") then
@@ -4668,22 +4673,26 @@
             
         ---
 
-        menu.slider(TUNABLES, TRANSLATE("Custom Money Remover"), {"hcmoneyrem"}, IS_WORKING(true) .. TRANSLATE("An Easy Way To Remove GTA Online's banked money"), 0, 2000000000, 5000, 10000, function(Value)
-            menu.show_warning(TUNABLES, CLICK_MENU, TRANSLATE("Do you sure remove your money?"), function()
-                SET_INT_GLOBAL(262145 + 20288, Value) -- -156036296, https://www.unknowncheats.me/forum/3276092-post3.html
-                STAT_SET_PACKED_BOOL(15382, true) -- Makes able to buy the Ballistic Armor
-                STAT_SET_PACKED_BOOL(9461, true) -- Makes you have the Ballistic Armor
-    
-                menu.trigger_commands("nopimenugrey on")
-                if util.is_interaction_menu_open() then
+        CUSTOM_MONEY_REMOVER = menu.slider(TUNABLES, TRANSLATE("Custom Money Remover"), {"hcmoneyrem"}, IS_WORKING(true) .. TRANSLATE("An Easy Way To Remove GTA Online's banked money"), 0, 2000000000, 5000, 10000, function(Value)
+            if menu.get_value(CUSTOM_MONEY_REMOVER) < players.get_bank(players.user()) then
+                menu.show_warning(TUNABLES, CLICK_MENU, TRANSLATE("Do you sure remove your money?"), function()
+                    SET_INT_GLOBAL(262145 + 20288, Value) -- -156036296, https://www.unknowncheats.me/forum/3276092-post3.html
+                    SET_PACKED_STAT_BOOL_CODE(15382, true) -- Makes able to buy the Ballistic Armor
+                    SET_PACKED_STAT_BOOL_CODE(9461, true) -- Makes you have the Ballistic Armor
+        
+                    menu.trigger_commands("nopimenugrey on")
+                    if util.is_interaction_menu_open() then
+                        IA_MENU_OPEN_OR_CLOSE()
+                    end
+                    SET_INT_GLOBAL(2766485, 85) -- Renders Ballistic Equipment Services screen of the Interaction Menu
                     IA_MENU_OPEN_OR_CLOSE()
-                end
-                SET_INT_GLOBAL(2766485, 85) -- Renders Ballistic Equipment Services screen of the Interaction Menu
-                IA_MENU_OPEN_OR_CLOSE()
-                IA_MENU_ENTER(1)
-    
-                NOTIFY(TRANSLATE("Because this feature works via requesting the Ballistic Armor, it'll be dropped nearby soon."))
-            end)
+                    IA_MENU_ENTER(1)
+        
+                    NOTIFY(TRANSLATE("Because this feature works via requesting the Ballistic Armor, it'll be dropped nearby soon."))
+                end)
+            else
+                NOTIFY(TRANSLATE("You try removing banked money amount that more than currently you have."))
+            end
         end)
 
     ---
@@ -4733,7 +4742,7 @@
 
         menu.divider(AFK_MONEY, TRANSLATE("AFK Money") .. " " .. TRANSLATE("(Risky)"))
 
-            --- Functions for Auto Cayo Bot
+            --- Functions for Auto Cayo Bot, https://docs.fivem.net/docs/game-references/controls/
             
                 function CP_PRESS_D(Num)
                     for i = 1, Num do
@@ -4780,18 +4789,20 @@
                 -- Raid Control Auto Cayo Bot Source Code: https://pastebin.com/JKVXcZBz
 
                 if NumberOfPlayingCP >= NumberOfPlayedCP then
-                    if not util.is_interaction_menu_open() then
+                    if not players.is_using_controller(players.user()) then
+                        if not util.is_interaction_menu_open() then
+                            IA_MENU_OPEN_OR_CLOSE()
+                        end
+
+                        if GET_INT_GLOBAL(2774130 + 1 + (0 * 66) + 1 + GET_INT_LOCAL("am_pi_menu", 232)) ~= 37 then -- am_pi_menu.c
+                            NOTIFY(TRANSLATE("Make sure your spawning position is 'Last Location'") .. "\n" .. TRANSLATE("You can set it on Interaction Menu."))
+                            menu.set_value(AUTO_CAYO_BOT, false)
+                            return
+                        end
+
+                        util.yield()
                         IA_MENU_OPEN_OR_CLOSE()
                     end
-
-                    if GET_INT_GLOBAL(2774130 + 1 + (0 * 66) + 1 + GET_INT_LOCAL("am_pi_menu", 232)) ~= 37 then -- am_pi_menu.c
-                        NOTIFY(TRANSLATE("Make sure your spawning position is 'Last Location'") .. "\n" .. TRANSLATE("You can set it on Interaction Menu."))
-                        menu.set_value(AUTO_CAYO_BOT, false)
-                        return
-                    end
-                    
-                    util.yield()
-                    IA_MENU_OPEN_OR_CLOSE()
 
                     if players.get_boss(players.user()) == -1 then
                         menu.trigger_commands("ceostart")
@@ -4806,7 +4817,7 @@
                     menu.trigger_commands("hctimercustom off")
                     menu.trigger_commands("hccpquick on")
                 
-                    local SubBlip, SubControlBlip
+                    local SubBlip, SubControlBlip = 0, 0
                     util.create_tick_handler(function() -- Updates blip info per a tick
                         SubBlip = HUD.GET_FIRST_BLIP_INFO_ID(760)
                         SubControlBlip = HUD.GET_FIRST_BLIP_INFO_ID(773)
@@ -4858,7 +4869,7 @@
                         util.yield()
                     end
                     util.yield(1000)
-                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL", From https://docs.fivem.net/docs/game-references/controls/
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL", https://docs.fivem.net/docs/game-references/controls/
                     util.yield(8000)
                     
                     CP_PRESS_ENTER(2)
@@ -5603,7 +5614,7 @@
 
     local INFO_SPOOFING = menu.list(TOOLS, TRANSLATE("Stat Spoofing"), {}, TRANSLATE("Change your session to apply!"), function(); end)
 
-        local INFO_SPOOFING_WALLET_MONEY = menu.list(INFO_SPOOFING, "Wallet Money", {}, "", function(); end) -- freemode.c
+        local INFO_SPOOFING_WALLET_MONEY = menu.list(INFO_SPOOFING, TRANSLATE("Wallet Money"), {}, "", function(); end) -- freemode.c
 
             menu.toggle_loop(INFO_SPOOFING_WALLET_MONEY, TRANSLATE("Enable"), {}, IS_WORKING(false), function()
                 SET_INT_GLOBAL((1853910 + 1 + players.user() * 862) + 205 + 3, menu.get_value(WALLET_MONEY_SPOOFING))
@@ -5803,11 +5814,11 @@
 
             menu.divider(STAT_EDITOR, "Date")
 
-                DATE_YEAR = menu.slider(STAT_EDITOR, "Year", {"hcedityear"}, "", 2013, os.date("%Y"), 0, 1, function(); end)
-                DATE_MONTH = menu.slider(STAT_EDITOR, "Month", {"hceditmonth"}, "", 0, 12, 0, 1, function(); end)
-                DATE_DAY = menu.slider(STAT_EDITOR, "Days", {"hceditday"}, "", 0, 31, 0, 1, function(); end)
-                DATE_HOUR = menu.slider(STAT_EDITOR, "Hours", {"hcedithour"}, "", 0, 24, 0, 1, function(); end)
-                DATE_MIN = menu.slider(STAT_EDITOR, "Mins", {"hceditmin"}, "", 0, 60, 0, 1, function(); end)
+                DATE_YEAR = menu.slider(STAT_EDITOR, TRANSLATE("Years"), {"hcedityear"}, "", 2013, os.date("%Y"), 0, 1, function(); end)
+                DATE_MONTH = menu.slider(STAT_EDITOR, TRANSLATE("Months"), {"hceditmonth"}, "", 0, 12, 0, 1, function(); end)
+                DATE_DAY = menu.slider(STAT_EDITOR, TRANSLATE("Days"), {"hceditday"}, "", 0, 31, 0, 1, function(); end)
+                DATE_HOUR = menu.slider(STAT_EDITOR, TRANSLATE("Hours"), {"hcedithour"}, "", 0, 24, 0, 1, function(); end)
+                DATE_MIN = menu.slider(STAT_EDITOR, TRANSLATE("Mins"), {"hceditmin"}, "", 0, 60, 0, 1, function(); end)
 
             ---
 
@@ -5853,12 +5864,12 @@
                     end
                 end)
 
-                menu.action(STAT_EDITOR, "Date", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_DATE_CREATED\n" .. TRANSLATE("Stat Value") .. ": " .. "Year: 1970, Month: 1, Day: 1", function()
+                menu.action(STAT_EDITOR, "Date", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_DATE_CREATED\n" .. TRANSLATE("Stat Value") .. ": " .. TRANSLATE("Years") .. ": 1970, " .. TRANSLATE("Months") .. ": 12, " .. TRANSLATE("Days") .. ": 25", function()
                     if menu.get_value(STAT_EDITOR_NAME) == "" then
                         NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
                     else
                         STAT_SET_DATE(menu.get_value(STAT_EDITOR_NAME), menu.get_value(DATE_YEAR), menu.get_value(DATE_MONTH), menu.get_value(DATE_DAY), menu.get_value(DATE_HOUR), menu.get_value(DATE_MIN))
-                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. "Year: " .. menu.get_value(DATE_YEAR) .. "\n" .. "Month: " .. menu.get_value(DATE_MONTH) .. "\n" .."Day: " .. menu.get_value(DATE_DAY) .. "\n" .. "Hour: " .. menu.get_value(DATE_HOUR) .. "\n" .. "Min: " .. menu.get_value(DATE_MIN))
+                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Years") .. ": " .. menu.get_value(DATE_YEAR) .. "\n" .. TRANSLATE("Months") .. ": " .. menu.get_value(DATE_MONTH) .. "\n" .. TRANSLATE("Days") .. ": " .. menu.get_value(DATE_DAY) .. "\n" .. TRANSLATE("Hours") .. ": " .. menu.get_value(DATE_HOUR) .. "\n" .. TRANSLATE("Mins") .. ": " .. menu.get_value(DATE_MIN))
                         FORCE_CLOUD_SAVE()
                     end
                 end)
@@ -5941,7 +5952,7 @@
                     else
                         NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. "Year: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Days") .. "\n" .. "Hour: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hours") .. "\n" .. "Min: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Mins"))
                         if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard("Year: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Year") .. "\n" .. "Month: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Month") .. "\n" .. "Day: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Days") .. "\n" .. "Hour: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hours") .. "\n" .. "Min: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Mins"))
+                            util.copy_to_clipboard(TRANSLATE("Year") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Years") .. "\n" .. TRANSLATE("Month") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Months") .. "\n" .. TRANSLATE("Days") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Days") .. "\n" .. TRANSLATE("Hours") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hours") .. "\n" .. TRANSLATE("Min") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Mins"))
                         end
                     end
                 end)
@@ -5964,8 +5975,8 @@
         end)
 
         menu.action_slider(TOOLS_OTH, TRANSLATE("Skips Conversation With NPCs"), {}, "", {
-            "All",
-            "One Line",
+            TRANSLATE("All"),
+            TRANSLATE("One Line"),
         }, function(Index)
             if AUDIO.IS_SCRIPTED_CONVERSATION_ONGOING() then
                 if Index == 1 then
@@ -6073,29 +6084,36 @@
                                         }
                                         for _, Text in pairs(CodeBlackListedTexts) do
                                             if trans:find(Text) then 
-                                                goto outofcodeloop
+                                                goto out_of_code_loop
                                             end
                                         end
                             
                                         local _, i = trans:find("TRANSLATE", StartPos)
-                                        local _, j = trans:find('")', StartPos)
+                                        local _, j = trans:find('")', i + 1)
                                         if i and j ~= nil then
                                             local Text = string.sub(trans, i + 3, j - 2)
-                                            for _, DuplicatedText in pairs(GeneratedCodeTable) do
-                                                if Text == DuplicatedText then 
-                                                    goto outofcodeloop 
-                                                end
-                                            end
-                            
                                             GeneratedCodeTable[#GeneratedCodeTable+1] = Text
                                             StartPos = j + 1
                                         else
-                                            goto outofcodeloop
+                                            goto out_of_code_loop
                                         end
                                     end
                                     
-                                    ::outofcodeloop::
-                                    StartPos = 1 
+                                    ::out_of_code_loop::
+                                    StartPos = 1
+                                end
+                                
+
+                                ::out_of_duplicated_check_loop::
+                                for idx1, i in pairs(GeneratedCodeTable) do
+                                    for idx2, j in pairs(GeneratedCodeTable) do
+                                        if i == j then
+                                            if idx1 < idx2 then
+                                                table.remove(GeneratedCodeTable, idx2)
+                                                goto out_of_duplicated_check_loop
+                                            end
+                                        end
+                                    end
                                 end
 
                             
@@ -6123,7 +6141,7 @@
                                                trans == ""      or
                                                trans == " "     then
                                                 
-                                               goto outoftransloop
+                                               goto out_of_trans_loop
                                             end
                                         end
                             
@@ -6136,7 +6154,7 @@
                                         GeneratedTransTable[idx][2] = Text
                                     end
                             
-                                    ::outoftransloop::
+                                    ::out_of_trans_loop::
                                 end
 
                         
@@ -6379,6 +6397,7 @@
 
             menu.divider(CREDITS, TRANSLATE("Translators"))
 
+                menu.action(CREDITS, "Cheung", {}, TRANSLATE("Maintains HC's translation") .. ": Chinese - 中文", function(); end)
                 menu.action(CREDITS, "Leif.Erickson", {}, TRANSLATE("Maintains HC's translation") .. ": French - français", function(); end)
                 menu.action(CREDITS, "Hibanana", {}, TRANSLATE("Maintains HC's translation") .. ": German - Deutsch", function(); end)
                 menu.action(CREDITS, "Greensky445", {}, TRANSLATE("Maintains HC's translation") .. ": Japanese - 日本語", function(); end)
