@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 2023/01/06 10:09:12 PM
-# Heist Control Version: V 3.1.1
+# Generated Date: 2023/01/08 10:35:31 PM
+# Heist Control Version: V 3.1.2
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -71,7 +71,7 @@ Weapon Loadouts = Chargement des armes
 Aggressor = Agresseur 
 - Machete + Grenade = - Machette + Grenade 
 Conspirator = Conspirateur 
-Crackshot =  Crackshot 
+Crackshot = Crackshot 
 - Knife + Molotov = - Couteau + Molotov 
 Saboteur = Saboteur 
 Marksman = Tireur d'élite 
@@ -185,7 +185,7 @@ Double Action Revolver = Revolver à double détente
 Navy Revolver = Revolver de marine 
 Up-N-Atomizer = Up-N-Atomizer 
 Vanilla Unicorn Award = Prix de la licorne - vanille 
-Alien Tatto (Illuminati) = Alien Tatto (Illuminati) 
+Alien Tatto (Illuminati) = Tatouage Alien (Illuminati) 
 Tunables = Tunables 
 Remove Cooldowns = Suppression des temporisations
 MC Business = Business de Club de Motards
@@ -378,7 +378,6 @@ Force The Final Cutscene = Forcer la cinématique finale
 Set Heist To Default (Reset) = Réinitialiser Braquage
 Diamonds = Diamants
 $3.5 Million For All Players = $3.5 millions pour chaque Joueur
-ALWAYS Choose The Low Level Buyer! = Choisissez TOUJOURS l'acheteur Amateur !
 Skip Drilling The Vault Door = Sauter Perçage de la porte du coffre-fort
 Planning Boards (Arcade) = Tableaux de préparation (Arcade)
 Garage Exit (Arcade) = Sortie du garage (Arcade)
@@ -477,8 +476,6 @@ Valentine's Day = Saint-Valentin
 Unlock Hats And Many Shirts = Débloquez des chapeaux et de nombreuses chemises
 Unlock Sasquatch Outfit = Déverrouiller la tenue de Sasquatch
 Unlock 'Don't Cross the Line Tee' = Déverrouillez le T-shirt 'Don't Cross the Line'.
-Tattos = Tatoos
-Unlock Some Tattos = Débloquer des tatouages
 Unlock Some Trade Prices = Débloquer certains prix commerciaux
 Taxi Livery = Liaison avec les taxis
 a.k.a: 'Downtown Cab Co.' livery = alias 'Downtown Cab Co.'.
@@ -520,7 +517,6 @@ Renaming CEO/MC = Renommer le PDG/CM
 CEO Abilities = Capacités du PDG
 Casino Services: Chips = Services de casino : Jetons
 (Risky) = (Risqué)
-Make sure don't buy chip more than 1.5M per a day (real-time). Otherwise, you can be banned! = Assurez-vous de ne pas acheter plus de 1,5 million de jetons par jour (en temps réel). Sinon, vous pouvez être ban !
 VIP = VIP
 N/A = N/A
 Chips Amount = Quantité de jetons
@@ -633,3 +629,34 @@ Get Support, Report Bugs and Enjoy Other Stuffs! = Obtenez de l'aide, signalez l
 Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D = Les vidéos liées au tutoriel de HC sont téléchargées ici, abonnez-vous à la chaîne pour montrer votre soutien :D
 If you don't know how to use HC, click me! = Si vous ne savez pas comment utiliser HC, cliquez ici !
 If you want to know what was changed in the latest version, click me! = Si vous voulez savoir ce qui a été modifié dans la dernière version, cliquez ici !
+When using this method, the percentage and final payment will be random! = En utilisant cette méthode, le pourcentage et le paiement final seront aléatoires !
+Works On Both: Fingerprint and Keypad = Fonctionne sur les deux : empreinte digitale et clavier.
+Choose Masks = Choisissez les masques
+(Final Heist) = (Braquage Final)
+Setup: Server Farm (Lester) = Init : Parc de serveurs (Lester)
+Will be applied only to you and you have to be the host = Ne sera appliqué qu'à vous, vous devez être Hôte.
+- Only do this only 1-2 times in less than 24 hours. = - Ne le faites qu'une ou deux fois en 24 heures.
+- Otherwise, you can be banned! = - Sinon, vous pouvez être ban !
+Always keep this option enabled before starting a contract = Toujours garder cette Option activée avant de commencer un contrat
+Note: You may need to keep activating to use some of Independence Day's contents. = Remarque : il se peut que vous deviez continuer de garder cette option Activée pour utiliser certains contenus de l'Independence Day.
+Tattoos = Tatouages
+Unlock Some Tattoos = Débloquez quelques tatouages
+WM 29 Pistol = Pistolet WM 29
+a.k.a XM3 Pistol = alias Pistolet XM3
+Ceramic Pistol = Pistolet en céramique
+You try removing banked money amount that more than currently you have. = Vous essayez de retirer un montant supérieur à celui que vous avez actuellement en Banque.
+All of features use undetected methods but use at own your risk. If you earn too much, you can be banned. = Toutes ces fonctions utilisent des méthodes non détectées, mais vous les utilisez à vos risques et périls. Si vous gagnez trop, vous pouvez être ban.
+Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs. = Le Braquage de Cayo Perico en Solo sera effectué par Heist Control automatiquement toutes les 20 minutes pour obtenir 2,09 m$. N'appuyez sur aucune touche pour éviter certains bugs de jeu.
+Don't earn more than $50M per a day (real-time), otherwise it'll lead you get banned! = Ne gagnez pas plus de 50 millions de dollars par jour (en temps réel), sinon vous serez ban !
+Note that not working on ULP Missions - Superyatch = Notez que cela ne fonctionne pas sur les missions ULP - Super Yatch
+Cooldown time has passed, you can play the heist again! = La temporisation est écoulée, vous pouvez à nouveau faire la Braquage !
+Wallet Money = Argent de poche
+Mins = Mins
+Use at your own risk! Setting certain stats may cause a ban like casino-related stats. = A utiliser à vos risques et périls ! La modification de certaines stats peut entraîner un ban, comme les stats relatives aux casinos.
+Years = Années
+Months = Mois
+Year = Année
+Month = Mois
+Min = Min
+All = Tout
+One Line = En ligne
