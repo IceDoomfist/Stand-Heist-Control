@@ -15,7 +15,7 @@
 
 ## Main Features
 
-> - Officially keep up-to-date translations in 8 languages (ZH, FR, DE, JP, KO, PT, RU, ES)
+> - Officially keep up-to-date translations in 9 languages (ZH, FR, DE, JP, KO, PL, PT, RU, ES)
 > - Extra Cayo, Casino, Classic, LS Tuner, ULP Missions, Agency Heist Options
 > - AFK Money (Main Method: Auto Cayo Bot, Auto Rig Slot Machine)
 > - Instant Finish Heists and Others

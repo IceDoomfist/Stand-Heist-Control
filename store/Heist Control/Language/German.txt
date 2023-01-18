@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 2023/01/08 07:25:22 PM
-# Heist Control Version: V 3.1.2
+# Generated Date: 2023/01/17 03:04:29 PM
+# Heist Control Version: V 3.1.3
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -33,11 +33,8 @@ Automated Presets = Automatische Presets
 2 Players = 2 Spieler
 3 Players = 3 Spieler
 4 Players = 4 Spieler
-Sapphire Panther = Saphir- Panther
+Sapphire Panther = Saphir-Panther
 Ruby Necklace = Rubin-Halskette
-Standard Preset = Standard-Preset
-Semi-Original Preset = Semi-Standard Preset
-- Remember to deactivate the preset at the end. = - Denk dran, das Preset am Ende wieder zu deaktivieren.
 Custom Teleport = Custom Teleports
 Compound = Villa
 El Rubio's Office = El Rubio's Büro
@@ -314,7 +311,6 @@ Maintains HC's translation = Kümmert sich um HCs Übersetzung
 [NOT WORKING] = [FUNKTIONIERT NICHT]
 - This feature isn't working due to the latest GTA Online patch: = - Dieses Feature fuktioniert (noch) nicht aufgrund des neuesten GTA Updates:
 Please download the lastest version of Heist Control or wait for Heist Control's developer patching. = Bitte downloade die neueste Version von HC oder warte auf das Update.
-HC Logo for In-Game notification doesn't exist. = HC-Logo für Ingame-Benachrichtigungen ist nciht vorhanden.
 Please re-enable 'Stand > Lua Scripts > Repository > Heist Control' to fix! = Bitte lade HC erneut, um das zu beheben!
 Except [NOT WORKING] features should work! = Alle Features außer die mit [FUNKTIONIERT NICHT] sollten funktionieren!
 But, all features of HC should work! = But, all features of HC should work!
@@ -322,7 +318,6 @@ Coded GTA Online Version: = Gecoded für GTA Online Version:
 Current GTA Online Version: = Aktuelle GTA Online Version:
 ULP Missions = ULP Missionen
 Settings And About HC = Einstellungen und über HC
-- Remember to choose your preset before entering the Submarine = - Wähle dein Preset, bevor du das U-Boot betrittst.
 Quick Preset (1 - 4P) = Schnelle Presets (1 ~ 4 Spieler)
 There are no secondary targets, there's only the primary target. Your goal is get it. = Es gibt keine Sekundärziele, nur das Prmärziel. Schnapp es dir Tiger!
 Drainage Pipe = Entwässerungsrohr
@@ -545,7 +540,6 @@ Change Lucky Wheel Reward = Belohnung des Glücksrades ändern
 Vehicle Discount = Fahrzeug Discount
 How many time to play Auto Cayo Bot = Wie oft der Auto Cayo Bot laufen soll
 Teleport to the Lucky Wheel = Zum Glücksrad teleportieren
-If this doesn't work properly, please press again. = Wenn das nicht funktioniert, drücke es nochmal
 Make sure your spawning position is 'Last Location' = Stelle sicher, dass dein Spawnort auf "letzter Ort" steht.
 You can set it on Interaction Menu. = Du kannst das im Interaktionsmenü machen.
 Kosatka has been requested. Wait for a few secs. = Kosatka angefordert. Warte ein paar Sekunden.
@@ -606,13 +600,11 @@ Name of The File = Name der Datei
 HC will overwrite if name of the file already exists. = Wenn eine Datei schon denselben Namen hat, wird HC diese überschreiben.
 Please input name of the file! = Bitte gib einen Dateinamen ein!
 Waiting for updating English.txt... = Update English.txt, bitte warten...
-Sucessfully Generated! = Erfolgreich generiert!
 Directory of the file: = Dateiverzeichnis:
 Update Translation File = Übersetzungs-Datei updaten
 Refresh = Neu laden
 Refresh the list via restarting Heist Control. = Lade die Liste neu, indem du HC neu startest.
 This action will take a few seconds. Please wait for it patiently, don't press multiple times. = Dieser Vorgang wird ein paar Sekunden dauern. Bitte klicke NICHT 50x hier drauf.
-Sucessfully Updated! = Erfolgreich geupdated!
 - Total number of translations: = - Anzahl an Übersetzungen insgesamt:
 - Number of not modified translations: = - Anzahl der modifizierten Übersetzungen:
 - Number of modified (updated) translations: = - Anzahl der modifizierten (geupdateten) Übersetzungen:
@@ -628,13 +620,6 @@ Get Support, Report Bugs and Enjoy Other Stuffs! = Stelle Fragen, erhalte Suppor
 Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D = HC-Tutorials und mehr, lass gerne ein Abo da wenn es dir gefällt! :)
 If you don't know how to use HC, click me! = Wenn du nicht weißt, wie du HC verwenden sollst, klicke hier!
 If you want to know what was changed in the latest version, click me! = Wenn du wissen willst, was sich alles  in der neuesten Version geändert hat, klicke hier!
-
-
-
-# Start of newly updated translations.
-# Translate them!
-
-
 When using this method, the percentage and final payment will be random! = Wenn du diese Methode nutzt, sind die %-Anteile und die finale Auszahlung zufällig!
 Works On Both: Fingerprint and Keypad = Funktioniert sowohl auf Fingerprint- als auch auf Keypad-Hacks
 Choose Masks = Masken wählen
@@ -647,8 +632,6 @@ Always keep this option enabled before starting a contract = Du solltest dies im
 Note: You may need to keep activating to use some of Independence Day's contents. = Möglicherweise musst du dies wieder aktivieren, um einiges aus dem Independence Day-Content zu nutzen
 Tattoos = Tattoos
 Unlock Some Tattoos = Ein paar Tattoos freischalten
-WM 29 Pistol = WM 29 Pistole
-a.k.a XM3 Pistol = a.k.a XM3 Pistole
 Ceramic Pistol = Keramikpistole
 You try removing banked money amount that more than currently you have. = Du versuchst, mehr Geld zu entfernen als du hast du Dulli :angy:
 All of features use undetected methods but use at own your risk. If you earn too much, you can be banned. = Alle Features nutzen undetectete Methoden, aber bleib vorsichtig. Wenn du es übertreibst, könntest du gebannt werden.
@@ -661,8 +644,36 @@ Mins = Minuten
 Use at your own risk! Setting certain stats may cause a ban like casino-related stats. = Nutzung auf eigene Gefahr! Das Setzen einiger Stats (z.B. die mit Casino zu tun haben) können einen Ban nach sich ziehen!
 Years = Jahre
 Months = Monate
-Year = Jahr
-Month = Monat
-Min = Minute
 All = Alle
 One Line = One Line
+
+
+# Start of newly updated translations.
+# Translate them!
+
+
+HC Logo image file doesn't exist. = Bilddatei des HC Logo existiert nicht.
+Native file for HC doesn't exist. = Native-Datei für HC existiert nicht.
+Please re-enable 'Stand > Lua Scripts > Repository > natives-1672190175' or please join HC DC server to get support! = Bitte aktiviere 'Stand > Lua Scripts > Repository > natives-1672190175' oder joine dem Discord für Support!
+Your current Stand version isn't compatible with current Heist Control version. Please update Stand to use it. = Deine aktuelle Stand-Version ist nicht mit der aktuellen HC-Version kompatibel. Bitte aktualisiere Stand.
+- Current your Heist Control version: = - Deine aktuelle HC-Version:
+- At least required Stand version: = - Mindestens erforderliche Stand-Version:
+- Current your Stand version: = - Deine aktuelle Stand-Version:
+You should enable the preset until the end of the heist! = Du solltest das Preset bis zum Ende des Heists aktiviert lassen!
+- How to change the line color: Stand > Settings > Appearance > Colours > HUD Colour = - Hier kannst du die Farbe der Linie ändern: Stand > Settings > Appearance > Colours > HUD Colour
+- How to change the AR Beacon color: Stand > Settings > Appearance > Colours > AR Colour = - Hier kannst du die Farbe des AR-Beacon ändern: Stand > Settings > Appearance > Colours > AR Colour
+Use with Cayo Perico Heist > Custom Teleport > Island > Drainage Pipe! = Nutze dies in Verbindung mit dem Teleport zum Entwässerungsrohr!
+Refresh Kosatka Planning Table = Kosatka Planungstafel neu laden
+You can update changed cayo perico heist stats in the Kosatka by refreshing it. = Du kannst geänderte Cayo Perico Heist-Einstellungen anwenden, indem du die Tafel neu lädst.
+Successfully cancelled! = Erfolgreich abgebrochen!
+Works unless you are in the casino. = Funktioniert nicht, wenn du im Casino bist.
+If you are in it, not required to use. Just use 'Auto Lucky Wheel' = Wenn du schon drin bist, musst du dies nicht nutzen. Nutze einfach "Auto-Glücksrad"
+Acid Lab = Acid Labor
+RC Bandito = RC Bandito
+RC Tank = RC Panzer
+Days = Tage
+Waiting for generating: = Warte aufs generieren:
+Successfully Generated! = Erfolgreich generiert!
+Successfully Updated! = Erfolgreich updated!
+'Stand' setting is synced with Stand's default feature: 'Stand > Settings > Appearance > Colours > AR Colour' = 'Stand' wird syncronisiert mit den Einstellungen in 'Stand > Settings > Appearance > Colours > AR Colour'
+If you changed the Stand's setting while HC is still running, need to restart HC to apply. = Wenn du die Einstellungen in Stand geändert hast während HC noch aktiv war, lade HC neu zum anwenden.

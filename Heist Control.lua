@@ -31,6 +31,8 @@
     - To learn stats, global and local variables
     FiveM Docs - Game References: https://docs.fivem.net/docs/game-references/
     - Controls, Blips, etc
+    Labels: https://github.com/root-cause/v-labels
+    - To find stats, global and local variables by yourself.
     GTA Online 1.64 Decompiled Scripts: https://github.com/root-cause/v-decompiled-scripts
     - To find stats, global and local variables by yourself. 'freemode.c' and 'tuneables_processing.c' are used oftenly to me. 
 
@@ -52,7 +54,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.1.3"
+        HC_VERSION = "V 3.1.4"
         CODED_GTAO_VERSION = 1.64
         SUPPORTED_STAND_VERSION = 97 -- Stand 97 | https://stand.gg/help/changelog | Lua API: Added players.set_wanted_level
 
@@ -82,6 +84,7 @@
             German = FolderDirs.Lang .. "German.txt",
             Japanese = FolderDirs.Lang .. "Japanese.txt",
             Korean = FolderDirs.Lang .. "Korean.txt",
+            Polish = FolderDirs.Lang .. "Polish.txt",
             Portuguese = FolderDirs.Lang .. "Portuguese.txt",
             Russian = FolderDirs.Lang .. "Russian.txt",
             Spanish = FolderDirs.Lang .. "Spanish.txt",
@@ -172,7 +175,6 @@
         function STAT_GET_DATE(stat, type)
             local DatePTR = memory.alloc(8*7) -- Thanks for helping memory stuffs, aaronlink127#0127
             STATS.STAT_GET_DATE(util.joaat(ADD_MP_INDEX(stat)), DatePTR, 7, true)
-
             local DateType = {
                 "Years",
                 "Months",
@@ -383,6 +385,7 @@
                 { "fr", "French - français" },
                 { "de", "German - Deutsch" },
                 { "ko", "Korean - 한국어" },
+                { "pl", "Polish - Polski" },
                 { "pt", "Portuguese - Português" },
                 { "ru", "Russian - русский" },
                 { "es", "Spanish - Español" },
@@ -424,6 +427,7 @@
             { "French - français", LangDirs.French },
             { "German - Deutsch", LangDirs.German },
             { "Korean - 한국어", LangDirs.Korean },
+            { "Polish - Polski", LangDirs.Polish },
             { "Portuguese - Português", LangDirs.Portuguese },
             { "Russian - русский", LangDirs.Russian },
             { "Spanish - Español", LangDirs.Spanish },
@@ -536,7 +540,7 @@
             open:close()
     
             for _, text in pairs(Texts) do
-                local _, i = string.find(text, "Active Profile: ")
+                local __, i = string.find(text, "Active Profile: ")
                 if i ~= nil then
                     return string.sub(text, i + 1, string.len(text))
                 end
@@ -553,7 +557,7 @@
     
             for _, text in pairs(Texts) do
                 local String = type .. ": "
-                local _, i = string.find(text, String)
+                local __, i = string.find(text, String)
                 if i ~= nil then
                     return string.sub(text, i + 1, string.len(text))
                 end
@@ -563,7 +567,7 @@
         end
 
         function GET_CURSOR_POSITION()
-            local Text = menu.get_active_list_cursor_text() -- '2/12' format
+            local Text = menu.get_active_list_cursor_text(true, true) -- '2/12' format
             local i = string.find(Text, "/")
             return tonumber(string.sub(Text, 0, i - 1)) -- return '2'
         end
@@ -643,7 +647,7 @@
         if filesystem.exists(FolderDirs.Img .. "Logo.ytd") then
             util.register_file(FolderDirs.Img .. "Logo.ytd")
         else
-            if READ_SETTING("Notification Sort") == "In-Game" and READ_SETTING("Notification Icon") == "HC Logo" then
+            if READ_SETTING("Notification Type") == "In-Game" and READ_SETTING("Notification Icon") == "HC Logo" then
                 ERROR_LOG(TRANSLATE("HC Logo image file doesn't exist.") .. "\n\n" .. TRANSLATE("Please re-enable 'Stand > Lua Scripts > Repository > Heist Control' to fix!"))
             end
         end
@@ -732,9 +736,6 @@
 
         util.on_stop(function()
             menu.trigger_commands("clearnotifications")
-            if not SCRIPT_SILENT_STOP then
-                NOTIFY(TRANSLATE("Good bye, thank you for using HC! :D"))
-            end
         end)
 
     ---
@@ -2084,7 +2085,7 @@
             STAT_SET_INT("H4_PLAYTHROUGH_STATUS", 0)
         end)
 
-        menu.action(MORE_OPTIONS, TRANSLATE("Set Heist To Default (Reset)"), {"hccpreset"}, "", function()
+        menu.action(MORE_OPTIONS, TRANSLATE("Set Heist to Default (Reset)"), {"hccpreset"}, "", function()
             STAT_SET_INT("H4_MISSIONS", 0)
             STAT_SET_INT("H4_PROGRESS", 0)
             STAT_SET_INT("H4CNF_APPROACH", 0)
@@ -4349,124 +4350,6 @@
 
         ---
 
-        local TUNABLES_CRATE = menu.list(TUNABLES, TRANSLATE("Trigger Special Crate Missions"), {}, TRANSLATE("Note that buying special crates can only in the Terrobyte."), function(); end)
-
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Ornamental Egg"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1) -- freemode.c
-                SET_INT_GLOBAL(1949814, 2) -- freemode.c
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Gold Minigun"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1)
-                SET_INT_GLOBAL(1949814, 4)
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Large Diamond"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1)
-                SET_INT_GLOBAL(1949814, 6)
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Rage Hide"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1)
-                SET_INT_GLOBAL(1949814, 7)
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Film Reel"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1)
-                SET_INT_GLOBAL(1949814, 8)
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            menu.toggle_loop(TUNABLES_CRATE, TRANSLATE("Rare Pocket Watch"), {}, IS_WORKING(false), function()
-                SET_INT_GLOBAL(1949968, 1)
-                SET_INT_GLOBAL(1949814, 9)
-            end, function()
-                SET_INT_GLOBAL(1949968, 0)
-            end)
-            
-        ---
-
-        local TUNABLES_SEL = menu.list(TUNABLES, TRANSLATE("Bunker Mission Selector"), {}, "", function(); end)
-            
-            menu.toggle_loop(TUNABLES_SEL, TRANSLATE("(SPECIAL) Trigger Alien Egg Mission"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("Steal Supplies") .. ")", function()
-                SET_INT_GLOBAL(2793044 + 5225 + 345, 20)
-                STAT_SET_INT("LFETIME_BIKER_BUY_COMPLET5", 1200)
-                STAT_SET_INT("LFETIME_BIKER_BUY_UNDERTA5", 1200)
-            end)
-
-            menu.divider(TUNABLES_SEL, TRANSLATE("Steal Supplies"))
-
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Altruist Camp"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 1)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Dune Buggy (Arm Runners)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 2)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Riot Van (Police)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 3)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Old Mine"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 4)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Technical Aqua (4 Helicopters)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 5)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Rival Operation"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 6)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Zancudo River"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 7)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Ballistic Equipment"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 8)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Merryweather HQ (Railgun)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 9)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Training Ground (Tank)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 10)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Heist Crew (Technical Pickup)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 11)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Rusty Van (Rumpo Classic)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 12)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Stealth Zone (Yacht/Docks)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 13)
-                end)
-
-            ---
-
-            menu.divider(TUNABLES_SEL, TRANSLATE("Sell Weapons"))
-
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Insurgent Pick-Up Custom (Merryweather)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 14)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Insurgent (Stealth)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 15)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Marshall"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 16)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Insurgent Pick-Up Custom (A to B)"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 17)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Phantom Wedge"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 18)
-                end)
-                menu.toggle_loop(TUNABLES_SEL, TRANSLATE("Dune FAV"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(2793044 + 5225 + 345, 19)
-                end)
-
-            ---
-
-        ---
-
         local TUNABLES_RSU = menu.list(TUNABLES, TRANSLATE("Remove Other Cost"), {}, "", function(); end)
 
             menu.toggle_loop(TUNABLES_RSU, TRANSLATE("Repair Vehicle Cargo (Stealing)"), {"hcremcostveh"}, IS_WORKING(true) .. TRANSLATE("When you sell a vehicle, it blocks having to pay for the repair."), function() 
@@ -4549,41 +4432,15 @@
 
         local TUNABLES_CAH = menu.list(TUNABLES, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"), {}, "", function(); end)
 
-            util.create_tick_handler(function()
-                if IS_WORKING(false) == "" then
-                    if GET_INT_GLOBAL(1853910 + 1 + players.user() * 862 + 267 + 384) == 0 then -- Found by me, freemode.c or casino_slots.c
-                        CasinoMembership = TRANSLATE("Normal")
-                    else
-                        CasinoMembership = TRANSLATE("VIP")
-                    end
-                else
-                    CasinoMembership = TRANSLATE("N/A")
-                end
-            end)
-
-            local CAHAmount = 0
-            menu.slider(TUNABLES_CAH, TRANSLATE("Chips Amount"), {"hccahservice"}, "", INT_MIN, INT_MAX, 0, 10000, function(Value)
-                CAHAmount = Value
-            end)
+            CHIPS_AMOUNT = menu.slider(TUNABLES_CAH, TRANSLATE("Chips Amount"), {"hccahservice"}, "", INT_MIN, INT_MAX, 0, 10000, function(); end)
 
             menu.divider(TUNABLES_CAH, TRANSLATE("Casino Services: Chips") .. " " .. TRANSLATE("(Risky)"))
 
                 menu.action(TUNABLES_CAH, TRANSLATE("Trade in Chips"), {}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(262145 + 26980, CAHAmount) -- VC_CASINO_CHIP_MIN_SELL
-                end, function()
-                    SET_INT_GLOBAL(262145 + 26980, 1)
+                    SET_INT_GLOBAL(262145 + 26980, menu.get_value(CHIPS_AMOUNT)) -- VC_CASINO_CHIP_MIN_SELL
                 end)
-
                 menu.action(TUNABLES_CAH, TRANSLATE("Max Chips"), {}, IS_WORKING(false), function()
-                    if CasinoMembership == TRANSLATE("Normal") or TRANSLATE("VIP") then
-                        SET_INT_GLOBAL(262145 + 26981, CAHAmount) -- VC_CASINO_CHIP_MAX_BUY
-                    end
-                end, function()
-                    if CasinoMembership == TRANSLATE("Normal") then
-                        SET_INT_GLOBAL(262145 + 26982, 20000) -- VC_CASINO_CHIP_MAX_BUY_PENTHOUSE
-                    elseif CasinoMembership == TRANSLATE("VIP") then
-                        SET_INT_GLOBAL(262145 + 26982, 50000)
-                    end
+                    SET_INT_GLOBAL(262145 + 26981, menu.get_value(CHIPS_AMOUNT)) -- VC_CASINO_CHIP_MAX_BUY
                 end)
 
             ---
@@ -4593,15 +4450,6 @@
                 menu.toggle_loop(TUNABLES_CAH, TRANSLATE("Remove Cooldown Buy Chips"), {}, TRANSLATE("If you enable this, able to buy over 20K or 50K chips by removing cooldown time."), function()
                     STAT_SET_INT("MPPLY_CASINO_CHIPS_PUR_GD", 0)
                     STAT_SET_INT("MPPLY_CASINO_CHIPS_PURTIM", 0)
-                end)
-
-                CASINO_MEMBERSHIP = menu.action_slider(TUNABLES_CAH, TRANSLATE("Change Membership of Casino"), {}, IS_WORKING(true) .. TRANSLATE("Your Membership of Casino:") .. " " .. CasinoMembership, {
-                    TRANSLATE("Normal"),
-                    TRANSLATE("VIP"),
-                }, function(index)
-                    SET_INT_GLOBAL(1853910 + 1 + players.user() * 862 + 267 + 384, index - 1)
-                    util.yield_once()
-                    menu.set_help_text(CASINO_MEMBERSHIP, TRANSLATE("Your Membership of Casino:") .. " " .. CasinoMembership)
                 end)
 
                 menu.action(TUNABLES_CAH, TRANSLATE("Get Visitor Bonus Again"), {}, TRANSLATE("Change your session to apply!"), function()
@@ -4615,7 +4463,7 @@
         local TUNABLES_OTH = menu.list(TUNABLES, TRANSLATE("Others"), {}, "", function(); end)
 
             menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Disable Transaction Errors"), {"hcnotransactionerr"}, IS_WORKING(true) .. TRANSLATE("This can be used to remove transaction errors while you are doing special cargo money loop in Musiness Banager Lua."), function() -- https://github.com/jonaaa20/RecoverySuite
-                if GET_INT_GLOBAL(4536679) == 20 or GET_INT_GLOBAL(4536679) == 4 then
+                if GET_INT_GLOBAL(4536679) == 4 or 20 then
                     SET_INT_GLOBAL(4536673, 0)
                 end
             end)
@@ -5896,6 +5744,7 @@
             { "German - Deutsch", {"german"} },
             { "Japanese - 日本語", {"japanese"} },
             { "Korean - 한국어", {"korean"} },
+            { "Polish - Polski", {"polish"} },
             { "Portuguese - Português", {"portuguese"}},
             { "Russian - русский", {"russian"} },
             { "Spanish - Español", {"spanish"} },
@@ -6256,7 +6105,7 @@
         ---
 
         TIMER_SETTING = menu.list_action(INFOS, TRANSLATE("Heist Cooldown Timer") .. ": " .. READ_SETTING("Timer Color"), {"hctimercolor"}, TRANSLATE("'Stand' setting is synced with Stand's default feature: 'Stand > Settings > Appearance > Colours > AR Colour'") .. "\n\n" .. TRANSLATE("If you changed the Stand's setting while HC is still running, need to restart HC to apply."), {
-            "Stand",
+            { "Stand" }, 
             { TRANSLATE("Black") },
             { TRANSLATE("White") },
             { TRANSLATE("Red") },
@@ -6323,6 +6172,7 @@
                 menu.action(CREDITS, "Hibanana", {}, TRANSLATE("Maintains HC's translation") .. ": German - Deutsch", function(); end)
                 menu.action(CREDITS, "Greensky445", {}, TRANSLATE("Maintains HC's translation") .. ": Japanese - 日本語", function(); end)
                 menu.action(CREDITS, "IceDoomfist", {}, TRANSLATE("Maintains HC's translation") .. ": Korean - 한국어", function(); end)
+                menu.action(CREDITS, "-Negotium-", {}, TRANSLATE("Maintains HC's translation") .. ": Polish - Polski", function(); end)
                 menu.action(CREDITS, "Pedro9558", {}, TRANSLATE("Maintains HC's translation") .. ": Portuguese - Português", function(); end)
                 menu.action(CREDITS, "Sega", {}, TRANSLATE("Maintains HC's translation") .. ": Russian - русский", function(); end)
                 menu.action(CREDITS, "zigmazero", {}, TRANSLATE("Maintains HC's translation") .. ": Spanish - Español", function(); end)
