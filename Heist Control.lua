@@ -54,7 +54,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.2.0"
+        HC_VERSION = "V 3.2.1"
         CODED_GTAO_VERSION = 1.66
         SUPPORTED_STAND_VERSION = 100 -- Stand 100 | https://stand.gg/help/changelog | Lua API: Renamed action_slider to textslider and slider_text to textslider_stateful (friendly reminder that list_action and list_select should be preferred)
 
@@ -579,7 +579,7 @@
 
         function GET_CURSOR_POSITION()
             local Text = menu.get_active_list_cursor_text(true, true) -- '2/12' format
-            local i = string.lfind(Text, "/")
+            local i = string.find(Text, "/")
             return tonumber(string.sub(Text, 0, i - 1)) -- return '2'
         end
 
@@ -5213,7 +5213,6 @@
 
             menu.action(INSTANT_FINISH, TRANSLATE("Cayo / Tuners / ULP / Agency"), {"hcinsfincp"}, IS_WORKING(true) .. TRANSLATE("Note that may works for some of other preps. Only 'Quick Preset' is compatible with Cayo Perico Heist."), function() -- https://www.unknowncheats.me/forum/3524081-post3.html
                 menu.trigger_commands("scripthost")
-                repeat util.yield_once() until players.get_script_host() ~= players.user()
 
                 SET_INT_LOCAL("fm_mission_controller_2020", 42279 + 1, 51338752) -- 'fm_mission_controller_2020' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller_2020", 42279 + 1375 + 1, 50) -- 'fm_mission_controller_2020' instant finish variable?
@@ -5221,7 +5220,6 @@
 
             menu.action(INSTANT_FINISH, TRANSLATE("Casino Aggressive / Classic"), {"hcinsfincah"}, IS_WORKING(true) .. TRANSLATE("Note that if you don't use Heist Control's automated Casino Heist presets, won't get money."), function()
                 menu.trigger_commands("scripthost")
-                repeat util.yield_once() until players.get_script_host() ~= players.user()
                 
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 1741, 80) -- Casino Aggressive Kills & Act 3
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 2686, 10000000) -- How much did you take in the casino heist
@@ -5231,7 +5229,6 @@
 
             menu.action(INSTANT_FINISH, TRANSLATE("Doomsday"), {"hcinsfindooms"}, IS_WORKING(true) .. TRANSLATE("Note that you may press multiple times to instant finish the heist."), function()
                 menu.trigger_commands("scripthost")
-                repeat util.yield_once() until players.get_script_host() ~= players.user()
 
                 SET_INT_LOCAL("fm_mission_controller", 19707, 12) -- ???
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 1741, 150) -- Casino Aggressive Kills & Act 3
