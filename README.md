@@ -15,12 +15,12 @@
 
 ## Main Features
 
-> - Officially keep up-to-date translations in 9 languages (ZH, FR, DE, JP, KO, PL, PT, RU, ES)
+> - Officially keep up-to-date translations in 9 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES)
 > - Extra Cayo, Casino, Classic, LS Tuner, ULP Missions, Agency Heist Options
-> - AFK Money (Main Method: Auto Cayo Bot, Auto Rig Slot Machine)
+> - AFK Money (Main Methods: Auto Cayo Bot, Auto Rig Slot Machine)
 > - Instant Finish Heists and Others
 > - Skip Hacking Process
-> - Custom Stat Editor And Reader
+> - Custom Stat Editor And Reader: Included GTAHaXUI Stat Editor
 > - Tons of other features
 
 
@@ -37,7 +37,7 @@ Originally from [HC for 2T1](https://github.com/jhowkNx/Heist-Control-v2) and [M
 Currently try making unique features not exist in 2T1 one, like Auto Cayo Bot.
 
 Note that some options and codes of 2T1 HC and 2T1 Master Unlocker were coded by me to improve it, not only using its code.
-- For examples, `Check compatibility with current GTA Online`, [Instant Finish for the Air Cargo](https://www.unknowncheats.me/forum/3513482-post37.html), [Request Services](https://www.unknowncheats.me/forum/3442776-post4.html), `Remove Money via Ballistic Armor`, [Some options of the Mini Game Hack](https://www.unknowncheats.me/forum/3455828-post8.html).
+- For examples, [Instant Finish for the Air Cargo](https://www.unknowncheats.me/forum/3513482-post37.html), [Request Services](https://www.unknowncheats.me/forum/3442776-post4.html), more and more.
 
 
 ## Credits
