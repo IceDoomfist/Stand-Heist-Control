@@ -15,12 +15,12 @@
 
 ## Main Features
 
-> - Officially keep up-to-date translations in 9 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES)
+> - Officially keep up-to-date translations in 10 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES)
 > - Extra Cayo, Casino, Classic, LS Tuner, ULP Missions, Agency Heist Options
 > - AFK Money (Main Methods: Auto Cayo Bot, Auto Rig Slot Machine)
 > - Instant Finish Heists and Others
 > - Skip Hacking Process
-> - Custom Stat Editor And Reader: Included GTAHaXUI Stat Editor
+> - Custom Stat Editor And Reader: Included [GTAHaXUI](https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html) Stat Editor
 > - Tons of other features
 
 

@@ -54,7 +54,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.2.1"
+        HC_VERSION = "V 3.2.2"
         CODED_GTAO_VERSION = 1.66
         SUPPORTED_STAND_VERSION = 100 -- Stand 100 | https://stand.gg/help/changelog | Lua API: Renamed action_slider to textslider and slider_text to textslider_stateful (friendly reminder that list_action and list_select should be preferred)
 
@@ -96,41 +96,8 @@
 
     --- Core Functions
 
-        function IS_MPPLY_STAT(stat)
-            local MpplyStats = {
-                "MP_PLAYING_TIME",
-                "MP_NGDLCPSTAT_INT0",
-                
-                "MP_TUPSTAT_INT0",
-                "MP_TUPSTAT_INT1",
-                "MP_TUPSTAT_INT2",
-                "MP_TUPSTAT_INT3",
-                "MP_TUPSTAT_BOOL0",
-                "MP_NGPSTAT_INT0",
-                "MP_NGPSTAT_BOOL0",
-                "MP_NGDLCPSTAT_BOOL0",
-                "MP_PLAYING_TIME_NEW",
-                "MP_PSTAT_BOOL0",
-                "MP_PSTAT_BOOL1",
-                "MP_PSTAT_BOOL2",
-                "MP_PSTAT_INT0",
-                "MP_PSTAT_INT1",
-                "MP_PSTAT_INT2",
-            }
-            for _, mpply_stat in pairs(MpplyStats) do
-                if stat == mpply_stat then
-                    return true
-                end
-            end
-
-            if string.contains(stat, "MPPLY_") then
-                return true
-            else
-                return false
-            end
-        end
         function ADD_MP_INDEX(stat)
-            if not IS_MPPLY_STAT(stat) then
+            if not string.contains(stat, "MP_") and not string.contains(stat, "MPPLY_") then
                 stat = "MP" .. util.get_char_slot() .. "_" .. stat
             end
             return stat
@@ -246,11 +213,21 @@
             end
         end
 
+        function SET_BIT(Bits, Place) -- Credit goes to WiriScript
+            return (Bits | (1 << Place))
+        end
+        function SET_LOCAL_BIT(script, script_local, bit)
+            if memory.script_local(script, script_local) ~= 0 then
+                local Addr = memory.script_local(script, script_local)
+                memory.write_int(Addr, SET_BIT(memory.read_int(Addr), bit))
+            end
+        end
+
     ---
     
     --- Folders and Log Functions
 
-        util.require_natives("natives-1676318796")
+        util.require_natives(1676318796)
 
         for _, folder in pairs(FolderDirs) do
             if not filesystem.exists(folder) then
@@ -326,7 +303,6 @@
 
             for idx, setting in pairs(Values) do
                 Settings[idx] = { nil, nil } -- { type, value }
-
                 local i, j = string.find(setting, ": ")
                 if i and j ~= nil then
                     Settings[idx][1] = string.sub(setting, 0, i - 1)
@@ -475,7 +451,7 @@
                 local _, j = string.find(Translations[i], TransFormat)
                 if j ~= nil then
                     if not string.contains(Translations[i], "#") then
-                        Translation = string.sub(Translations[i], j + 1)
+                        Translation = string.sub(Translations[i], j + 1, string.len(Translations[i]))
                     end
                 end
                 
@@ -717,7 +693,7 @@
                 end
             elseif READ_SETTING("Notification Type") == "No Notification" then
                 -- Nothing Does
-            else 
+            else
                 WRITE_SETTING("Notification Type", "Stand")
                 util.toast(TRANSLATE("Heist Control") .. " | " .. TRANSLATE("Notification") .. "\n\n" .. Message)
             end
@@ -738,6 +714,7 @@
         IsCEO = false
         IsInArcade = false
         util.create_tick_handler(function()
+            if IS_WORKING(false) ~= "" then return end
             if not util.is_session_started() then return end
             IsCEO = GET_INT_GLOBAL(1894573 + 1 + (players.user() * 608) + 10 + 428) ~= 1 -- https://www.unknowncheats.me/forum/3683018-post106.html
             IsInArcade = GET_INT_GLOBAL(2657589 + 1 + (players.user() * 466) + 321 + 7) ~= -1 -- Found by me in apparcadebusiness.c
@@ -786,9 +763,9 @@
     --- Announcement
 
         if SCRIPT_MANUAL_START and not SCRIPT_SILENT_START then
-            async_http.init("icedoomfist.com", "/Stand_Heist_Control/Announcement/", function(Sucess)
-                if Sucess ~= "" then
-                    NOTIFY("| " .. TRANSLATE("Announcement") .. " |" .. "\n\n" .. Sucess)
+            async_http.init("icedoomfist.com", "/Stand_Heist_Control/Announcement/", function(Success)
+                if Success ~= "" then
+                    NOTIFY("| " .. TRANSLATE("Announcement") .. " |" .. "\n\n" .. Success)
                 end
             end)
             async_http.dispatch()
@@ -827,15 +804,6 @@
 
             IsForCayoBot = false
             QUICK_PRESET = menu.toggle(CAYO_PRESETS, TRANSLATE("Quick Preset (1 - 4P)"), {"hccpquick"}, IS_WORKING(true) .. TRANSLATE("There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.55M) by only getting it."), function()
-                local CPTargets = { -- { STAT_SET_INT, SET_INT_GLOBAL }
-                    { 5, 262145 + 29987 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_SAPPHIRE_PANTHER_STATUE
-                    { 4, 262145 + 29986 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_MADRAZO_FILES
-                    { 3, 262145 + 29985 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_PINK_DIAMOND
-                    { 2, 262145 + 29984 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_BEARER_BONDS
-                    { 1, 262145 + 29983 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_PEARL_NECKLACE
-                    { 0, 262145 + 29982 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_TEQUILA
-                }
-
                 if menu.get_value(QUICK_PRESET) then
                     menu.trigger_commands("hccprefreshboard")
 
@@ -903,6 +871,14 @@
                     STAT_SET_INT("H4_PLAYTHROUGH_STATUS", 5)
 
                     local Value = menu.get_value(QUICK_PRESET_TARGET)
+                    local CPTargets = { -- { STAT_SET_INT, SET_INT_GLOBAL }
+                        { 5, 262145 + 29987 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_SAPPHIRE_PANTHER_STATUE
+                        { 4, 262145 + 29986 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_MADRAZO_FILES
+                        { 3, 262145 + 29985 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_PINK_DIAMOND
+                        { 2, 262145 + 29984 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_BEARER_BONDS
+                        { 1, 262145 + 29983 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_PEARL_NECKLACE
+                        { 0, 262145 + 29982 }, -- H4CNF_TARGET, IH_PRIMARY_TARGET_VALUE_TEQUILA
+                    }
                     STAT_SET_INT("H4CNF_TARGET", CPTargets[Value][1])
                     if IsForCayoBot then
                         SET_INT_GLOBAL(CPTargets[Value][2], 2090000)
@@ -1724,9 +1700,9 @@
 
     PERICO_ADV = menu.list(PERICO_HEIST, TRANSLATE("Advanced Features"), {}, "", function(); end)
 
-        HSCUT_CP = menu.list(PERICO_ADV, TRANSLATE("Player's Cut"), {}, TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), function(); end)
+        PERICO_CUTS = menu.list(PERICO_ADV, TRANSLATE("Player's Cut"), {}, TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), function(); end)
 
-            PERICO_HOST_CUT = menu.list(HSCUT_CP, TRANSLATE("Your Cut"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
+            PERICO_HOST_CUT = menu.list(PERICO_CUTS, TRANSLATE("Your Cut"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CP_HOST_CUT_LOOP = menu.toggle_loop(PERICO_HOST_CUT, TRANSLATE("Enable"), {"hccphostcutloop"}, IS_WORKING(false), function()
                     SET_INT_GLOBAL(1977693 + 823 + 56 + 1, menu.get_value(CP_HOST_CUT)) -- heist_island_planning.c
@@ -1738,7 +1714,7 @@
 
             ---
 
-            PERICO_P2_CUT = menu.list(HSCUT_CP, TRANSLATE("Player 2"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
+            PERICO_P2_CUT = menu.list(PERICO_CUTS, TRANSLATE("Player 2"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CP_2P_CUT_LOOP = menu.toggle_loop(PERICO_P2_CUT, TRANSLATE("Enable"), {"hccp2pcutloop"}, IS_WORKING(false), function()
                     SET_INT_GLOBAL(1977693 + 823 + 56 + 2, menu.get_value(CP_2P_CUT)) -- heist_island_planning.c
@@ -1750,7 +1726,7 @@
             
             ---
             
-            PERICO_P3_CUT = menu.list(HSCUT_CP, TRANSLATE("Player 3"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
+            PERICO_P3_CUT = menu.list(PERICO_CUTS, TRANSLATE("Player 3"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CP_3P_CUT_LOOP = menu.toggle_loop(PERICO_P3_CUT, TRANSLATE("Enable"), {"hccp3pcutloop"}, IS_WORKING(false), function()
                     SET_INT_GLOBAL(1977693 + 823 + 56 + 3, menu.get_value(CP_3P_CUT)) -- heist_island_planning.c
@@ -1762,7 +1738,7 @@
 
             ---
 
-            PERICO_P4_CUT = menu.list(HSCUT_CP, TRANSLATE("Player 4"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
+            PERICO_P4_CUT = menu.list(PERICO_CUTS, TRANSLATE("Player 4"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CP_4P_CUT_LOOP = menu.toggle_loop(PERICO_P4_CUT, TRANSLATE("Enable"), {"hccp4pcutloop"}, IS_WORKING(false), function()
                     SET_INT_GLOBAL(1977693 + 823 + 56 + 4, menu.get_value(CP_4P_CUT)) -- heist_island_planning.c
@@ -2201,7 +2177,7 @@
         menu.trigger_commands("hccprefreshboard")
     end)
 
-    menu.list_action(PERICO_HEIST, TRANSLATE("Equipment's Spawn Location"), {"hccpequip"}, TRANSLATE("- Guard Clothing") .. "\n" .. TRANSLATE("- Bolt Cutters"), { 
+    menu.list_action(PERICO_HEIST, TRANSLATE("Equipment's Spawn Location"), {"hccpequipment"}, TRANSLATE("- Guard Clothing") .. "\n" .. TRANSLATE("- Bolt Cutters"), { 
         { TRANSLATE("Airport"), {"airport"} },
         { TRANSLATE("Docks"), {"dock"} },
         { TRANSLATE("Compound"), {"compound"} },
@@ -2237,7 +2213,7 @@
         menu.trigger_commands("hccprefreshboard")
     end)
 
-    menu.list_action(PERICO_HEIST, TRANSLATE("Heist Difficulty"), {"hccpdiff"}, "", {
+    menu.list_action(PERICO_HEIST, TRANSLATE("Heist Difficulty"), {"hccpdifficulty"}, "", {
         { TRANSLATE("Normal"), {"normal"} },
         { TRANSLATE("Hard"), {"hard"} },
     }, function(index)
@@ -2320,8 +2296,10 @@
 
 --- Diamond Casino Heist
 
-    util.create_tick_handler(function() -- Found by me in gb_casino_heist_planning.c, for after launching the heist, in Board 3
-        if IS_WORKING(false) == "" then
+    util.create_tick_handler(function() -- Found by me in gb_casino_heist_planning.c, for after launching the heist, in Board 3, these are required to work 'Makes Forced Able To Launch' feature
+        if IS_WORKING(false) ~= "" then return end
+        if not util.is_session_started() then return end
+        if NETWORK.NETWORK_IS_ACTIVITY_SESSION() then
             for i = 1022, 1025 do
                 SET_INT_GLOBAL(1970895 + 1497 + i, 1) -- Forced checked Entrance, Exit, Buyer, and Entry Disguise
             end
@@ -2494,7 +2472,7 @@
                 end
 
                 while menu.get_value(DIAMOND_AA) do
-                    SET_INT_GLOBAL(262145 + 28808, 10000000) -- 1410065408
+                    SET_INT_GLOBAL(262145 + 28808, 1410065408) -- 1410065408
                     for i = 1, #ForCasinoPresets do
                         menu.set_value(ForCasinoPresets[i][1], ForCasinoPresets[i][2])
                     end
@@ -2761,7 +2739,7 @@
 
         menu.action(CAH_ADVCED, TRANSLATE("Makes Forced Able To Launch"), {"hccahforcedstart"}, IS_WORKING(true) .. TRANSLATE("When you are at the board you select players cut, this feature will allow you forced start even other players don't set as ready. There's visual bug related the payout."), function()
             for i = 0, 3 do
-                SET_INT_GLOBAL(1970895 + 1497 + 736 + 87 + i, -1) -- Found by me in gb_casino_heist_planning.c, should 'Makes Force Checked All TODOs' feature be enabled
+                SET_INT_GLOBAL(1970895 + 1497 + 736 + 87 + i, -1) -- Found by me in gb_casino_heist_planning.c
             end
             menu.trigger_commands("hccahrefreshboards")
         end)
@@ -2780,16 +2758,14 @@
 
     TELEPORT_CAH = menu.list(CASINO_HEIST, TRANSLATE("Teleport Places"), {}, TRANSLATE("- How to change the line color: Stand > Settings > Appearance > Colours > HUD Colour") .. "\n\n" .. TRANSLATE("- How to change the AR Beacon color: Stand > Settings > Appearance > Colours > AR Colour"), function(); end)
 
-        menu.action(TELEPORT_CAH, TRANSLATE("Entrance Of Your Arcade"), {}, "", function()
+        ArcadePos, ArcadeHeading = nil, nil
+        util.create_tick_handler(function()
             local Blip = HUD.GET_FIRST_BLIP_INFO_ID(740) -- Arcade Blip
+            if IsInArcade and not HUD.DOES_BLIP_EXIST(Blip) then return end
+
             local Pos = HUD.GET_BLIP_COORDS(Blip)
             local Zone = ZONE.GET_NAME_OF_ZONE(Pos.x, Pos.y, Pos.z)
             local Label = util.get_label_text(Zone)
-            if IsInArcade and not HUD.DOES_BLIP_EXIST(Blip) then
-                NOTIFY(TRANSLATE("You are in your arcade or cannot get arcade blip info."))
-                return
-            end
-
             local Arcades = { -- { arcade_name, pos, heading }
                 { util.get_label_text("MP_ARC_1"), v3.new(-245.9931, 6210.773, 31.939024), -50 }, -- Pixel Pete's - Paleto Bay
                 { util.get_label_text("MP_ARC_2"), v3.new(1695.5393, 4784.196, 41.94444), -95 }, -- Wonderama - Grapeseed
@@ -2800,9 +2776,18 @@
             }
             for i = 1, #Arcades do
                 if string.contains(Arcades[i][1], Label) then
-                    TELEPORT(Arcades[i][2].x, Arcades[i][2].y, Arcades[i][2].z)
-                    SET_HEADING(Arcades[i][3])
+                    ArcadePos = Arcades[i][2]
+                    ArcadeHeading = Arcades[i][3]
                 end
+            end
+        end)
+
+        TELEPORT_CAH_ENTRANCE = menu.action(TELEPORT_CAH, TRANSLATE("Entrance Of Your Arcade"), {}, TRANSLATE("Note that works perfectly when no other players are in your session."), function()
+            if ArcadePos and ArcadeHeading ~= nil then
+                TELEPORT(ArcadePos.x, ArcadePos.y, ArcadePos.z)
+                SET_HEADING(ArcadeHeading)
+            else
+                NOTIFY(TRANSLATE("Please go out of the current interior to use this feature."))
             end
         end)
 
@@ -2861,41 +2846,34 @@
 
     CASINO_BOARD1 = menu.list(CASINO_HEIST, TRANSLATE("Heist Scope Out (Board 1)"), {}, "", function(); end)
 
-        BOARD1_APPROACH = menu.list(CASINO_BOARD1, TRANSLATE("Change Approach And Difficulty"), {}, "", function(); end)
+        menu.list_action(CASINO_BOARD1, TRANSLATE("Change Approach"), {"hccahapproach"}, "", {
+            { TRANSLATE("Silent & Sneaky Approach"), {"silent"} },
+            { TRANSLATE("BigCon Approach"), {"bigcon"} },
+            { TRANSLATE("Aggressive Approach"), {"aggressive"} },
+        }, function(index)
+            STAT_SET_INT("H3_LAST_APPROACH", 0)
+            STAT_SET_INT("H3OPT_APPROACH", index)
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-            menu.list_action(BOARD1_APPROACH, TRANSLATE("Silent & Sneaky Approach"), {"hccahdiffsil"}, "", {
-                { TRANSLATE("Normal"), {"normal"} },
-                { TRANSLATE("Hard"), {"hard"} },
-            }, function(index)
-                STAT_SET_INT("H3_LAST_APPROACH", 0)
-                STAT_SET_INT("H3OPT_APPROACH", 1)
-                STAT_SET_INT("H3_HARD_APPROACH", index - 1)
-                menu.trigger_commands("hccahrefreshboards")
-            end)
-        
-            menu.list_action(BOARD1_APPROACH, TRANSLATE("BigCon Approach"), {"hccahdiffbig"}, "", {
-                { TRANSLATE("Normal"), {"normal"} },
-                { TRANSLATE("Hard"), {"hard"} },
-            }, function(index)
-                STAT_SET_INT("H3_LAST_APPROACH", 0)
-                STAT_SET_INT("H3OPT_APPROACH", 2)
-                STAT_SET_INT("H3_HARD_APPROACH", index - 1)
-                menu.trigger_commands("hccahrefreshboards")
-            end)
-        
-            menu.list_action(BOARD1_APPROACH, TRANSLATE("Aggressive Approach"), {"hccahdiffagg"}, "", {
-                { TRANSLATE("Normal"), {"normal"} },
-                { TRANSLATE("Hard"), {"hard"} },
-            }, function(index)
-                STAT_SET_INT("H3_LAST_APPROACH", 0)
-                STAT_SET_INT("H3OPT_APPROACH", 3)
-                STAT_SET_INT("H3_HARD_APPROACH", index - 1)
-                menu.trigger_commands("hccahrefreshboards")
-            end)
+        menu.list_action(CASINO_BOARD1, TRANSLATE("Change Difficulty"), {"hccahdifficulty"}, "", {
+            { TRANSLATE("Normal"), {"normal"} },
+            { TRANSLATE("Hard"), {"hard"} },
+        }, function(index)
+            if index == 1 then
+                STAT_SET_INT("H3_HARD_APPROACH", 0)
+            elseif index == 2 then
+                for i = 1, 3 do
+                    if STAT_GET_INT("H3OPT_APPROACH") == i then
+                        STAT_SET_INT("H3_HARD_APPROACH", i)
+                    end
+                end
+            end
 
-        --- 
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-        menu.list_action(CASINO_BOARD1, TRANSLATE("Change Target"), {"hccahtar"}, "", {
+        menu.list_action(CASINO_BOARD1, TRANSLATE("Change Target"), {"hccahtarget"}, "", {
             { TRANSLATE("Diamonds"), {"diamond"} },
             { TRANSLATE("Gold"), {"gold"} },
             { TRANSLATE("Artwork"), {"artwork"} },
@@ -2914,29 +2892,11 @@
             menu.trigger_commands("hccahrefreshboards")
         end)
 
-        AccessPoint = 1
-        if STAT_GET_INT("H3OPT_ACCESSPOINTS") == 0 then
-            AccessPoint = 2
-        end
-        menu.list_select(CASINO_BOARD1, TRANSLATE("P.O.I And Access Points"), {"hccahpoi"}, TRANSLATE("Change your session to apply!"), {
-            { TRANSLATE("Scope(d)"), {"scope"} },
-            { TRANSLATE("Unscope(d)"), {"unscope"} },
-        }, AccessPoint, function(index)
-            if index == 1 then
-                STAT_SET_INT("H3OPT_ACCESSPOINTS", 2047)
-            elseif index == 2 then
-                STAT_SET_INT("H3OPT_ACCESSPOINTS", 0)
-            end
-
-            STAT_SET_INT("H3OPT_POI", index - 2)
-            menu.trigger_commands("hccahrefreshboards")
-        end)
-
     ---
 
     CASINO_BOARD2 = menu.list(CASINO_HEIST, TRANSLATE("Heist Perp Work (Board 2)"), {}, "", function(); end)
 
-        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Gunman"), {"hccahweaponvar"}, "", {
+        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Gunman"), {"hccahgunman"}, "", {
             { TRANSLATE("Chester McCoy") .. " (10%)", {"chester"} },
             { TRANSLATE("Gustavo Mota") .. " (9%)", {"gustavo"} },
             { TRANSLATE("Patrick McReary") .. " (8%)", {"patrick"} },
@@ -2977,7 +2937,7 @@
             menu.trigger_commands("hccahrefreshboards")
         end)
 
-        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Driver"), {"hccahveh"}, "", {
+        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Driver"), {"hccahdriver"}, "", {
             { TRANSLATE("Chester McCoy") .. " (10%)", {"chester"} },
             { TRANSLATE("Eddie Toh") .. " (9%)", {"eddie"} },
             { TRANSLATE("Taliana Martinez") .. " (7%)", {"taliana"} },
@@ -3027,7 +2987,7 @@
             menu.trigger_commands("hccahrefreshboards")
         end)
 
-        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Hacker"), {"hccahhack"}, "", {
+        menu.list_action(CASINO_BOARD2, TRANSLATE("Change Hacker"), {"hccahhacker"}, "", {
             { TRANSLATE("Avi Schwartzman") .. " (10%)", {"avi"} },
             { TRANSLATE("Paige Harris") .. " (9%)", {"paige"} },
             { TRANSLATE("Christian Feltz") .. " (7%)", {"christian"} },
@@ -3092,81 +3052,87 @@
 
     CASINO_BOARD3 = menu.list(CASINO_HEIST, TRANSLATE("Heist Planning (Board 3)"), {}, "", function(); end)
 
-        menu.divider(CASINO_BOARD3, TRANSLATE("Heist Planning (Board 3)"))
-
-            menu.list_select(CASINO_BOARD3, TRANSLATE("Entrance"), {"hccahentrance"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
-                { TRANSLATE("Main Door"), {"maindoor"} },
-                { TRANSLATE("Staff Lobby"), {"stafflobby"} },
-                { TRANSLATE("Waste Disposal"), {"wastedisposal"} },
-                { TRANSLATE("S.W Roof Terrace"), {"swroofterrace"} },
-                { TRANSLATE("N.W Roof Terrace"), {"nwroofterrace"} },
-                { TRANSLATE("S.E Roof Terrace"), {"seroofterrace"} },
-                { TRANSLATE("N.E Roof Terrace"), {"neroofterrace"} },
-                { TRANSLATE("South Helipad"), {"southhelipad"} },
-                { TRANSLATE("North Helipad"), {"northhelipad"} },
-                { TRANSLATE("Security Tunnel"), {"securitytunnel"} },
-                { TRANSLATE("Sewers"), {"sewers"} },
-            }, 1, function(index)
-                util.create_tick_handler(function()
-                    SET_INT_GLOBAL(1970895 + 1497 + 1017, index - 1) -- https://www.unknowncheats.me/forum/3666316-post96.html
-                end)
-                menu.trigger_commands("hccahrefreshboards")
+        menu.list_select(CASINO_BOARD3, TRANSLATE("Entrance"), {"hccahentrance"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
+            { TRANSLATE("Main Door"), {"maindoor"} },
+            { TRANSLATE("Staff Lobby"), {"stafflobby"} },
+            { TRANSLATE("Waste Disposal"), {"wastedisposal"} },
+            { TRANSLATE("S.W Roof Terrace"), {"swroofterrace"} },
+            { TRANSLATE("N.W Roof Terrace"), {"nwroofterrace"} },
+            { TRANSLATE("S.E Roof Terrace"), {"seroofterrace"} },
+            { TRANSLATE("N.E Roof Terrace"), {"neroofterrace"} },
+            { TRANSLATE("South Helipad"), {"southhelipad"} },
+            { TRANSLATE("North Helipad"), {"northhelipad"} },
+            { TRANSLATE("Security Tunnel"), {"securitytunnel"} },
+            { TRANSLATE("Sewers"), {"sewers"} },
+        }, 1, function(index)
+            util.create_tick_handler(function()
+                if IS_WORKING(false) ~= "" then return end
+                if not util.is_session_started() then return end
+                SET_INT_GLOBAL(1970895 + 1497 + 1017, index - 1) -- https://www.unknowncheats.me/forum/3666316-post96.html
             end)
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-            menu.list_select(CASINO_BOARD3, TRANSLATE("Exit"), {"hccahexit"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
-                { TRANSLATE("Main Door"), {"maindoor"} },
-                { TRANSLATE("Staff Lobby"), {"stafflobby"} },
-                { TRANSLATE("Waste Disposal"), {"wastedisposal"} },
-                { TRANSLATE("S.W Roof Terrace"), {"swroofterrace"} },
-                { TRANSLATE("N.W Roof Terrace"), {"nwroofterrace"} },
-                { TRANSLATE("S.E Roof Terrace"), {"seroofterrace"} },
-                { TRANSLATE("N.E Roof Terrace"), {"neroofterrace"} },
-                { TRANSLATE("South Helipad"), {"southhelipad"} },
-                { TRANSLATE("North Helipad"), {"northhelipad"} },
-                { TRANSLATE("Security Tunnel"), {"securitytunnel"} },
-                { TRANSLATE("Sewers"), {"sewers"} },
-            }, 1, function(index)
-                util.create_tick_handler(function()
-                    SET_INT_GLOBAL(1970895 + 1497 + 1018, index - 1) -- https://www.unknowncheats.me/forum/3666316-post96.html
-                end)
-                menu.trigger_commands("hccahrefreshboards")
+        menu.list_select(CASINO_BOARD3, TRANSLATE("Exit"), {"hccahexit"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
+            { TRANSLATE("Main Door"), {"maindoor"} },
+            { TRANSLATE("Staff Lobby"), {"stafflobby"} },
+            { TRANSLATE("Waste Disposal"), {"wastedisposal"} },
+            { TRANSLATE("S.W Roof Terrace"), {"swroofterrace"} },
+            { TRANSLATE("N.W Roof Terrace"), {"nwroofterrace"} },
+            { TRANSLATE("S.E Roof Terrace"), {"seroofterrace"} },
+            { TRANSLATE("N.E Roof Terrace"), {"neroofterrace"} },
+            { TRANSLATE("South Helipad"), {"southhelipad"} },
+            { TRANSLATE("North Helipad"), {"northhelipad"} },
+            { TRANSLATE("Security Tunnel"), {"securitytunnel"} },
+            { TRANSLATE("Sewers"), {"sewers"} },
+        }, 1, function(index)
+            util.create_tick_handler(function()
+                if IS_WORKING(false) ~= "" then return end
+                if not util.is_session_started() then return end
+                SET_INT_GLOBAL(1970895 + 1497 + 1018, index - 1) -- https://www.unknowncheats.me/forum/3666316-post96.html
             end)
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-            menu.list_select(CASINO_BOARD3, TRANSLATE("Buyer Level"), {"hccahbuyer"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
-                { TRANSLATE("Low"), {"low"} },
-                { TRANSLATE("Mid"), {"mid"} },
-                { TRANSLATE("High"), {"high"} },
-            }, 1, function(index)
-                util.create_tick_handler(function()
-                    SET_INT_GLOBAL(1970895 + 1497 + 1019, (index * 3) - 3) -- https://www.unknowncheats.me/forum/3666316-post96.html
-                end)
-                menu.trigger_commands("hccahrefreshboards")
+        menu.list_select(CASINO_BOARD3, TRANSLATE("Buyer Level"), {"hccahbuyer"}, IS_WORKING(true) .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
+            { TRANSLATE("Low"), {"low"} },
+            { TRANSLATE("Mid"), {"mid"} },
+            { TRANSLATE("High"), {"high"} },
+        }, 1, function(index)
+            util.create_tick_handler(function()
+                if IS_WORKING(false) ~= "" then return end
+                if not util.is_session_started() then return end
+                SET_INT_GLOBAL(1970895 + 1497 + 1019, (index * 3) - 3) -- https://www.unknowncheats.me/forum/3666316-post96.html
             end)
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-            menu.list_select(CASINO_BOARD3, TRANSLATE("Entry Disguise"), {"hccahentrydisguise"}, IS_WORKING(true) .. "(" .. TRANSLATE("BigCon Approach") .. ")" .. "\n\n" .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
-                { TRANSLATE("Bugstars"), {"bugstars"} },
-                { TRANSLATE("LS Water & Power"), {"lswaternpower"} },
-                { TRANSLATE("Gruppe Sechs"), {"gruppesechs"} },
-                { TRANSLATE("Yung Ancestor"), {"yungancestor"} },
-            }, 1, function(index)
-                util.create_tick_handler(function()
-                    SET_INT_GLOBAL(1970895 + 1497 + 1020, index)
-                end)
-                menu.trigger_commands("hccahrefreshboards")
+        menu.list_select(CASINO_BOARD3, TRANSLATE("Entry Disguise"), {"hccahentrydisguise"}, IS_WORKING(true) .. "(" .. TRANSLATE("BigCon Approach") .. ")" .. "\n\n" .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
+            { TRANSLATE("Bugstars"), {"bugstars"} },
+            { TRANSLATE("LS Water & Power"), {"lswaternpower"} },
+            { TRANSLATE("Gruppe Sechs"), {"gruppesechs"} },
+            { TRANSLATE("Yung Ancestor"), {"yungancestor"} },
+        }, 1, function(index)
+            util.create_tick_handler(function()
+                if IS_WORKING(false) ~= "" then return end
+                if not util.is_session_started() then return end
+                SET_INT_GLOBAL(1970895 + 1497 + 1020, index)
             end)
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
-            menu.list_select(CASINO_BOARD3, TRANSLATE("Exit Disguise"), {"hccahexitdisguise"}, IS_WORKING(true) .. "(" .. TRANSLATE("BigCon Approach") .. ")" .. "\n\n" .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
-                { TRANSLATE("Noose"), {"noose"} },
-                { TRANSLATE("Firefighters"), {"firefighters"} },
-                { TRANSLATE("High Rollers"), {"highrollers"} },
-            }, 1, function(index)
-                util.create_tick_handler(function()
-                    SET_INT_GLOBAL(1970895 + 1497 + 1021, index + 5)
-                end)
-                menu.trigger_commands("hccahrefreshboards")
+        menu.list_select(CASINO_BOARD3, TRANSLATE("Exit Disguise"), {"hccahexitdisguise"}, IS_WORKING(true) .. "(" .. TRANSLATE("BigCon Approach") .. ")" .. "\n\n" .. TRANSLATE("Don't forget changing this feature before starting the heist! Otherwise, won't be applied."), {
+            { TRANSLATE("Noose"), {"noose"} },
+            { TRANSLATE("Firefighters"), {"firefighters"} },
+            { TRANSLATE("High Rollers"), {"highrollers"} },
+        }, 1, function(index)
+            util.create_tick_handler(function()
+                if IS_WORKING(false) ~= "" then return end
+                if not util.is_session_started() then return end
+                SET_INT_GLOBAL(1970895 + 1497 + 1021, index + 5)
             end)
-
-        ---
+            menu.trigger_commands("hccahrefreshboards")
+        end)
 
         menu.divider(CASINO_BOARD3, TRANSLATE("Remove Drills"))
 
@@ -3466,13 +3432,20 @@
 
     TELEPORT_DOOMS = menu.list(DOOMS_HEIST, TRANSLATE("Teleport Places"), {}, TRANSLATE("- How to change the line color: Stand > Settings > Appearance > Colours > HUD Colour") .. "\n\n" .. TRANSLATE("- How to change the AR Beacon color: Stand > Settings > Appearance > Colours > AR Colour"), function(); end)
 
-        TELEPORT_DOOMS_ENTRANCE = menu.action(TELEPORT_DOOMS, TRANSLATE("Entrance Of Your Facility"), {}, TRANSLATE("You should not in your facility to use this feature."), function()
+        FacilityPos = nil
+        util.create_tick_handler(function()
             local Blip = HUD.GET_FIRST_BLIP_INFO_ID(590) -- Facility Blip
             local Pos = HUD.GET_BLIP_COORDS(Blip)
             if HUD.DOES_BLIP_EXIST(Blip) then
-                TELEPORT(Pos.x, Pos.y, Pos.z)
+                FacilityPos = Pos
+            end
+        end)
+
+        TELEPORT_DOOMS_ENTRANCE = menu.action(TELEPORT_DOOMS, TRANSLATE("Entrance Of Your Facility"), {}, TRANSLATE("Note that works perfectly when no other players are in your session."), function()
+            if FacilityPos ~= nil then
+                TELEPORT(FacilityPos.x, FacilityPos.y, FacilityPos.z)
             else
-                NOTIFY(menu.get_help_text(TELEPORT_DOOMS_ENTRANCE))
+                NOTIFY(TRANSLATE("Please go out of the current interior to use this feature."))
             end
         end)
         TELEPORT_DOOMS_SCREEN = menu.action(TELEPORT_DOOMS, TRANSLATE("Heist Screen on Facility"), {}, TRANSLATE("Make sure you are in your facility."), function()
@@ -3635,6 +3608,18 @@
 
         menu.toggle_loop(FLEECA_HEIST, TRANSLATE("Skip Drilling"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3485435-post19.html
             SET_FLOAT_LOCAL("fm_mission_controller", 10058 + 11, 100)
+        end)
+
+    ---
+
+    PACIFIC_STANDARD_HEIST = menu.list(CLASSIC_HEISTS, TRANSLATE("Pacific Standard Heist"), {}, "", function(); end)
+
+        menu.toggle_loop(PACIFIC_STANDARD_HEIST, TRANSLATE("Keep Cash $1.85M Take"), {}, TRANSLATE("This makes you won't lose money by getting shot to the cash bags from polices"), function()
+            SET_INT_LOCAL("fm_mission_controller", 19707 + 2686, 1850000) -- How much did you take in the casino and pacific standard heist
+        end)
+
+        menu.toggle_loop(PACIFIC_STANDARD_HEIST, TRANSLATE("Skip The Hacking Process"), {}, "", function() -- https://www.unknowncheats.me/forum/3694259-post117.html
+            SET_LOCAL_BIT("fm_mission_controller", 9764, 9)
         end)
 
     ---
@@ -3925,7 +3910,7 @@
             SET_INT_GLOBAL(262145 + 31781, 1200000)
         end)
 
-        menu.textslider(TH_CONTRACT, TRANSLATE("Remote Access: Agency App"), {"hcagencyapp"}, "", {
+        menu.textslider(TH_CONTRACT, TRANSLATE("Remote Access: Agency App"), {"hcagencyapp"}, TRANSLATE("Note that you don't have the app, some of functions won't work."), {
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
@@ -4171,7 +4156,7 @@
 
         ---
 
-        CONTRACT_DLC = menu.list(DLC_UNLOCKER, TRANSLATE("The Contract DLC" ), {}, "", function(); end)
+        CONTRACT_DLC = menu.list(DLC_UNLOCKER, TRANSLATE("The Contract DLC"), {}, "", function(); end)
 
             menu.action(CONTRACT_DLC, TRANSLATE("Unlock Animal Masks"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(31859, 31870, 1) -- FIXER_LOGIN_AWARD_FISHMASK_1, FIXER_LOGIN_AWARD_SEALMASK_4
@@ -4539,6 +4524,9 @@
             STAT_SET_INT("KILLS_PLAYERS", 500) -- Embellished Scroll
             STAT_SET_INT("KILLS_PLAYERS", 1000) -- Seven Deadly Sins
             STAT_SET_BOOL("AWD_FMFULLYMODDEDCAR", true) -- Los Santos Customs
+
+            -- https://www.unknowncheats.me/forum/3201794-post5.html
+            SET_INT_GLOBAL(262145 + 27889, 1) -- VC_TATTOO_THE_ROYALS
         end)
 
         menu.action(UNLOCKER_TATTOO, TRANSLATE("Alien Tatto (Illuminati)"), {}, TRANSLATE("Change your session to apply!"), function()
@@ -4952,6 +4940,10 @@
                 SET_FLOAT_GLOBAL(262145 + 25301, 1)
             end)
 
+            menu.toggle_loop(TUNABLES_OTH, TRANSLATE("Keep Full Nightclub Population"), {}, "", function()
+                STAT_SET_INT("CLUB_POPULARITY", 1000)
+            end)
+
             menu.action(TUNABLES_OTH, TRANSLATE("Single MC Vehicle Sell"), {"hcsinglemcveh"}, IS_WORKING(true) .. TRANSLATE("Forces the amount of MC Business' sale vehicles to one. Please click once before starting selling mission. Only works when you're the leader."), function()
                 SET_INT_LOCAL("gb_biker_contraband_sell", 698 + 17, 0) -- https://github.com/Tgamer500/YiffWarePWLua/blob/main/YiffWarePW.lua
             end)
@@ -4964,7 +4956,7 @@
             
         ---
 
-        CUSTOM_MONEY_REMOVER = menu.slider(TUNABLES, TRANSLATE("Custom Money Remover"), {"hcmoneyrem"}, IS_WORKING(true) .. TRANSLATE("The best way to remove GTA Online banked money up to $2B at once!"), 0, 2000000000, 5000, 10000, function(Value)
+        CUSTOM_MONEY_REMOVER = menu.slider(TUNABLES, TRANSLATE("Custom Money Remover"), {"hcmoneyremove"}, IS_WORKING(true) .. TRANSLATE("The best way to remove GTA Online banked money up to $2B at once!"), 0, 2000000000, 5000, 10000, function(Value)
             if menu.get_value(CUSTOM_MONEY_REMOVER) < players.get_bank(players.user()) then
                 menu.show_warning(TUNABLES, CLICK_MENU, TRANSLATE("Do you sure remove your money?"), function()
                     SET_INT_GLOBAL(262145 + 20288, Value) -- -156036296, https://www.unknowncheats.me/forum/3276092-post3.html
@@ -5030,7 +5022,7 @@
 
             NumberOfPlayedCP = 0
             AUTO_CAYO_BOT = menu.toggle_loop(AFK_MONEY, TRANSLATE("Auto Cayo Bot"), {}, IS_WORKING(true) .. TRANSLATE("Solo Cayo Perico Heist will be done by Heist Control automatically per 20 mins to get $2.09M. Don't press any keys to prevent some game bugs."), function()
-                -- An idea and source code from Raid Control for X-Force, but almost tweaked by me.
+                -- The idea and source code from Raid Control for X-Force, but almost tweaked by me.
                 -- Raid Control Auto Cayo Bot Source Code: https://pastebin.com/JKVXcZBz
 
                 if menu.get_value(NUM_OF_PLAYING_CAYO_BOT) >= NumberOfPlayedCP then
@@ -5088,7 +5080,7 @@
                     CP_PRESS_ENTER(2)
 
                     repeat util.yield(2000) until HUD.IS_WARNING_MESSAGE_ACTIVE() -- "Are you sure you want to launch this Job on your own?"
-                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Almost same as CP_PRESS_ENTER(1), but this is for "FRONTEND_CONTROL", https://docs.fivem.net/docs/game-references/controls/
+                    PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1) -- Enter Key
                     util.yield(8000)
                     
                     CP_PRESS_ENTER(2)
@@ -5207,7 +5199,7 @@
 
     ---
 
-    local INSTANT_FINISH = menu.list(TOOLS, TRANSLATE("Instant Finish Heists & Others"), {"hcinsfin"}, TRANSLATE("Instant finishes are pretty new features. Due to that, most of them aren't known how they don't work. Please don't complain to me if one of them don't work to you."), function(); end)
+    INSTANT_FINISH = menu.list(TOOLS, TRANSLATE("Instant Finish Heists & Others"), {"hcinsfin"}, TRANSLATE("Instant finishes are pretty new features. Due to that, most of them aren't known how they don't work. Please don't complain to me if one of them don't work to you."), function(); end)
 
         menu.divider(INSTANT_FINISH, TRANSLATE("Heists"))
 
@@ -5222,7 +5214,7 @@
                 menu.trigger_commands("scripthost")
                 
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 1741, 80) -- Casino Aggressive Kills & Act 3
-                SET_INT_LOCAL("fm_mission_controller", 19707 + 2686, 10000000) -- How much did you take in the casino heist
+                SET_INT_LOCAL("fm_mission_controller", 19707 + 2686, 10000000) -- How much did you take in the casino and pacific standard heist
                 SET_INT_LOCAL("fm_mission_controller", 28329 + 1, 99999) -- 'fm_mission_controller' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller", 31585 + 69, 99999) -- 'fm_mission_controller' instant finish variable?
             end)
@@ -5230,7 +5222,7 @@
             menu.action(INSTANT_FINISH, TRANSLATE("Doomsday"), {"hcinsfindooms"}, IS_WORKING(true) .. TRANSLATE("Note that you may press multiple times to instant finish the heist."), function()
                 menu.trigger_commands("scripthost")
 
-                SET_INT_LOCAL("fm_mission_controller", 19707, 12) -- ???
+                SET_INT_LOCAL("fm_mission_controller", 19707, 12) -- ???, 'fm_mission_controller' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller", 19707 + 1741, 150) -- Casino Aggressive Kills & Act 3
                 SET_INT_LOCAL("fm_mission_controller", 28329 + 1, 99999) -- 'fm_mission_controller' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller", 31585 + 69, 99999) -- 'fm_mission_controller' instant finish variable?
@@ -5276,7 +5268,7 @@
 
     ---
 
-    REMOTE_ACCESS = menu.list(TOOLS, TRANSLATE("Remote Access"), {"hcapp"}, TRANSLATE("Let you open remotely some of apps for missions."), function(); end)
+    REMOTE_ACCESS = menu.list(TOOLS, TRANSLATE("Remote Access"), {"hcapp"}, TRANSLATE("Let you open remotely some of apps for missions.") .. "\n\n" .. TRANSLATE("Note that you don't have the app, some of functions won't work."), function(); end)
 
         menu.textslider(REMOTE_ACCESS, TRANSLATE("Bunker"), {"hcbunkerapp"}, "", {
             TRANSLATE("Open"),
@@ -5361,7 +5353,7 @@
 
         menu.divider(COOLDOWN_TIMER, TRANSLATE("Settings"))
 
-            local TIMER_POS = menu.list(COOLDOWN_TIMER, TRANSLATE("Text Position"), {}, "", function(); end)
+            TIMER_POS = menu.list(COOLDOWN_TIMER, TRANSLATE("Text Position"), {}, "", function(); end)
 
                 menu.divider(TIMER_POS, TRANSLATE("Heist Control"))
 
@@ -6078,7 +6070,7 @@
                         end
                     end
 
-                    for idx, file_name in pairs(HaxUIFiles) do
+                    for idx1, file_name in pairs(HaxUIFiles) do
                         local open = io.open(FolderDirs.HaxUI .. file_name .. ".txt", "r")
                         local Contents = {}
                         for line in open:lines() do
@@ -6086,7 +6078,6 @@
                         end
                         open:close()
 
-                        local CommandRef = menu.ref_by_command_name("hchaxui" .. idx)
                         local StatTypes = { -- https://www.unknowncheats.me/forum/2689198-post2471.html
                             "INT32",
                             "INT64",
@@ -6101,7 +6092,7 @@
                             MPPLY = 0,
                         }
                         for _, file_content in pairs(Contents) do
-                            for _, stat_type in pairs(StatTypes) do
+                            for __, stat_type in pairs(StatTypes) do
                                 if string.contains(file_content, stat_type) then -- If Heist Control detects GTAHaXUI's file stat type
                                     HelpText.Type = stat_type
                                     goto out
@@ -6117,30 +6108,34 @@
                         ::out::
 
                         local Stats = {} -- { stat_name, value }
-                        for idx, file_content in pairs(Contents) do
+                        for idx2, file_content in pairs(Contents) do
                             if string.startswith(file_content, "$MPPLY_") then -- If a MPPLY stat
-                                if not string.startswith(Contents[idx+1], "$MP") then
-                                    local _, i = string.find(file_content, "$MPPLY_")
-                                    local Stat = string.sub(file_content, i + 1, string.len(file_content))
-                                    Stat = string.upper(Stat)
-                                    HelpText.MPPLY = HelpText.MPPLY + 1
-                                    table.insert(Stats, { Stat, Contents[idx+1] })
-                                else
-                                    HelpText.InvalidLine = HelpText.InvalidLine + 1
-                                end 
+                                if Contents[idx2+1] ~= nil then
+                                    if not string.startswith(Contents[idx2+1], "$MP") then
+                                        local _, i = string.find(file_content, "$MPPLY_")
+                                        local Stat = string.sub(file_content, i + 1, string.len(file_content))
+                                        Stat = string.upper(Stat)
+                                        HelpText.MPPLY = HelpText.MPPLY + 1
+                                        table.insert(Stats, { Stat, Contents[idx2+1] })
+                                    else
+                                        HelpText.InvalidLine = HelpText.InvalidLine + 1
+                                    end
+                                end
                             elseif string.startswith(file_content, "$MP") then -- If a MPx stat
-                                if not string.startswith(Contents[idx+1], "$MP") then
-                                    local _, i = string.find(file_content, "$MP")
-                                    local Stat = string.sub(file_content, i + 3, string.len(file_content))
-                                    Stat = string.upper(Stat)
-                                    HelpText.MPx = HelpText.MPx + 1
-                                    table.insert(Stats, { Stat, Contents[idx+1] })
-                                else
-                                    HelpText.InvalidLine = HelpText.InvalidLine + 1
+                                if Contents[idx2+1] ~= nil then
+                                    if not string.startswith(Contents[idx2+1], "$MP") then
+                                        local _, i = string.find(file_content, "$MP")
+                                        local Stat = string.sub(file_content, i + 3, string.len(file_content))
+                                        Stat = string.upper(Stat)
+                                        HelpText.MPx = HelpText.MPx + 1
+                                        table.insert(Stats, { Stat, Contents[idx2+1] })
+                                    else
+                                        HelpText.InvalidLine = HelpText.InvalidLine + 1
+                                    end
                                 end
                             else -- If not a stat name
-                                if Contents[idx-1] ~= nil then -- If not the first line of the txt file
-                                    if not string.startswith(Contents[idx-1], "$MP") then -- Unless the previous line is stat name
+                                if Contents[idx2-1] ~= nil then -- If not the first line of the txt file
+                                    if not string.startswith(Contents[idx2-1], "$MP") then -- Unless the previous line is stat name
                                         HelpText.InvalidLine = HelpText.InvalidLine + 1
                                     end
                                 end
@@ -6154,10 +6149,11 @@
                             HelpText.Comment = TRANSLATE("Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV.")
                         end
 
+                        local CommandRef = menu.ref_by_command_name("hchaxui" .. idx1)
                         menu.divider(CommandRef, TRANSLATE("Tools"))
 
                             menu.action(CommandRef, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
-                                WRITE_SETTING("Saved Command Name", "hchaxui" .. idx)
+                                WRITE_SETTING("Saved Command Name", "hchaxui" .. idx1)
                                 util.restart_script()
                             end)
 
@@ -6401,14 +6397,14 @@
                                                 "TRANSLATE(Text)",
                                                 '"TRANSLATE", start',
                                             }
-                                            for _, Text in pairs(CodeBlackListedTexts) do
+                                            for __, Text in pairs(CodeBlackListedTexts) do
                                                 if trans:find(Text) then 
                                                     goto out_of_code_loop
                                                 end
                                             end
                                 
-                                            local _, i = trans:find("TRANSLATE", StartPos)
-                                            local __, j = trans:find('")', i + 1)
+                                            local __, i = trans:find("TRANSLATE", StartPos)
+                                            local ___, j = trans:find('")', i + 1)
                                             if i and j ~= nil then
                                                 local Text = string.sub(trans, i + 3, j - 2)
                                                 table.insert(GeneratedCodeTable, Text)
@@ -6949,7 +6945,7 @@
         },
         Casino = {
             {
-                { nil, nil }, -- menu.list("Entrance Of Your Arcade")
+                { TELEPORT_CAH_ENTRANCE, ArcadePos },
                 { TELEPORT_CAH_IN_BOARD, v3.new(2711.773, -369.458, -54.781) },
                 { TELEPORT_CAH_IN_EXIT, v3.new(2677.237, -361.494, -55.187) },
                 { TELEPORT_CAH_IN_DISPOSAL, v3.new(2542.052, -214.3084, -58.722965) },
@@ -6965,7 +6961,7 @@
         },
         Dooms = {
             {
-                { nil, nil }, -- menu.list("Entrance Of Your Facility")
+                { TELEPORT_DOOMS_ENTRANCE, FacilityPos },
                 { TELEPORT_DOOMS_SCREEN, v3.new(350.69284, 4872.308, -60.794243) },
                 { TELEPORT_DOOMS_BOARD, v3.new(515.528, 4835.353, -62.587) },
                 { TELEPORT_DOOMS_CELL, v3.new(512.888, 4833.033, -68.989) },
