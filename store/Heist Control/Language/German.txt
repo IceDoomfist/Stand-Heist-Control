@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 02/26/2023 01:44:13 AM
-# Heist Control Version: V 3.2.1
+# Generated Date: 03/05/2023 06:25:33 PM
+# Heist Control Version: V 3.2.2
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -348,10 +348,6 @@ Outside The Vault (Casino) = Äußerer Tresor (Casino)
 Daily Cash Storage (Casino) = Täglicher Bonus-Raum (Casino)
 Main Gate (Casino) = Haupteingang (Casino)
 Heist Scope Out (Board 1) = Heist vorbereiten [Tafel 1]
-Change Approach And Difficulty = Herangehensweise und Schwierigkeit ändern
-P.O.I And Access Points = Interessante Orte (P.O.I) & Zugangspunkte
-Scope(d) = Ausgespäht
-Unscope(d) = Nicht ausgespäht
 Heist Perp Work (Board 2) = Heist vorbereiten [Tafel 2]
 Remove Masks = Masken entfernen
 Geometric Set = Geometrisch
@@ -623,12 +619,6 @@ When you steal a vehicle, it blocks having to pay for the repair. = Blockiert di
 Terrorbyte = Terrorbyte
 Auto Paste To Stat Name = Stat Names automatisch einfügen
 If your clipboard contains stat name, the strings will be pasted into 'Stat Name' automatically. = Wenn deine Zwischenablage Stat Namen enthält, werden sie automatisch in das Feld eingefügt.
-
-
-# Start of newly updated translations.
-# Translate them!
-
-
 Please close your opened pause menu to open any apps remotely. = Bitte schließe das geöffnete Pausenmenü, um eine Anwendung aus der Ferne zu öffnen.
 Seems like you need to be a MC President. So, Heist Control made you become MC President. = Es scheint, dass du MC-Präsident sein musst. Heist Control hat das für dich gemacht.
 Seems like you need to be a CEO. So, Heist Control made you become CEO. = Es scheint, dass du CEO sein musst. Heist Control hat das für dich gemacht.
@@ -649,7 +639,6 @@ Kosatka: Heist Board = Kosatka: Heist Planungstafel
 $3.5 Millions For All Players = $3.5 Millionen für alle Spieler
 When you are at the board you select players cut, this feature will allow you forced start even other players don't set as ready. There's visual bug related the payout. = Wenn du an der Tafel mit den Spieleranteilen bist, kannst du mit dieser Funktion den Start erzwingen, auch wenn die anderen Spieler noch nicht bereit sind. Es gibt einen visuellen Bug im Zusammenhang mit der Auszahlung.
 Entrance Of Your Arcade = Spielhalleneingang
-You are in your arcade or cannot get arcade blip info. = Du befindest sich in deiner Spielhalle oder es können grade keine Spielhallen-Infos abgerufen werden.
 You should in your arcade to use this teleport! = Du solltest in deiner Spielhalle sein, wenn du diesen Teleport benutzt!
 Entry Disguise = Verkleidung auf dem Weg rein
 Bugstars = Bugstars
@@ -667,7 +656,6 @@ Note that there is a payout visual bug on the heist screen. = Beachte, dass es a
 ACT II - The Bogdan Problem = AKT II - The Bogdan Problem
 ACT III - The Doomsday Scenario = ACT III - The Doomsday Scenario
 Entrance Of Your Facility = Bunkereingang
-You should not in your facility to use this feature. = Du solltest nicht in deiner Basis sein, während du dieses Feature benutzt.
 Make sure you are in your facility. = Stelle sicher, dass du in deiner Basis bist.
 Refresh Heist Screen On Facility = Heist-Bildschirm in der Basis neu laden
 You can update changed doomsday heist stats in the Facility by refreshing it. = Du kannst geänderte Doomsday-Heist-Stats anwenden, indem du ihn neu lädst.
@@ -727,3 +715,19 @@ All Stats List = Liste mit allen Stats
 Some Useful Stats List = Liste mit sinnvollen Stats
 Open Folder for Translations = Ordner mit Übersetzungen öffnen
 Don't enable both of automated presets at once = Aktiviere nicht beide automatische Presets auf einmal.
+
+
+# Start of newly updated translations.
+# Translate them!
+
+
+Note that works perfectly when no other players are in your session. = Beachte, dass dies am besten funktioniert, wenn keine anderen Spieler in deiner Session sind.
+Please go out of the current interior to use this feature. = Bitte verlasse dein aktuelles Interior, um dieses Feature zu nutzen.
+Change Approach = Herangehensweise ändern
+Change Difficulty = Schwierigkeit ändern
+Pacific Standard Heist = Pacific Standard Heist
+Keep Cash $1.85M Take = 1.85 Mio.$ Take behalten
+This makes you won't lose money by getting shot to the cash bags from polices = Sorgt dafür, dass du kein Geld aus deinen Taschen verlierst, wenn du angeschossen wirst.
+Note that you don't have the app, some of functions won't work. = Beachte, dass einige Funktionen nicht funktionieren, wenn du die App nicht hast.
+The Contract DLC = The Contract DLC
+Keep Full Nightclub Population = Volle Nachtclub-Beliebtheit halten

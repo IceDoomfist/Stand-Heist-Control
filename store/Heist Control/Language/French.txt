@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 02/25/2023 10:53:42 AM
-# Heist Control Version: V 3.2.0
+# Generated Date: 03/05/2023 12:10:56 PM
+# Heist Control Version: V 3.2.2
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -348,10 +348,6 @@ Outside The Vault (Casino) = Extérieur Chambre forte (Casino)
 Daily Cash Storage (Casino) = Stockage Gains Quotidiens (Casino)
 Main Gate (Casino) = Porte Principale (Casino)
 Heist Scope Out (Board 1) = Tableau 1
-Change Approach And Difficulty = Changer Approche et Difficulté
-P.O.I And Access Points = Points d'intérêts et d'accès
-Scope(d) = Cibler(ciblé)
-Unscope(d) = Hors Cible
 Heist Perp Work (Board 2) = Tableau de préparation (Tableau 2)
 Remove Masks = Retirer Masques
 Geometric Set = Ensemble géométrique
@@ -631,7 +627,6 @@ Max payout for this heist = Paiement maximal pour ce braquage
 - Under $2.550.000 per run = - Moins de 2 550 000 $ par braquage
 - Under $4.100.000 per hour = - Moins de 4 100 000 $ par heure
 - Under $3.650.000 per run = - Moins de 3 650 000 $ par braquage
-Fleeca Heist: Under $15.000.000 per run = - Braquage de la Fleeca : Moins de 15 000 000 $ par braquage
 Enabling one of these presets will complete all of setups, and set as max payout, $2.55 Millions. It will be affected to all of heist players. = Activer l'un de ces préréglages terminera toutes les préparations et définira un paiement maximal de 2,55 millions de dollars. Cela affectera tous les joueurs invités dans le braquage.
 Recommended = Recommandé
 There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.55M) by only getting it. = Il n'y a qu'une seule cible principale, en fonction de l'option que vous avez choisie. Tous les joueurs du braquage peuvent obtenir le paiement maximal (2,55 millions de dollars).
@@ -643,7 +638,6 @@ Kosatka: Heist Board = Kosatka : Ecran de braquage
 $3.5 Millions For All Players = 3,5 millions $ pour tous les joueurs
 When you are at the board you select players cut, this feature will allow you forced start even other players don't set as ready. There's visual bug related the payout. = Lorsque vous êtes sur le tableau où vous choisissez la part de chaque joueur, cette option vous permettra de forcer le démarrage même si les autres joueurs ne sont pas prêts. Il y a un bug visuel lié au paiement.
 Entrance Of Your Arcade = Entrée de votre Arcade
-You are in your arcade or cannot get arcade blip info. = Vous êtes déjà dans votre arcade ou vous ne pouvez pas obtenir les informations sur le lieu de votre Arcade.
 You should in your arcade to use this teleport! = Vous devez être dans votre Arcade pour utiliser cette téléportation !
 Entry Disguise = Déguisement à l'Entrée
 Bugstars = Bugstars
@@ -661,7 +655,6 @@ Note that there is a payout visual bug on the heist screen. = Notez qu'il y a un
 ACT II - The Bogdan Problem = ACTE II - Le problème Bogdan
 ACT III - The Doomsday Scenario = ACTE III - Le scénario de la Fin du Monde
 Entrance Of Your Facility = Entrée de votre Complexe
-You should not in your facility to use this feature. = Vous ne devriez pas être dans votre Complexe pour utiliser cette fonctionnalité.
 Make sure you are in your facility. = Assurez-vous d'être dans votre Complexe.
 Refresh Heist Screen On Facility = Actualiser l'écran du braquage dans le Complexe
 You can update changed doomsday heist stats in the Facility by refreshing it. = Vous pouvez mettre à jour les stats moddées du braquage de la Fin du Monde dans le Complexe en le rafraîchissant.
@@ -721,3 +714,20 @@ All Stats List = Liste de toutes les Stats
 Some Useful Stats List = Liste de certaines Stats utiles
 Open Folder for Translations = Ouvrir le dossier des traductions
 Don't enable both of automated presets at once = Ne pas activer deux préréglages automatisés en même temps
+
+
+# Start of newly updated translations.
+# Translate them!
+
+
+- Fleeca Heist: Under $15.000.000 per run = - Braquage de la Fleeca : Moins de 15 millions de $ par braquage.
+Note that works perfectly when no other players are in your session. = Notez que cela fonctionne parfaitement lorsque vous êtes seul dans votre session.
+Please go out of the current interior to use this feature. = Veuillez sortir de l'intérieur actuel pour utiliser cette option.
+Change Approach = Changer Approche
+Change Difficulty = Changer Difficulté
+Pacific Standard Heist = Le Casse de la Pacific Standard
+Keep Cash $1.85M Take = Garder Part de 1,85 Millions
+This makes you won't lose money by getting shot to the cash bags from polices = Ainsi, vous ne perdrez pas d'argent en vous faisant tirer dessus par la police.
+Note that you don't have the app, some of functions won't work. = Notez que si vous n'avez pas l'application, certaines options ne fonctionneront pas.
+The Contract DLC = DLC Le Contrat
+Keep Full Nightclub Population = Garde vos Boites de Nuit pleines
