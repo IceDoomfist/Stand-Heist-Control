@@ -54,9 +54,9 @@
 
     --- Important
 
-        HC_VERSION = "V 3.2.3"
+        HC_VERSION = "V 3.2.4"
         CODED_GTAO_VERSION = 1.66
-        SUPPORTED_STAND_VERSION = 100 -- Stand 100 | https://stand.gg/help/changelog | Lua API: Renamed action_slider to textslider and slider_text to textslider_stateful (friendly reminder that list_action and list_select should be preferred)
+        SUPPORTED_STAND_VERSION = 101 -- Stand 101 | https://stand.gg/help/changelog | Not mentioned in the Changelog: 'menu.hyperlink' only accepts http and https links due to security issues
 
     ---
 
@@ -391,7 +391,7 @@
             local LangByStandCodes = {
                 { "zh", "Chinese - 中文" },
                 { "fr", "French - français" },
-                { "De", "German - Deutsch" },
+                { "de", "German - Deutsch" },
                 { "ko", "Korean - 한국어" },
                 { "pl", "Polish - Polski" },
                 { "pt", "Portuguese - Português" },
@@ -1719,7 +1719,8 @@
             if STAT_GET_INT("IH_SUB_OWNED") ~= 0 then
                 if not HUD.DOES_BLIP_EXIST(SubBlip) and not HUD.DOES_BLIP_EXIST(SubControlBlip) then
                     NOTIFY(TRANSLATE("Waiting for requesting Kosatka..."))
-                    menu.trigger_commands("hcreqkosatka")
+                    local CommandRef = menu.ref_by_command_name("hcreq")
+                    menu.trigger_command(CommandRef, "kosatka")
                     util.arspinner_enable()
                     repeat util.yield_once() until HUD.DOES_BLIP_EXIST(SubBlip)
                     util.arspinner_disable()
@@ -3637,7 +3638,13 @@
             SET_INT_LOCAL("fm_mission_controller_2020", 974 + 135, 3)
         end)
         menu.action(ULP_MISSIONS, TRANSLATE("Teleport To IAA Headquarters"), {}, "", function()
-            TELEPORT(101.595, -662.923, 45.093)
+            local Blip = HUD.GET_FIRST_BLIP_INFO_ID(838) -- ULP Blip, https://wiki.rage.mp/index.php?title=Blips
+            if Blip ~= 0 then
+                local Pos = HUD.GET_BLIP_COORDS(Blip)
+                TELEPORT(Pos.x, Pos.y, Pos.z)
+            else
+                NOTIFY(TRANSLATE("Please make sure you can play ULP Missions now!"))
+            end
         end)
 
     ---
@@ -3654,11 +3661,9 @@
             { TRANSLATE("The Marina"), {"themarina"}, TRANSLATE("(Prep)") },
             { TRANSLATE("NightLife Leak"), {"nightlifeleak"}, TRANSLATE("(Mission)") },
         }, function(index)
-            if index == 1 then
-                STAT_SET_INT("FIXER_STORY_BS", 3)
-            elseif index == 2 then
-                STAT_SET_INT("FIXER_STORY_BS", 4)
-            elseif index == 3 then
+            if index ~= 3 then
+                STAT_SET_INT("FIXER_STORY_BS", index + 2)
+            else
                 STAT_SET_INT("FIXER_STORY_BS", 12)
             end
 
@@ -3874,7 +3879,7 @@
                 STAT_SET_BOOL("AWD_CONTACT_SPORT", true)
             end)
 
-            menu.action(ARENA_TOOL, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
+            menu.action(ARENA_TOOL, TRANSLATE("Unlock Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(25842, 25909, 1) -- -1782918513, -1597048932
             end)
 
@@ -3891,7 +3896,7 @@
                 STAT_SET_BOOL("AWD_ELEVENELEVEN", true)
             end)
 
-            menu.action(SUMMER2020, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
+            menu.action(SUMMER2020, TRANSLATE("Unlock Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(29685, 29720, 1) -- ENABLE_LOGIN_BCTR_AGED_TEE, ENABLE_LOGIN_LEMON_SPORTS_TRACK_TOP
             end)
 
@@ -3969,7 +3974,7 @@
 
         DRUG_WAR = menu.list(DLC_UNLOCKER, TRANSLATE("Drug War DLC"), {}, "", function(); end)
 
-            menu.action(DRUG_WAR, TRANSLATE("Clothing"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3635453-post69.html
+            menu.action(DRUG_WAR, TRANSLATE("Unlock Clothing"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3635453-post69.html
                 SET_PACKED_INT_GLOBAL(33973, 34112, 1) -- EVENT_LOGIN_DLC22022_ICE_VINYL_JACKET_3, -711496356
             end)
 
@@ -4068,7 +4073,7 @@
                 STAT_SET_BOOL("SCGW_WON_NO_DEATHS", true)
             end)
 
-            menu.action(ARCADE_TOOL, TRANSLATE("Clothing"), {}, IS_WORKING(false), function()
+            menu.action(ARCADE_TOOL, TRANSLATE("Unlock Clothing"), {}, IS_WORKING(false), function()
                 SET_PACKED_INT_GLOBAL(28316, 28336, 1) -- STREET_CRIMES_BOXART_TEE, RED_FAME_OR_SHAME_KRONOS
             end)
 
@@ -5299,8 +5304,7 @@
             Sec = 0,
         }
         TimerCustom = {
-            Total = 1200,
-            Time = 0,
+            Total = nil,
             Min = 0,
             Plus = 0,
             Sec = 0,
@@ -5352,10 +5356,7 @@
             ---
 
             IS_STAND_OVERLAY = menu.toggle(COOLDOWN_TIMER, TRANSLATE("Use Stand's Overlay"), {}, TRANSLATE("Enabled: Use Stand's Overlay & Settings: Game > Info Overlay") .. "\n\n" .. TRANSLATE("Disabled: Use Heist Control's Overlay & Settings"), function(); end)
-            
-            menu.slider(COOLDOWN_TIMER, TRANSLATE("Set Custom Time (Seconds)"), {"hctimertime"}, "", 0, 259200, 1200, 60, function(seconds)
-                TimerCustom.Total, TimerCustom.Time = seconds, seconds
-            end)
+            CUSTOM_TIMER_TIME = menu.slider(COOLDOWN_TIMER, TRANSLATE("Set Custom Time (Seconds)"), {"hctimertime"}, "", 0, 259200, 1200, 60, function(); end)
 
         ---
 
@@ -5476,8 +5477,10 @@
             end)
 
             TIMER_CUSTOM = menu.toggle(COOLDOWN_TIMER, TRANSLATE("Custom Timer"), {"hctimercustom"}, "", function()
-                if not menu.get_value(TIMER_CUSTOM) then
-                    TimerCustom.Total, TimerCustom.Min, TimerCustom.Plus, TimerCustom.Sec = TimerCustom.Time, 0, 0, 0
+                if menu.get_value(TIMER_CUSTOM) then
+                    TimerCustom.Total = menu.get_value(CUSTOM_TIMER_TIME)
+                else
+                    TimerCustom.Total, TimerCustom.Min, TimerCustom.Plus, TimerCustom.Sec = menu.get_value(CUSTOM_TIMER_TIME), 0, 0, 0
                 end
 
                 while menu.get_value(TIMER_CUSTOM) do
@@ -5489,7 +5492,7 @@
                     TimerCustom.Total = TimerCustom.Total - 1
                     TimerCustom.Min = math.floor(TimerCustom.Total / 60)
                     TimerCustom.Plus = TimerCustom.Plus + 1
-                    TimerCustom.Sec = TimerCustom.Time - TimerCustom.Min * 60 - TimerCustom.Plus
+                    TimerCustom.Sec = menu.get_value(CUSTOM_TIMER_TIME) - TimerCustom.Min * 60 - TimerCustom.Plus
                     util.yield(1000)
                 end
             end)
@@ -5516,11 +5519,10 @@
             if not IsOneOfThemEnabled then return end
 
             for i = 1, #TimerTypes do
-                if TimerTypes[i][3] < 10 then
-                    TimerTypes[i][3] = 0 .. TimerTypes[i][3]
-                end
-                if TimerTypes[i][4] < 10 then
-                    TimerTypes[i][4] = 0 .. TimerTypes[i][4]
+                for j = 3, 4 do
+                    if TimerTypes[i][j] < 10 then
+                        TimerTypes[i][j] = 0 .. TimerTypes[i][j]
+                    end
                 end
             end
             if menu.get_value(IS_STAND_OVERLAY) then
@@ -5677,37 +5679,37 @@
 
     ---
 
-    REQ_SERVICE = menu.list(TOOLS, TRANSLATE("Request Services"), {"hcreq"}, "", function(); end) -- freemode.c, https://www.unknowncheats.me/forum/3442776-post4.html
-        
-        menu.action(REQ_SERVICE, TRANSLATE("MOC"), {"hcreqmoc"}, IS_WORKING(false), function()
+    menu.list_action(TOOLS, TRANSLATE("Request Services"), {"hcreq"}, "", {
+        { TRANSLATE("MOC"), {"moc"}, "" },
+        { TRANSLATE("Avenger"), {"avenger"}, "" },
+        { TRANSLATE("Terrorbyte"), {"terrorbyte"}, "" },
+        { TRANSLATE("Kosatka"), {"kosatka"}, "" },
+        { TRANSLATE("Acid Lab"), {"acidlab"}, "" },
+        { TRANSLATE("Dingy"), {"dingy"}, "" },
+        { TRANSLATE("Ballistic Armor"), {"ballisticarmor"}, "" },
+        { TRANSLATE("RC Bandito"), {"rcbandito"}, "" },
+        { TRANSLATE("RC Tank"), {"rctank"}, "" },
+    }, function(index)
+        if index == 1 then
             SET_INT_GLOBAL(2793046 + 925, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Avenger"), {"hcreqavenger"}, IS_WORKING(false), function()
+        elseif index == 2 then
             SET_INT_GLOBAL(2793046 + 933, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Terrorbyte"), {"hcreqterrorbyte"}, IS_WORKING(false), function()
+        elseif index == 3 then
             SET_INT_GLOBAL(2793046 + 937, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Kosatka"), {"hcreqkosatka"}, IS_WORKING(false), function()
+        elseif index == 4 then
             SET_INT_GLOBAL(2793046 + 954, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Acid Lab"), {"hcreqacidlab"}, IS_WORKING(false), function()
+        elseif index == 5 then
             SET_INT_GLOBAL(2793046 + 938, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Dingy"), {"hcreqdingy"}, IS_WORKING(false), function()
+        elseif index == 6 then
             SET_INT_GLOBAL(2793046 + 966, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("Ballistic Armor"), {"hcreqballisticarmor"}, IS_WORKING(false), function()
+        elseif index == 7 then
             SET_INT_GLOBAL(2793046 + 896, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("RC Bandito"), {"hcreqrcbandito"}, IS_WORKING(false), function()
+        elseif index == 8 then
             SET_INT_GLOBAL(2793046 + 6874, 1)
-        end)
-        menu.action(REQ_SERVICE, TRANSLATE("RC Tank"), {"hcreqrctank"}, IS_WORKING(false), function()
+        elseif index == 9 then
             SET_INT_GLOBAL(2793046 + 6875, 1)
-        end)
-
-    ---
+        end
+    end)
 
     STAT_EDITOR_READER = menu.list(TOOLS, TRANSLATE("Stat Editor And Reader"), {}, "", function(); end)
 
@@ -6166,8 +6168,6 @@
                                 end)
                             end)
 
-                            menu.hyperlink(CommandRef, TRANSLATE("Open This File"), "file:///" .. FolderDirs.HaxUI .. file_name .. ".txt", "")
-
                             menu.action(CommandRef, TRANSLATE("Delete This File"), {}, "", function()
                                 menu.show_warning(CommandRef, CLICK_MENU, TRANSLATE("Do you sure delete this file? It cannot be recovered!"), function()
                                     local Children = menu.get_children(CommandRef)
@@ -6207,7 +6207,10 @@
 
             ---
 
-            menu.hyperlink(GTAHAXUI_STAT_EDITOR, TRANSLATE("Open Folder for Custom Stat Files"), "file:///" .. FolderDirs.HaxUI, "")
+            menu.action(GTAHAXUI_STAT_EDITOR, TRANSLATE("Open Folder for Custom Stat Files"), {}, FolderDirs.HaxUI, function()
+                util.open_folder(FolderDirs.HaxUI)
+            end)
+            
             menu.hyperlink(GTAHAXUI_STAT_EDITOR, TRANSLATE("Visit GTAHaXUI"), "https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html", "")
 
         ---
@@ -6636,7 +6639,9 @@
 
             menu.divider(HC_LANG_GEN, TRANSLATE("Tools"))
 
-                menu.hyperlink(HC_LANG_GEN, TRANSLATE("Open Folder for Translations"), "file:///" .. FolderDirs.Lang, "")
+                menu.action(HC_LANG_GEN, TRANSLATE("Open Folder for Translations"), {}, FolderDirs.Lang, function()
+                    util.open_folder(FolderDirs.Lang)
+                end)
 
             ---
 

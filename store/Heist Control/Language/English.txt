@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 03/18/2023 10:16:26 PM
-# Heist Control Version: V 3.2.3
+# Generated Date: 03/22/2023 09:45:01 PM
+# Heist Control Version: V 3.2.4
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -657,7 +657,6 @@ Seems some of lines are invalid. But it doesn't matter too much. Go ahead. = See
 Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV. = Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV.
 Apply Stats = Apply Stats
 Do you sure apply the number of stats? = Do you sure apply the number of stats?
-Open This File = Open This File
 Comment = Comment
 Information = Information
 Except for 'N/A', doesn't matter what it is. Heist Control will make it compatible with GTAV using all methods. = Except for 'N/A', doesn't matter what it is. Heist Control will make it compatible with GTAV using all methods.
@@ -676,12 +675,6 @@ All Stats List = All Stats List
 Some Useful Stats List = Some Useful Stats List
 Open Folder for Translations = Open Folder for Translations
 Don't enable both of automated presets at once = Don't enable both of automated presets at once
-
-
-# Start of newly updated translations.
-# Translate them!
-
-
 Waiting for requesting Kosatka... = Waiting for requesting Kosatka...
 (Submarine) = (Submarine)
 Alkonost = Alkonost
@@ -735,3 +728,5 @@ Would helpful for skipping something cannot be skipped using 'Game > Skip Cutsce
 Clear All Help Messages = Clear All Help Messages
 Clearing a black box with white help texts where are left, above of the screen. = Clearing a black box with white help texts where are left, above of the screen.
 Can be used for getting targets slightly more fast. = Can be used for getting targets slightly more fast.
+Please make sure you can play ULP Missions now! = Please make sure you can play ULP Missions now!
+Unlock Clothing = Unlock Clothing
