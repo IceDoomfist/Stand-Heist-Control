@@ -54,7 +54,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.2.4"
+        HC_VERSION = "V 3.2.5"
         CODED_GTAO_VERSION = 1.66
         SUPPORTED_STAND_VERSION = 101 -- Stand 101 | https://stand.gg/help/changelog | Not mentioned in the Changelog: 'menu.hyperlink' only accepts http and https links due to security issues
 
@@ -768,7 +768,7 @@
         end
 
         if SCRIPT_MANUAL_START and not SCRIPT_SILENT_START then
-            SHOW_IMG("HC Banner.png", 4)
+            SHOW_IMG("HC Banner.png", 2.5)
 
             local LatestGTAO = tonumber(NETWORK.GET_ONLINE_VERSION())
             if CODED_GTAO_VERSION ~= LatestGTAO then
@@ -784,19 +784,6 @@
                     State
                 )
             end
-        end
-
-    ---
-
-    --- Announcement
-
-        if SCRIPT_MANUAL_START and not SCRIPT_SILENT_START then
-            async_http.init("icedoomfist.com", "/Stand_Heist_Control/Announcement/", function(Success)
-                if Success ~= "" then
-                    NOTIFY("| " .. TRANSLATE("Announcement") .. " |" .. "\n\n" .. Success)
-                end
-            end)
-            async_http.dispatch()
         end
 
     ---
@@ -2291,7 +2278,6 @@
             for i = 1022, 1025 do
                 SET_INT_GLOBAL(1970895 + 1497 + i, 1) -- Forced checked Entrance, Exit, Buyer, and Entry Disguise
             end
-            SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 4, 0) -- Forced checked Player Cut
         end
     end)
 
@@ -2689,9 +2675,9 @@
             CAH_1P = menu.list(CAH_PLAYER_CUT, TRANSLATE("Your Cut"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CAH_1P_CUT_LOOP = menu.toggle_loop(CAH_1P, TRANSLATE("Enable"), {"hccah1pcutloop"}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(1970895 + 2326, menu.get_value(CAH_1P_CUT)) -- gb_casino_heist.c
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 1, menu.get_value(CAH_1P_CUT)) -- gb_casino_heist.c
                 end, function()
-                    SET_INT_GLOBAL(1970895 + 2326, menu.get_default_state(CAH_1P_CUT))
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 1, menu.get_default_state(CAH_1P_CUT))
                 end)
 
                 CAH_1P_CUT = menu.slider(CAH_1P, TRANSLATE("Custom Percentage"), {"hccah1pcut"}, "(%)", 0, 1000, 100, 5, function(); end)
@@ -2701,9 +2687,9 @@
             CAH_2P = menu.list(CAH_PLAYER_CUT, TRANSLATE("Player 2"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CAH_2P_CUT_LOOP = menu.toggle_loop(CAH_2P, TRANSLATE("Enable"), {"hccah2pcutloop"}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 1, menu.get_value(CAH_2P_CUT)) -- gb_casino_heist.c
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 2, menu.get_value(CAH_2P_CUT)) -- gb_casino_heist.c
                 end, function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 1, menu.get_default_state(CAH_2P_CUT))
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 2, menu.get_default_state(CAH_2P_CUT))
                 end)
 
                 CAH_2P_CUT = menu.slider(CAH_2P, TRANSLATE("Custom Percentage"), {"hccah2pcut"}, "(%)", 0, 1000, 100, 5, function(); end)
@@ -2713,9 +2699,9 @@
             CAH_3P = menu.list(CAH_PLAYER_CUT, TRANSLATE("Player 3"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
 
                 CAH_3P_CUT_LOOP = menu.toggle_loop(CAH_3P, TRANSLATE("Enable"), {"hccah3pcutloop"}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 2, menu.get_value(CAH_3P_CUT)) -- gb_casino_heist.c
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 3, menu.get_value(CAH_3P_CUT)) -- gb_casino_heist.c
                 end, function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 2, menu.get_default_state(CAH_3P_CUT))
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 3, menu.get_default_state(CAH_3P_CUT))
                 end)
 
                 CAH_3P_CUT = menu.slider(CAH_3P, TRANSLATE("Custom Percentage"), {"hccah3pcut"}, "(%)", 0, 1000, 100, 5, function(); end)
@@ -2725,9 +2711,9 @@
             CAH_4P = menu.list(CAH_PLAYER_CUT, TRANSLATE("Player 4"), {}, TRANSLATE("Only works if you are host of the heist."), function(); end)
                 
                 CAH_4P_CUT_LOOP = menu.toggle_loop(CAH_4P, TRANSLATE("Enable"), {"hccah4pcutloop"}, IS_WORKING(false), function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 3, menu.get_value(CAH_4P_CUT)) -- gb_casino_heist.c
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 4, menu.get_value(CAH_4P_CUT)) -- gb_casino_heist.c
                 end, function()
-                    SET_INT_GLOBAL(1970895 + 2326 + 3, menu.get_default_state(CAH_4P_CUT))
+                    SET_INT_GLOBAL(1970895 + 1497 + 736 + 92 + 4, menu.get_default_state(CAH_4P_CUT))
                 end)
 
                 CAH_4P_CUT = menu.slider(CAH_4P, TRANSLATE("Custom Percentage"), {"hccah4pcut"}, "(%)", 0, 1000, 100, 5, function(); end)
@@ -5882,12 +5868,16 @@
                     end
                 end)
 
-                menu.action(STAT_EDITOR, "Boolean", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CL_RACE_MODDED_CAR\n" .. TRANSLATE("Stat Value") .. ": " .. "true or false", function()
+                menu.action(STAT_EDITOR, "Boolean", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CL_RACE_MODDED_CAR\n" .. TRANSLATE("Stat Value") .. ": " .. "'true' or 'false'", function()
                     if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
                         menu.focus(STAT_EDITOR_NAME)
                         NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
                     else
-                        STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
+                        if string.contains(menu.get_value(STAT_EDITOR_VALUE), "true") then
+                            STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), true)
+                        elseif string.contains(menu.get_value(STAT_EDITOR_VALUE), "false") then
+                            STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), false)
+                        end 
                         NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
                         FORCE_CLOUD_SAVE()
                     end
@@ -6647,7 +6637,7 @@
 
         ---
 
-        menu.hyperlink(INFOS, TRANSLATE("How To Translate"), "https://icedoomfist.com/Stand_Heist_Control/How_To_Translate", TRANSLATE("Always looking for translators for non-existing languages. If you're interested in translating HC, click!"))
+        -- menu.hyperlink(INFOS, TRANSLATE("How To Translate"), "https://icedoomfist.com/Stand_Heist_Control/How_To_Translate", TRANSLATE("Always looking for translators for non-existing languages. If you're interested in translating HC, click!"))
 
     ---
 
@@ -6829,10 +6819,10 @@
 
         ---
 
-        menu.hyperlink(INFOS, TRANSLATE("Join Discord Server!"), "https://icedoomfist.com/Link/HC_Discord", TRANSLATE("Get Support, Report Bugs and Enjoy Other Stuffs!"))
-        menu.hyperlink(INFOS, TRANSLATE("Youtube"), "https://icedoomfist.com/Link/HC_Youtube", TRANSLATE("Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D"))
-        menu.hyperlink(INFOS, TRANSLATE("Tutorial"), "https://icedoomfist.com/Stand_Heist_Control/Tutorial", TRANSLATE("If you don't know how to use HC, click me!"))
-        menu.hyperlink(INFOS, TRANSLATE("Changelog"), "https://icedoomfist.com/Stand_Heist_Control/Changelog", TRANSLATE("If you want to know what was changed in the latest version, click me!"))
+        menu.hyperlink(INFOS, TRANSLATE("Join Discord Server!"), "https://discord.gg/KTFAYQn5Xz", TRANSLATE("Get Support, Report Bugs and Enjoy Other Stuffs!"))
+        menu.hyperlink(INFOS, TRANSLATE("Youtube"), "https://www.youtube.com/@standheistcontrol", TRANSLATE("Videos related to HC's tutorial are uploaded here, subscribe to the channel to show your support :D")) -- https://icedoomfist.com/Link/HC_Youtube
+        -- menu.hyperlink(INFOS, TRANSLATE("Tutorial"), "https://icedoomfist.com/Stand_Heist_Control/Tutorial", TRANSLATE("If you don't know how to use HC, click me!"))
+        menu.hyperlink(INFOS, TRANSLATE("Changelog"), "https://github.com/IceDoomfist/Stand-Heist-Control/releases", TRANSLATE("If you want to know what was changed in the latest version, click me!")) -- https://icedoomfist.com/Stand_Heist_Control/Changelog
 
     ---
 
@@ -7081,11 +7071,5 @@
             HUD.UNLOCK_MINIMAP_POSITION()
         end)
     end
-
-    util.create_tick_handler(function()
-        if not menu.is_open() then
-            HUD.UNLOCK_MINIMAP_POSITION()
-        end
-    end)
 
 ---

@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 03/18/2023 10:16:35 PM
-# Heist Control Version: V 3.2.3
+# Generated Date: 03/22/2023 09:45:33 PM
+# Heist Control Version: V 3.2.4
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -734,3 +734,5 @@ Would helpful for skipping something cannot be skipped using 'Game > Skip Cutsce
 Clear All Help Messages = 清除所有信息
 Clearing a black box with white help texts where are left, above of the screen. = 在屏幕左上侧生成帮助
 Can be used for getting targets slightly more fast. = 可以用于更快的索敌
+Please make sure you can play ULP Missions now! = 请确认您现在可以游玩ULP任务哦！
+Unlock Clothing = 解锁服装

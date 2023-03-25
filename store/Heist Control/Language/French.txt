@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 03/18/2023 02:51:46 PM
-# Heist Control Version: V 3.2.3
+# Generated Date: 03/22/2023 06:13:26 PM
+# Heist Control Version: V 3.2.4
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -647,7 +647,6 @@ Seems some of lines are invalid. But it doesn't matter too much. Go ahead. = Il 
 Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV. = Merci de vérifier que ce fichier a été conçu pour GTAHaXUI. L'appliquer n'affectera rien dans GTAV.
 Apply Stats = Appliquer les stats
 Do you sure apply the number of stats? = Êtes-vous sûr d'appliquer le nombre de stats ?
-Open This File = Ouvrir ce fichier
 Comment = Commentaire
 Information = Information
 Except for 'N/A', doesn't matter what it is. Heist Control will make it compatible with GTAV using all methods. = Sauf pour 'N/A', peu importe ce que c'est. Heist Control le rendra compatible avec GTAV en utilisant toutes les méthodes.
@@ -729,3 +728,5 @@ Would helpful for skipping something cannot be skipped using 'Game > Skip Cutsce
 Clear All Help Messages = Effacer tous les messages d'aide
 Clearing a black box with white help texts where are left, above of the screen. = Effacer une boîte noire avec des textes d'aide blancs qui se trouvent à gauche, en haut de l'écran.
 Can be used for getting targets slightly more fast. = Peut être utilisé pour obtenir les cibles légèrement plus rapidement.
+Please make sure you can play ULP Missions now! = Assurez-vous de pouvoir jouer aux Missions ULP maintenant !
+Unlock Clothing = Débloquer les vêtements
