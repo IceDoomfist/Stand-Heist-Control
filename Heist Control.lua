@@ -5059,15 +5059,16 @@
         menu.divider(INSTANT_FINISH, TRANSLATE("Heists"))
 
             menu.action(INSTANT_FINISH, TRANSLATE("Cayo / Tuners / ULP / Agency"), {"hcinsfincp"}, IS_WORKING(true) .. TRANSLATE("Note that may works for some of other preps. Only 'Quick Preset' is compatible with Cayo Perico Heist."), function() -- https://www.unknowncheats.me/forum/3524081-post3.html
-                menu.trigger_commands("scripthost")
 
+                util.request_script_host("fm_mission_controller_2020")
+                util.yield(3000)
                 SET_INT_LOCAL("fm_mission_controller_2020", 44749 + 1, 51338752) -- 'fm_mission_controller_2020' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller_2020", 44749 + 1375 + 1, 50) -- 'fm_mission_controller_2020' instant finish variable?
             end)
 
             menu.action(INSTANT_FINISH, TRANSLATE("Casino Aggressive / Classic"), {"hcinsfincah"}, IS_WORKING(true) .. TRANSLATE("Note that if you don't use Heist Control's automated Casino Heist presets, won't get money."), function()
-                menu.trigger_commands("scripthost")
-                
+                util.request_script_host("fm_mission_controller")
+                util.yield(3000)
                 SET_INT_LOCAL("fm_mission_controller", 19710 + 1741, 80) -- Casino Aggressive Kills & Act 3
                 SET_INT_LOCAL("fm_mission_controller", 19710 + 2686, 10000000) -- How much did you take in the casino and pacific standard heist
                 SET_INT_LOCAL("fm_mission_controller", 28331 + 1, 99999) -- 'fm_mission_controller' instant finish variable?
@@ -5075,8 +5076,8 @@
             end)
 
             menu.action(INSTANT_FINISH, TRANSLATE("Doomsday"), {"hcinsfindooms"}, IS_WORKING(true) .. TRANSLATE("Note that you may press multiple times to instant finish the heist."), function()
-                menu.trigger_commands("scripthost")
-
+                util.request_script_host("fm_mission_controller")
+                util.yield(3000)
                 SET_INT_LOCAL("fm_mission_controller", 19710, 12) -- ???, 'fm_mission_controller' instant finish variable?
                 SET_INT_LOCAL("fm_mission_controller", 19710 + 1741, 150) -- Casino Aggressive Kills & Act 3
                 SET_INT_LOCAL("fm_mission_controller", 28331 + 1, 99999) -- 'fm_mission_controller' instant finish variable?
