@@ -43,7 +43,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.3.4"
+        HC_VERSION = "V 3.3.5"
         CODED_GTAO_VERSION = 1.67
         SUPPORTED_STAND_VERSION = 101  --  Stand 101 | https://stand.gg/help/changelog | Not mentioned in the Changelog: 'menu.hyperlink' only accepts http and https links due to security issues
 
@@ -807,7 +807,7 @@
 
         menu.divider(CAYO_PRESETS, TRANSLATE("Recommended"))
 
-            QUICK_PRESET = menu.toggle(CAYO_PRESETS, TRANSLATE("Quick Preset (1 - 4P)"), {"hccpquick"}, IS_WORKING(true) .. TRANSLATE("There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.55M) by only getting it."), function()
+            QUICK_PRESET = menu.toggle(CAYO_PRESETS, TRANSLATE("Quick Preset (1 - 4P)"), {"hccpquick"}, IS_WORKING(true) .. TRANSLATE("There is only a primary target, depends on which you selected. All players of the heist session can get the max payout ($2.45M) by only getting it."), function()
                 if menu.get_value(QUICK_PRESET) then
                     menu.trigger_commands("hccprefreshboard")
 
@@ -887,9 +887,9 @@
                     SET_INT_GLOBAL(CPTargets[Value][2], 2455000)
                     
                     menu.set_value(CP_REM_FEE, true)
-                    menu.set_value(CP_NON_HOST_CUT, 145)
+                    menu.set_value(CP_NON_HOST_CUT, 100)
                     menu.set_value(CP_NON_HOST_CUT_LOOP, false)
-                    menu.set_value(CP_HOST_CUT, 145)
+                    menu.set_value(CP_HOST_CUT, 100)
                     menu.set_value(CP_HOST_CUT_LOOP, true)
                     menu.set_value(CP_2P_CUT, 145)
                     menu.set_value(CP_2P_CUT_LOOP, true)
@@ -1705,7 +1705,7 @@
 
         ---
 
-        TELEPORT_CP_KOSATKA = menu.action(TELEPORT_CP, TRANSLATE("Kosatka: Heist Board"), {"hctpsub"}, "", function()
+        TELEPORT_CP_KOSATKA = menu.action(TELEPORT_CP, TRANSLATE("Kosatka: Heist Board"), {"hctpsub"}, TRANSLATE("Note that works on best when you are alone in your session."), function()
             if STAT_GET_INT("IH_SUB_OWNED") ~= 0 then
                 if not HUD.DOES_BLIP_EXIST(SubBlip) and not HUD.DOES_BLIP_EXIST(SubControlBlip) then
                     local PlayerPos = players.get_position(players.user())
