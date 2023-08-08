@@ -27,9 +27,6 @@ The oldest Lua Script in the [Stand](https://stand.gg) Lua Scripts Community.
 
 Heist Control for Stand focuses helping play heists in GTA Online, provides some extra options for unlocks and useful tool features for heists.
 
-You can ask me something that you wonder, feel free to join Discord Server.
-Also support is available in the Discord Server.
-
 
 ## Credits
 
