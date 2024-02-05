@@ -94,10 +94,10 @@
                 end
             end
 
-            if not string.contains(stat, "MP_") and not string.contains(stat, "MPPLY_") then
-                return "MP" .. util.get_char_slot() .. "_" .. stat
+            if stat:sub(1, 3) == "MP_" or stat:sub(1, 6) == "MPPLY_" then
+                return stat
             end
-            return stat
+            return "MP" .. util.get_char_slot() .. "_" .. stat
         end
 
         function STAT_SET_INT(stat, value)
