@@ -13,8 +13,9 @@
 ## Main Features
 
 > - Officially keep up-to-date translations in 10 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES)
-> - Extra Cayo, Casino, Classic, LS Tuner, ULP Missions, Agency Heist Options
+> - Extra Cayo, Casino, Doomsday and Classic heist features
 > - Instant Finish Heists and Others
+> - Allow you play alone in Casino, Classic, Doomsday heists!
 > - Skip Hacking Process
 > - Custom Stat Editor And Reader: Included [GTAHaXUI](https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html) Stat Editor
 > - Tons of other features
