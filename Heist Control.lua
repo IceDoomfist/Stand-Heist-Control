@@ -38,7 +38,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.4.0"
+        HC_VERSION = "V 3.4.1"
         CODED_GTAO_VERSION = 1.68
 
     ---
@@ -603,31 +603,10 @@
             util.arspinner_disable()
         end
 
-        function START_SCRIPT(ceo_mc, name)
+        function START_SCRIPT(name)
             if HUD.IS_PAUSE_MENU_ACTIVE() then
                 NOTIFY(TRANSLATE("Please close your opened pause menu to open any apps remotely."))
                 return
-            end
-            if players.get_boss(players.user()) ~= -1 then
-                if players.get_org_type(players.user()) == 0 then -- NOTE: https://www.unknowncheats.me/forum/3683018-post106.html
-                    if ceo_mc == "MC" then
-                        menu.trigger_commands("ceotomc")
-                        NOTIFY(TRANSLATE("Seems like you need to be a MC President. So, Heist Control made you become MC President."))
-                    end
-                else
-                    if ceo_mc == "CEO" then
-                        menu.trigger_commands("ceotomc")
-                        NOTIFY(TRANSLATE("Seems like you need to be a CEO. So, Heist Control made you become CEO."))
-                    end
-                end
-            else
-                if ceo_mc == "CEO" then
-                    menu.trigger_commands("ceostart")
-                    NOTIFY(TRANSLATE("Seems like you need to be a CEO. So, Heist Control made you become CEO."))
-                elseif ceo_mc == "MC" then
-                    menu.trigger_commands("mcstart")
-                    NOTIFY(TRANSLATE("Seems like you need to be a MC President. So, Heist Control made you become MC President."))
-                end
             end
 
             SCRIPT.REQUEST_SCRIPT(name)
@@ -2669,7 +2648,16 @@
 
         ---
 
-        menu.toggle_loop(CAH_ADVCED, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player."), function()
+        menu.toggle_loop(CAH_ADVCED, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. TRANSLATE("Works On Both: Fingerprint and Keypad"), function()
+            if GET_INT_LOCAL("fm_mission_controller", 52985) ~= 1 then -- For Fingerprint, https://www.unknowncheats.me/forum/3418914-post13398.html
+                SET_INT_LOCAL("fm_mission_controller", 52985, 5)
+            end
+            if GET_INT_LOCAL("fm_mission_controller", 54047) ~= 1 then -- For Keypad, https://www.unknowncheats.me/forum/3455828-post8.html
+                SET_INT_LOCAL("fm_mission_controller", 54047, 5)
+            end
+        end)
+
+        menu.action(CAH_ADVCED, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player.") .. "\n\n" .. TRANSLATE("Press this feature once before launching the heist."), function()
             if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= nil then -- https://www.unknowncheats.me/forum/grand-theft-auto-v/463868-modest-menu-lua-scripting-megathread-239.html#google_vignette
                 if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= 0 then
                     if GET_INT_LOCAL("fmmc_launcher", 19331 + 15) > 1 then
@@ -2682,15 +2670,6 @@
                     SET_INT_GLOBAL(4718592 + 3255 + 1, 1)
                     SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
                 end
-            end
-        end)
-
-        menu.toggle_loop(CAH_ADVCED, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. TRANSLATE("Works On Both: Fingerprint and Keypad"), function()
-            if GET_INT_LOCAL("fm_mission_controller", 52985) ~= 1 then -- For Fingerprint, https://www.unknowncheats.me/forum/3418914-post13398.html
-                SET_INT_LOCAL("fm_mission_controller", 52985, 5)
-            end
-            if GET_INT_LOCAL("fm_mission_controller", 54047) ~= 1 then -- For Keypad, https://www.unknowncheats.me/forum/3455828-post8.html
-                SET_INT_LOCAL("fm_mission_controller", 54047, 5)
             end
         end)
 
@@ -3397,7 +3376,13 @@
 
     ---
 
-    menu.toggle_loop(DOOMS_HEIST, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player."), function()
+    menu.toggle_loop(DOOMS_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("The Data Breaches ACT I") .. " - " .. TRANSLATE("Setup: Server Farm (Lester)") .. " & " .. TRANSLATE("The Doomsday Scenario ACT III") .. ")", function()
+        SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
+        SET_INT_LOCAL("fm_mission_controller", 1543, 2)
+        SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
+    end)
+
+    menu.action(DOOMS_HEIST, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player.") .. "\n\n" .. TRANSLATE("Press this feature once before launching the heist."), function()
         if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= nil then -- https://www.unknowncheats.me/forum/grand-theft-auto-v/463868-modest-menu-lua-scripting-megathread-239.html#google_vignette
             if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= 0 then
                 if GET_INT_LOCAL("fmmc_launcher", 19331 + 15) > 1 then
@@ -3411,12 +3396,6 @@
                 SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
             end
         end
-    end)
-
-    menu.toggle_loop(DOOMS_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("The Data Breaches ACT I") .. " - " .. TRANSLATE("Setup: Server Farm (Lester)") .. " & " .. TRANSLATE("The Doomsday Scenario ACT III") .. ")", function()
-        SET_INT_LOCAL("fm_mission_controller", 1512, 3) -- For ACT I, Setup: Server Farm (Lester), https://www.unknowncheats.me/forum/3687245-post112.html
-        SET_INT_LOCAL("fm_mission_controller", 1543, 2)
-        SET_INT_LOCAL("fm_mission_controller", 1269 + 135, 3) -- For ACT III, https://www.unknowncheats.me/forum/3455828-post8.html
     end)
 
     menu.action(DOOMS_HEIST, TRANSLATE("Refresh Heist Screen On Facility"), {"hcdoomsrefreshscreen"}, IS_WORKING(true) .. TRANSLATE("You can update changed doomsday heist stats in the Facility by refreshing it."), function()
@@ -3451,12 +3430,12 @@
 
 --- Classic Heist
 
-    menu.list_action(CLASSIC_HEISTS, TRANSLATE("Automated Presets"), {"hcclassicpreset"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!"), {
-        { 1, TRANSLATE("The Fleeca Job"), {"fleeca"}, "" },
-        { 2, TRANSLATE("Prison Break"), {"prison"}, "" },
-        { 3, TRANSLATE("Humane Labs"), {"humane"}, "" },
-        { 4, TRANSLATE("Series A Funding"), {"seriesa"}, "" },
-        { 5, TRANSLATE("Pacific Standard Heist"), {"pacific"}, "" },
+    menu.list_action(CLASSIC_HEISTS, TRANSLATE("Automated Presets"), {"hcclassicpreset"}, TRANSLATE("If you use 'Mouse Support' feature, please before using this feature, click 'Game > Disables > Disable Game Inputs > Presets > Numpad' after using it, click 'Mouse'"), {
+        { 1, TRANSLATE("The Fleeca Job"), {"fleeca"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 2, TRANSLATE("Prison Break"), {"prison"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 3, TRANSLATE("Humane Labs"), {"humane"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 4, TRANSLATE("Series A Funding"), {"seriesa"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 5, TRANSLATE("Pacific Standard Heist"), {"pacific"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
     }, function(index)
         if index == 1 then
             SET_INT_GLOBAL(1928233 + 1 + 1, -14806)
@@ -3485,7 +3464,7 @@
         end
 
         PAD.SET_CURSOR_POSITION(0.775, 0.175) -- Moves Cursor
-        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1) -- Presses Enter
+        PAD.SET_CONTROL_VALUE_NEXT_FRAME(0, 237, 1) -- Presses Left Mouse Button
         PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 202, 1) -- Presses ESC
         util.yield(500)
         SET_INT_GLOBAL(1930201 + 3008 + 1, GET_INT_GLOBAL(1928233 + 1 + 2))
@@ -3510,29 +3489,17 @@
             SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, 1850000) -- How much did you take in the casino and pacific standard heist
         end)
         menu.toggle_loop(PACIFIC_STANDARD_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3694259-post117.html
-            SET_LOCAL_BIT("fm_mission_controller", 28335, 9)
+            SET_LOCAL_BIT("fm_mission_controller", 9773, 9)
         end)
 
     ---
 
-    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player."), function()
-        if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= nil then -- https://www.unknowncheats.me/forum/grand-theft-auto-v/463868-modest-menu-lua-scripting-megathread-239.html#google_vignette
-            if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= 0 then
-                if GET_INT_LOCAL("fmmc_launcher", 19331 + 15) > 1 then
-                    SET_INT_LOCAL("fmmc_launcher", 19331 + 15, 1)
-                    SET_INT_GLOBAL(794744 + 4 + 1 + (GET_INT_LOCAL("fmmc_launcher", 19331 + 34) * 89) + 69, 1)
-                end
-                
-                SET_INT_GLOBAL(4718592 + 3252, 1)
-                SET_INT_GLOBAL(4718592 + 3253, 1)
-                SET_INT_GLOBAL(4718592 + 3255 + 1, 1)
-                SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
-            end
-        end
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Complete All Setup"), {}, "", function()
+        STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
     end)
 
-    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Complete All Setup"), {}, TRANSLATE("Works on all of the classic heists. You need to activate this until first setup mission is ended."), function()
-        STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Remove The Cooldown"), {}, TRANSLATE("This doesn't bypass server-sided cooldown time, 20 mins. This just bypasses unable to launch heist in heist board."), function()
+        SET_INT_GLOBAL(1877075 + 1 + (PLAYER.PLAYER_ID() * 77) + 76, -1) -- Thanks to @vithiam on Discord
     end)
 
     FleecaBypassMinMaxTunables = {
@@ -3548,6 +3515,22 @@
         SET_INT_GLOBAL(262145 + FleecaBypassMinMaxTunables[1], 70)
         SET_INT_GLOBAL(262145 + FleecaBypassMinMaxTunables[2], 15)
         SET_INT_GLOBAL(262145 + FleecaBypassMinMaxTunables[3], 15)
+    end)
+
+    menu.action(CLASSIC_HEISTS, TRANSLATE("Allow You Play Alone"), {}, IS_WORKING(true) .. TRANSLATE("Allow you play alone this heist without another player.") .. "\n\n" .. TRANSLATE("Press this feature once before launching the heist."), function()
+        if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= nil then -- https://www.unknowncheats.me/forum/grand-theft-auto-v/463868-modest-menu-lua-scripting-megathread-239.html#google_vignette
+            if GET_INT_LOCAL("fmmc_launcher", 19331 + 34) ~= 0 then
+                if GET_INT_LOCAL("fmmc_launcher", 19331 + 15) > 1 then
+                    SET_INT_LOCAL("fmmc_launcher", 19331 + 15, 1)
+                    SET_INT_GLOBAL(794744 + 4 + 1 + (GET_INT_LOCAL("fmmc_launcher", 19331 + 34) * 89) + 69, 1)
+                end
+                
+                SET_INT_GLOBAL(4718592 + 3252, 1)
+                SET_INT_GLOBAL(4718592 + 3253, 1)
+                SET_INT_GLOBAL(4718592 + 3255 + 1, 1)
+                SET_INT_GLOBAL(4718592 + 176675 + 1, 0)
+            end
+        end
     end)
 
     menu.action(CLASSIC_HEISTS, TRANSLATE("Force Ready"), {}, TRANSLATE("Make all of players forced ready in planning board."), function()
@@ -4625,12 +4608,6 @@
             SET_INT_TUNABLE_GLOBAL("XM22_TAXI_DRIVER_ENABLE", 1)
         end)
 
-        menu.action(UNLOCKER_MISSIONS, TRANSLATE("Unlock Yacht Missions"), {}, "", function()
-            STAT_SET_INT("YACHT_MISSION_PROG", 0)
-            STAT_SET_INT("YACHT_MISSION_FLOW", 21845)
-            STAT_SET_INT("CASINO_DECORATION_GIFT_1", -1)
-        end)
-
         menu.action(UNLOCKER_MISSIONS, TRANSLATE("Unlock All Contacts"), {}, "", function()
             STAT_SET_INT("FM_ACT_PHN", -1)
             STAT_SET_INT("FM_VEH_TX1", -1)
@@ -4640,20 +4617,6 @@
             for i = 2, 9 do
                 STAT_SET_INT("FM_ACT_PH" .. i, -1)
             end
-        end)
-
-        menu.action(UNLOCKER_MISSIONS, TRANSLATE("Skip Lamar Missions To The Last One"), {}, TRANSLATE("Change your session to apply!"), function() -- https://www.unknowncheats.me/forum/2770402-post3008.html
-            STAT_SET_BOOL("LOW_FLOW_CS_DRV_SEEN", true)
-            STAT_SET_BOOL("LOW_FLOW_CS_TRA_SEEN", true)
-            STAT_SET_BOOL("LOW_FLOW_CS_FUN_SEEN", true)
-            STAT_SET_BOOL("LOW_FLOW_CS_PHO_SEEN", true)
-            STAT_SET_BOOL("LOW_FLOW_CS_FIN_SEEN", true)
-            STAT_SET_BOOL("LOW_BEN_INTRO_CS_SEEN", true)
-            util.yield_once()
-            STAT_SET_INT("LOWRIDER_FLOW_COMPLETE", 3)
-            util.yield_once()
-            STAT_SET_INT("LOW_FLOW_CURRENT_PROG", 8)
-            STAT_SET_INT("LOW_FLOW_CURRENT_CALL", 8)
         end)
 
     ---
@@ -5293,7 +5256,7 @@
                 SET_INT_LOCAL("fm_mission_controller_2020", 48513 + 1765 + 1, 50) -- 'fm_mission_controller_2020' instant finish variable?
             end)
 
-            menu.action(INSTANT_FINISH, TRANSLATE("Casino Aggressive / Classic"), {"hcinsfincah"}, IS_WORKING(true) .. TRANSLATE("Note that if you don't use Heist Control's automated Casino Heist presets, won't get money."), function()
+            menu.action(INSTANT_FINISH, TRANSLATE("Casino Aggressive / Classic"), {"hcinsfincah"}, IS_WORKING(true) .. TRANSLATE("Note that if you don't use Heist Control's automated Casino Heist presets, won't get money.") .. "\n\n" .. TRANSLATE("Instant finishing Pacific Standard heist won't work."), function()
                 menu.trigger_commands("scripthost")
                 
                 SET_INT_LOCAL("fm_mission_controller", 19728 + 1741, 80) -- Casino Aggressive Kills & Act 3
@@ -5357,40 +5320,40 @@
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
-            START_SCRIPT("CEO", "appbunkerbusiness")
+            START_SCRIPT("appbunkerbusiness")
         end)
         menu.textslider(REMOTE_ACCESS, TRANSLATE("Air Cargo"), {"hcappaircargo"}, "", {
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
-            START_SCRIPT("CEO", "appsmuggler")
+            START_SCRIPT("appsmuggler")
         end)
         menu.textslider(REMOTE_ACCESS, TRANSLATE("Nightclub"), {"hcappnightclub"}, "", {
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
-            START_SCRIPT("CEO", "appbusinesshub")
+            START_SCRIPT("appbusinesshub")
         end)
         menu.textslider(REMOTE_ACCESS, TRANSLATE("San Andreas Mercenaries Terminal"), {"hcappsanandreasmercenaries"}, "", {
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
-            START_SCRIPT("CEO", "appavengeroperations")
+            START_SCRIPT("appavengeroperations")
         end)
         menu.textslider(REMOTE_ACCESS, TRANSLATE("Agency"), {"hcappagency"}, TRANSLATE("Note that you don't have the app, some of functions won't work."), {
             TRANSLATE("Open"),
             TRANSLATE("Close"),
         }, function()
-            START_SCRIPT("CEO", "appfixersecurity")
+            START_SCRIPT("appfixersecurity")
         end)
         menu.action(REMOTE_ACCESS, TRANSLATE("The Open Road"), {"hcapptheopenroad"}, "(" .. TRANSLATE("Biker Business Management") .. ")", function()
-            START_SCRIPT("MC", "appbikerbusiness")
+            START_SCRIPT("appbikerbusiness")
         end)
         menu.action(REMOTE_ACCESS, TRANSLATE("Master Control Terminal"), {"hcappmastercontrol"}, "", function()
-            START_SCRIPT("CEO", "apparcadebusinesshub")
+            START_SCRIPT("apparcadebusinesshub")
         end)
         menu.action(REMOTE_ACCESS, TRANSLATE("Touchscreen Terminal"), {"hcapptouchscreen"}, "(" .. TRANSLATE("Terrobyte") .. ")", function()
-            START_SCRIPT("CEO", "apphackertruck")
+            START_SCRIPT("apphackertruck")
         end)
 
     ---

@@ -1,7 +1,7 @@
 # DON'T REMOVE '#', OTHERWISE WILL CAUSE ERRORS!
 
-# Generated Date: 04/10/2024 07:02:59 PM
-# Heist Control Version: V 3.4.0
+# Generated Date: 04/13/2024 12:14:34 PM
+# Heist Control Version: V 3.4.1
 
 # Thank you for translating Heist Control!
 # You should translate right-side of '=' character.
@@ -136,7 +136,6 @@ Unlock DJ Pooh Shirts = Unlock DJ Pooh Shirts
 Buildings = Buildings
 Casino Store Ace Masks = Casino Store Ace Masks
 Missions = Missions
-Unlock Yacht Missions = Unlock Yacht Missions
 Special Anniversaries = Special Anniversaries
 Christmas = Christmas
 Bypass Christmas Clothing = Bypass Christmas Clothing
@@ -353,7 +352,6 @@ Add Cosmetic Decorations To The Office/MC = Add Cosmetic Decorations To The Offi
 To apply, sell special crate or vehicle cargo and change your session! = To apply, sell special crate or vehicle cargo and change your session!
 Unlock Taxi Missions = Unlock Taxi Missions
 Unlock All Contacts = Unlock All Contacts
-Skip Lamar Missions To The Last One = Skip Lamar Missions To The Last One
 You must keep this feature enabled in order to wear it! = You must keep this feature enabled in order to wear it!
 Valentine's Day = Valentine's Day
 Unlock Sasquatch Outfit = Unlock Sasquatch Outfit
@@ -537,7 +535,6 @@ You can update changed doomsday heist stats in the Facility by refreshing it. = 
 Pacific Standard Heist = Pacific Standard Heist
 Keep Cash $1.85M Take = Keep Cash $1.85M Take
 This makes you won't lose money by getting shot to the cash bags from polices = This makes you won't lose money by getting shot to the cash bags from polices
-Works on all of the classic heists. You need to activate this until first setup mission is ended. = Works on all of the classic heists. You need to activate this until first setup mission is ended.
 Note that you don't have the app, some of functions won't work. = Note that you don't have the app, some of functions won't work.
 Open = Open
 Close = Close
@@ -750,3 +747,8 @@ Biker Bar Mission = Biker Bar Mission
 San Andreas Mercenaries Terminal = San Andreas Mercenaries Terminal
 Agency = Agency
 Motorbike = Motorbike
+Press this feature once before launching the heist. = Press this feature once before launching the heist.
+If you use 'Mouse Support' feature, please before using this feature, click 'Game > Disables > Disable Game Inputs > Presets > Numpad' after using it, click 'Mouse' = If you use 'Mouse Support' feature, please before using this feature, click 'Game > Disables > Disable Game Inputs > Presets > Numpad' after using it, click 'Mouse'
+Remove The Cooldown = Remove The Cooldown
+This doesn't bypass server-sided cooldown time, 20 mins. This just bypasses unable to launch heist in heist board. = This doesn't bypass server-sided cooldown time, 20 mins. This just bypasses unable to launch heist in heist board.
+Instant finishing Pacific Standard heist won't work. = Instant finishing Pacific Standard heist won't work.
