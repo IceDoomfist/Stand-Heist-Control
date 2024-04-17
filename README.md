@@ -17,8 +17,9 @@
 > - Instant Finish Heists and Others
 > - Allow you play alone in Casino, Classic, Doomsday heists!
 > - Skip Hacking Process
-> - Custom Stat Editor And Reader: Included [GTAHaXUI](https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html) Stat Editor
-> - Tons of other features
+> - Force Ready
+> - [GTAHaXUI](https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html) Stat Editor
+> - Tons of other features for heists and unlocks
 
 
 ## Introduction

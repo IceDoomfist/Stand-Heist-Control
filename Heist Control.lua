@@ -38,7 +38,7 @@
 
     --- Important
 
-        HC_VERSION = "V 3.4.1"
+        HC_VERSION = "V 3.4.2"
         CODED_GTAO_VERSION = 1.68
 
     ---
@@ -731,7 +731,7 @@
         PERICO_HEIST = menu.list(menu.my_root(), TRANSLATE("Cayo Perico Heist"), {"hccp"}, TRANSLATE("Max payout for this heist") .. "\n\n" .. TRANSLATE("- Under $2.550.000 per run") .. "\n" .. TRANSLATE("- Under $4.100.000 per hour") .. "\n\n" .. TRANSLATE("You won't get money if you don't keep money limitation!"), function();  end)
         CASINO_HEIST = menu.list(menu.my_root(), TRANSLATE("Diamond Casino Heist"), {"hccah"}, TRANSLATE("Max payout for this heist") .. "\n\n" .. TRANSLATE("- Under $3.650.000 per run") .. "\n\n" .. TRANSLATE("You won't get money if you don't keep money limitation!"), function(); end)
         DOOMS_HEIST = menu.list(menu.my_root(), TRANSLATE("Doomsday Heist"), {"hcdooms"}, TRANSLATE("Max payout for this heist") .. "\n\n" .. TRANSLATE("- Under $2.550.000 per run") .. "\n\n" .. TRANSLATE("You won't get money if you don't keep money limitation!"), function(); end)
-        CLASSIC_HEISTS = menu.list(menu.my_root(), TRANSLATE("Classic Heist"), {"hcclassic"}, TRANSLATE("Max payout for this heist") .. "\n\n" .. TRANSLATE("- Fleeca Heist: Under $15.000.000 per run") .. "\n\n" .. TRANSLATE("You won't get money if you don't keep money limitation!"), function(); end)
+        CLASSIC_HEISTS = menu.list(menu.my_root(), TRANSLATE("Classic Heist"), {"hcclassic"}, TRANSLATE("Max payout for this heist") .. "\n\n" .. TRANSLATE("- Fleeca Heist ~ Pacific Standard Heist: Under $15.000.000 per run") .. "\n\n" .. TRANSLATE("You won't get money if you don't keep money limitation!"), function(); end)
         ROBBERYS = menu.list(menu.my_root(), TRANSLATE("Robberies"), {"hcrob"}, "", function(); end)
         MISSONS = menu.list(menu.my_root(), TRANSLATE("Missions"), {"hcmission"}, "", function(); end)
         MASTER_UNLOCKER = menu.list(menu.my_root(), TRANSLATE("Master Unlocker"), {"hcmu"}, "", function(); end)
@@ -1800,6 +1800,12 @@
             SET_FLOAT_GLOBAL(262145 + CPRemFeeTunables[2], -0.02)
         end)
 
+        menu.action(PERICO_ADV, TRANSLATE("Force Ready"), {"hccpforceready"}, IS_WORKING(true) .. TRANSLATE("Forces the players on board to ready."), function() 
+            SET_INT_GLOBAL(1971856 + 1 + (1 * 27) + 8 + 1, 1) -- Thanks to @vithiam on Discord
+            SET_INT_GLOBAL(1971856 + 1 + (2 * 27) + 8 + 2, 1) 
+            SET_INT_GLOBAL(1971856 + 1 + (3 * 27) + 8 + 3, 1) 
+        end)
+
         menu.action(PERICO_ADV, TRANSLATE("Obtain The Primary Target"), {"hccpfintar"}, IS_WORKING(true) .. "(" .. TRANSLATE("Cayo Perico Heist") .. " > " .. TRANSLATE("Teleport Places") .. " > " .. TRANSLATE("Compound") .. " > " .. TRANSLATE("Primary Target") .. ")", function() -- https://www.unknowncheats.me/forum/3418914-post13398.html
             SET_INT_LOCAL("fm_mission_controller_2020", 30356, 5) -- CutterStage
             SET_INT_LOCAL("fm_mission_controller_2020", 30357, 3) -- BitCheck
@@ -2673,6 +2679,12 @@
             end
         end)
 
+        menu.action(CAH_ADVCED, TRANSLATE("Force Ready"), {"hccahforceready"}, IS_WORKING(true) .. TRANSLATE("Forces the players on board to ready."), function() 
+            SET_INT_GLOBAL(1968308 + 1 + (1 * 68) + 8 + 1, 1) -- Thanks to @vithiam on Discord
+            SET_INT_GLOBAL(1968308 + 1 + (2 * 68) + 8 + 2, 1) 
+            SET_INT_GLOBAL(1968308 + 1 + (3 * 68) + 8 + 3, 1)
+        end)
+
         menu.action(CAH_ADVCED, TRANSLATE("Skip Drilling The Vault Door"), {"hccahinsvault"}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3418914-post13398.html
             SET_INT_LOCAL("fm_mission_controller", 10107 + 7, GET_INT_LOCAL("fm_mission_controller", 10107 + 37))
         end)
@@ -3082,15 +3094,17 @@
 
     CASINO_MORE = menu.list(CASINO_HEIST, TRANSLATE("Others"), {}, "", function(); end)
 
-        menu.textslider_stateful(CASINO_MORE, TRANSLATE("Load & Unload - All Boards"), {}, "", {
-            TRANSLATE("Load"),
-            TRANSLATE("Unload"),
-        }, function(index)
-            STAT_SET_INT("H3OPT_BITSET1", index - 2)
-            STAT_SET_INT("H3OPT_BITSET0", index - 2)
+        menu.action(CASINO_MORE, TRANSLATE("Load All Boards"), {"hccahloadallboards"}, "", function()
+            STAT_SET_INT("H3OPT_BITSET1", -1)
+            STAT_SET_INT("H3OPT_BITSET0", -1)
         end)
 
-        REM_REPEAT_COOLDOWN = menu.action(CASINO_MORE, TRANSLATE("Remove Repeat Cooldown"), {}, TRANSLATE("You should not in your arcade to use this feature.") .. "\n\n" .. TRANSLATE("Meaning of the cooldown: Requesting new Diamond Casino Heist in calling to Lester"), function()
+        menu.action(CASINO_MORE, TRANSLATE("Unload All Boards"), {"hccahunloadallboards"}, "", function()
+            STAT_SET_INT("H3OPT_BITSET1", 0)
+            STAT_SET_INT("H3OPT_BITSET0", 0)
+        end)
+
+        menu.action(CASINO_MORE, TRANSLATE("Remove Repeat Cooldown"), {"hccahremovecooldown"}, TRANSLATE("You should not in your arcade to use this feature.") .. "\n\n" .. TRANSLATE("Meaning of the cooldown: Requesting new Diamond Casino Heist in calling to Lester"), function()
             if not IS_IN_ARCADE() then
                 STAT_SET_INT("H3_COMPLETEDPOSIX", -1)
                 STAT_SET_INT("MPPLY_H3_COOLDOWN", -1)
@@ -3398,6 +3412,12 @@
         end
     end)
 
+    menu.action(DOOMS_HEIST, TRANSLATE("Force Ready"), {"hcdoomsforceready"}, IS_WORKING(true) .. TRANSLATE("Forces the players on board to ready."), function() 
+        SET_INT_GLOBAL(1882422 + 1 + (1 * 142) + 39 + 1 + 4 + 8, 1) -- Thanks to @vithiam on Discord
+        SET_INT_GLOBAL(1882422 + 1 + (2 * 142) + 39 + 2 + 4 + 8, 1)
+        SET_INT_GLOBAL(1882422 + 1 + (3 * 142) + 39 + 3 + 4 + 8, 1)
+    end)
+
     menu.action(DOOMS_HEIST, TRANSLATE("Refresh Heist Screen On Facility"), {"hcdoomsrefreshscreen"}, IS_WORKING(true) .. TRANSLATE("You can update changed doomsday heist stats in the Facility by refreshing it."), function()
         SET_INT_LOCAL("gb_gang_ops_planning", 182, 6) -- https://www.unknowncheats.me/forum/3682032-post104.html
     end)
@@ -3430,12 +3450,12 @@
 
 --- Classic Heist
 
-    menu.list_action(CLASSIC_HEISTS, TRANSLATE("Automated Presets"), {"hcclassicpreset"}, TRANSLATE("If you use 'Mouse Support' feature, please before using this feature, click 'Game > Disables > Disable Game Inputs > Presets > Numpad' after using it, click 'Mouse'"), {
-        { 1, TRANSLATE("The Fleeca Job"), {"fleeca"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
-        { 2, TRANSLATE("Prison Break"), {"prison"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
-        { 3, TRANSLATE("Humane Labs"), {"humane"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
-        { 4, TRANSLATE("Series A Funding"), {"seriesa"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
-        { 5, TRANSLATE("Pacific Standard Heist"), {"pacific"}, TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+    menu.list_action(CLASSIC_HEISTS, TRANSLATE("Automated Presets"), {"hcclassicpreset"}, IS_WORKING(true) .. TRANSLATE("If you use 'Mouse Support' feature, please before using this feature, click 'Game > Disables > Disable Game Inputs > Presets > Numpad' after using it, click 'Mouse'"), {
+        { 1, TRANSLATE("The Fleeca Job"), {"fleeca"}, IS_WORKING(true) .. TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 2, TRANSLATE("Prison Break"), {"prison"}, IS_WORKING(true) .. TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 3, TRANSLATE("Humane Labs"), {"humane"}, IS_WORKING(true) .. TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 4, TRANSLATE("Series A Funding"), {"seriesa"}, IS_WORKING(true) .. TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
+        { 5, TRANSLATE("Pacific Standard Heist"), {"pacific"}, IS_WORKING(true) .. TRANSLATE("Let you and other players will get $15M when you are host and in finale.") .. "\n\n" .. TRANSLATE("Make sure DIFFICULTY is NORMAL!") },
     }, function(index)
         if index == 1 then
             SET_INT_GLOBAL(1928233 + 1 + 1, -14806)
@@ -3471,35 +3491,21 @@
         PAD.SET_CURSOR_POSITION(0.5, 0.5)
     end)
 
-    FLEECA_HEIST = menu.list(CLASSIC_HEISTS, TRANSLATE("Fleeca Heist"), {}, "", function(); end)
-
-        menu.toggle_loop(FLEECA_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3455828-post8.html
-            SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7)
-        end)
-
-        menu.toggle_loop(FLEECA_HEIST, TRANSLATE("Skip Drilling"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3485435-post19.html
-            SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100)
-        end)
-
-    ---
-
-    PACIFIC_STANDARD_HEIST = menu.list(CLASSIC_HEISTS, TRANSLATE("Pacific Standard Heist"), {}, "", function(); end)
-
-        menu.toggle_loop(PACIFIC_STANDARD_HEIST, TRANSLATE("Keep Cash $1.85M Take"), {}, IS_WORKING(true) .. TRANSLATE("This makes you won't lose money by getting shot to the cash bags from polices") .. "\n\n" .. TRANSLATE("Note that you shouldn't enable this feature while playing the Casino Heist: due to synced with payout for it"), function()
-            SET_INT_LOCAL("fm_mission_controller", 19728 + 2686, 1850000) -- How much did you take in the casino and pacific standard heist
-        end)
-        menu.toggle_loop(PACIFIC_STANDARD_HEIST, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(false), function() -- https://www.unknowncheats.me/forum/3694259-post117.html
-            SET_LOCAL_BIT("fm_mission_controller", 9773, 9)
-        end)
-
-    ---
-
-    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Complete All Setup"), {}, "", function()
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Complete All Setup"), {}, TRANSLATE("There are video tutorials in Heist Control Discord server. If you have no idea how to use this feature, see them!"), function()
         STAT_SET_INT("HEIST_PLANNING_STAGE", -1)
     end)
 
-    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Remove The Cooldown"), {}, TRANSLATE("This doesn't bypass server-sided cooldown time, 20 mins. This just bypasses unable to launch heist in heist board."), function()
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Remove The Cooldown"), {}, IS_WORKING(true) .. TRANSLATE("This doesn't bypass server-sided cooldown time, 20 mins. This just bypasses unable to launch heist in heist board."), function()
         SET_INT_GLOBAL(1877075 + 1 + (PLAYER.PLAYER_ID() * 77) + 76, -1) -- Thanks to @vithiam on Discord
+    end)
+
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("Fleeca Heist") .. " & " .. TRANSLATE("Pacific Standard Heist") .. ")", function()
+        SET_INT_LOCAL("fm_mission_controller", 11776 + 24, 7) -- Fleeca Heist, https://www.unknowncheats.me/forum/3455828-post8.html
+        SET_LOCAL_BIT("fm_mission_controller", 9773, 9) -- Pacific Standard Heist, https://www.unknowncheats.me/forum/3694259-post117.html
+    end)
+
+    menu.toggle_loop(CLASSIC_HEISTS, TRANSLATE("Skip Drilling"), {}, IS_WORKING(true) .. "(" .. TRANSLATE("Fleeca Heist") .. ")", function()
+        SET_FLOAT_LOCAL("fm_mission_controller", 10067 + 11, 100) -- https://www.unknowncheats.me/forum/3485435-post19.html
     end)
 
     FleecaBypassMinMaxTunables = {
@@ -3533,7 +3539,7 @@
         end
     end)
 
-    menu.action(CLASSIC_HEISTS, TRANSLATE("Force Ready"), {}, TRANSLATE("Make all of players forced ready in planning board."), function()
+    menu.action(CLASSIC_HEISTS, TRANSLATE("Force Ready"), {"hcclassicforceready"}, IS_WORKING(true) .. TRANSLATE("Make all of players forced ready in planning board."), function()
         SET_INT_GLOBAL(2657921 + 1 + (1 * 463) + 266, 6) -- Thanks to @vithiam on Discord
         SET_INT_GLOBAL(2657921 + 1 + (2 * 463) + 266, 6)
         SET_INT_GLOBAL(2657921 + 1 + (3 * 463) + 266, 6)
@@ -3749,7 +3755,7 @@
             STAT_SET_BOOL("SALV23_CAN_KEEP", true)
         end)
 
-        menu.toggle_loop(CHOP_SHOP_ROB, TRANSLATE("Skip The Hacking Process"), {}, TRANSLATE("Works On Both: Beam Puzzle & Brute Force"), function()
+        menu.toggle_loop(CHOP_SHOP_ROB, TRANSLATE("Skip The Hacking Process"), {}, IS_WORKING(true) .. TRANSLATE("Works On Both: Beam Puzzle & Brute Force"), function()
             SET_INT_LOCAL("fm_content_vehrob_casino_prize", 1043 + 135, 3) -- Beam Puzzle Hack
             SET_INT_LOCAL("fm_content_vehrob_police", 7478, 536871425) -- Brute Force
         end)
@@ -5811,528 +5817,314 @@
         end
     end)
 
-    STAT_EDITOR_READER = menu.list(TOOLS, TRANSLATE("Stat Editor And Reader"), {}, "", function(); end)
+    PRESET_STAT_EDITOR = menu.list(TOOLS, TRANSLATE("Preset Stat Editor"), {}, "", function(); end)
 
-        PRESET_STAT_EDITOR = menu.list(STAT_EDITOR_READER, TRANSLATE("Preset Stat Editor"), {}, "", function(); end)
+        PLAYTIME_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Playtime"), {}, "", function(); end)
 
-            PLAYTIME_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Playtime"), {}, "", function(); end)
+            menu.divider(PLAYTIME_EDITOR, TRANSLATE("Method"))
 
-                menu.divider(PLAYTIME_EDITOR, TRANSLATE("Method"))
+                IS_TIME_ADDING_METHOD = menu.toggle(PLAYTIME_EDITOR, TRANSLATE("Add Additional Playtime"), {}, TRANSLATE("Enabled: Add Method") .. "\n" .. TRANSLATE("- Adds Up To Your Current Playtime") .. "\n\n" .. TRANSLATE("Disabled: Overwrite Method") .. "\n" .. TRANSLATE("- Overwrites Your Current Playtime") .. "\n\n" .. TRANSLATE("Note: The overwrite method supports up to 24.8 days, but add method supports up to 50,000 days"), function(); end)
 
-                    IS_TIME_ADDING_METHOD = menu.toggle(PLAYTIME_EDITOR, TRANSLATE("Add Additional Playtime"), {}, TRANSLATE("Enabled: Add Method") .. "\n" .. TRANSLATE("- Adds Up To Your Current Playtime") .. "\n\n" .. TRANSLATE("Disabled: Overwrite Method") .. "\n" .. TRANSLATE("- Overwrites Your Current Playtime") .. "\n\n" .. TRANSLATE("Note: The overwrite method supports up to 24.8 days, but add method supports up to 50,000 days"), function(); end)
-
-                ---
-                
-                menu.divider(PLAYTIME_EDITOR, TRANSLATE("Modify Stat"))
-
-                    PLAYTIME_DAYS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Days"), {"hcplaytimedays"}, "", 0, 50000, 0, 1, function(); end)
-                    PLAYTIME_HOURS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Hours"), {"hcplaytimehours"}, "", 0, 50000, 0, 1, function(); end)
-                    PLAYTIME_MINS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Minutes"), {"hcplaytimemins"}, "", 0, 50000, 0, 1, function(); end)
-
-                ---
-
-                menu.divider(PLAYTIME_EDITOR, TRANSLATE("Set Stat"))
-
-                    PlaytimeStats = {
-                        { TRANSLATE("Total Playtime"), "TOTAL_PLAYING_TIME" },
-                        { TRANSLATE("GTA Online Playtime"), "MP_PLAYING_TIME" },
-                        { TRANSLATE("Deathmatches"), "MPPLY_TOTAL_TIME_SPENT_DEATHMAT" },
-                        { TRANSLATE("Races"), "MPPLY_TOTAL_TIME_SPENT_RACES" },
-                        { TRANSLATE("Creator"), "MPPLY_TOTAL_TIME_MISSION_CREATO" },
-                    }
-                    for i = 1, #PlaytimeStats do
-                        menu.action(PLAYTIME_EDITOR, PlaytimeStats[i][1], {}, "", function()
-                            if not menu.get_value(IS_TIME_ADDING_METHOD) then
-                                STAT_SET_INT(PlaytimeStats[i][2], menu.get_value(PLAYTIME_DAYS) * 86400000 + menu.get_value(PLAYTIME_HOURS) * 3600000 + menu.get_value(PLAYTIME_MINS) * 60000)
-                            else
-                                STAT_INCREMENT(PlaytimeStats[i][2], menu.get_value(PLAYTIME_DAYS) * 86400000 + menu.get_value(PLAYTIME_HOURS) * 3600000 + menu.get_value(PLAYTIME_MINS) * 60000)
-                            end
+            ---
             
-                            NOTIFY
-                            (
-                                TRANSLATE("Successfully set!") .. "\n\n" .. 
-                                TRANSLATE("Days") .. ": " .. menu.get_value(PLAYTIME_DAYS) .. "\n" .. 
-                                TRANSLATE("Hours") .. ": " .. menu.get_value(PLAYTIME_HOURS) .. "\n" .. 
-                                TRANSLATE("Mins") .. ": " .. menu.get_value(PLAYTIME_MINS)
-                            )
+            menu.divider(PLAYTIME_EDITOR, TRANSLATE("Modify Stat"))
 
-                            FORCE_CLOUD_SAVE()
-                        end)
+                PLAYTIME_DAYS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Days"), {"hcplaytimedays"}, "", 0, 50000, 0, 1, function(); end)
+                PLAYTIME_HOURS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Hours"), {"hcplaytimehours"}, "", 0, 50000, 0, 1, function(); end)
+                PLAYTIME_MINS = menu.slider(PLAYTIME_EDITOR, TRANSLATE("Minutes"), {"hcplaytimemins"}, "", 0, 50000, 0, 1, function(); end)
+
+            ---
+
+            menu.divider(PLAYTIME_EDITOR, TRANSLATE("Set Stat"))
+
+                PlaytimeStats = {
+                    { TRANSLATE("Total Playtime"), "TOTAL_PLAYING_TIME" },
+                    { TRANSLATE("GTA Online Playtime"), "MP_PLAYING_TIME" },
+                    { TRANSLATE("Deathmatches"), "MPPLY_TOTAL_TIME_SPENT_DEATHMAT" },
+                    { TRANSLATE("Races"), "MPPLY_TOTAL_TIME_SPENT_RACES" },
+                    { TRANSLATE("Creator"), "MPPLY_TOTAL_TIME_MISSION_CREATO" },
+                }
+                for i = 1, #PlaytimeStats do
+                    menu.action(PLAYTIME_EDITOR, PlaytimeStats[i][1], {}, "", function()
+                        if not menu.get_value(IS_TIME_ADDING_METHOD) then
+                            STAT_SET_INT(PlaytimeStats[i][2], menu.get_value(PLAYTIME_DAYS) * 86400000 + menu.get_value(PLAYTIME_HOURS) * 3600000 + menu.get_value(PLAYTIME_MINS) * 60000)
+                        else
+                            STAT_INCREMENT(PlaytimeStats[i][2], menu.get_value(PLAYTIME_DAYS) * 86400000 + menu.get_value(PLAYTIME_HOURS) * 3600000 + menu.get_value(PLAYTIME_MINS) * 60000)
+                        end
+        
+                        NOTIFY
+                        (
+                            TRANSLATE("Successfully set!") .. "\n\n" .. 
+                            TRANSLATE("Days") .. ": " .. menu.get_value(PLAYTIME_DAYS) .. "\n" .. 
+                            TRANSLATE("Hours") .. ": " .. menu.get_value(PLAYTIME_HOURS) .. "\n" .. 
+                            TRANSLATE("Mins") .. ": " .. menu.get_value(PLAYTIME_MINS)
+                        )
+
+                        FORCE_CLOUD_SAVE()
+                    end)
+                end
+
+            ---
+
+        ---
+
+        CASH_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Cash Earned & Spent"), {}, "", function(); end)
+
+            menu.divider(CASH_EDITOR, TRANSLATE("Modify Stat"))
+
+                CASH_EDITOR_AMOUNT = menu.slider(CASH_EDITOR, TRANSLATE("Cash Amount"), {"hccasheditor"}, "($)", INT_MIN, INT_MAX, 0, 10000, function(); end)
+
+            ---
+
+            menu.divider(CASH_EDITOR, TRANSLATE("Set Stat"))
+
+                menu.action(CASH_EDITOR, TRANSLATE("Total Earned"), {}, "", function()
+                    STAT_SET_INT("MPPLY_TOTAL_EVC", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Total Spent"), {}, "", function()
+                    STAT_SET_INT("MPPLY_TOTAL_SVC", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+
+            ---
+
+            menu.divider(CASH_EDITOR, TRANSLATE("Related Earned Cash"))
+
+                menu.action(CASH_EDITOR, TRANSLATE("Jobs"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_JOBS", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Betting"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_BETTING", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Shared"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_SHARED", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Car Sales"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_SELLING_VEH", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Others"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_GOOD_SPORT", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+                menu.action(CASH_EDITOR, TRANSLATE("Picked Up"), {}, "", function()
+                    STAT_SET_INT("MONEY_EARN_PICKED_UP", menu.get_value(CASH_EDITOR_AMOUNT))
+                    FORCE_CLOUD_SAVE()
+                end)
+
+            ---
+
+        CREW_LEVEL_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Crew Level"), {}, "", function(); end)
+
+            for i = 0, 4 do
+                menu.divider(CREW_LEVEL_EDITOR, TRANSLATE("Crew") .. " " .. i)
+
+                    CREW_RP = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Crew RP"))
+                    CREW_ID = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Crew ID"))
+                    CREW_CURRENT = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Current Crew Level"))
+                    CREW_LEVEL = menu.slider(CREW_LEVEL_EDITOR, TRANSLATE("Choose Crew Level"), { "hccrewlevel" .. i }, "", 1, 8000, 1, 1, function(); end)
+                    menu.action(CREW_LEVEL_EDITOR, TRANSLATE("Set Crew Level"), { "hcsetcrewlevel" .. i }, "", function()
+                        local RpForRank = util.get_rp_required_for_rank(menu.get_value(CREW_LEVEL))
+                        STAT_SET_INT("MPPLY_CREW_LOCAL_XP_" .. i, RpForRank)
+                    end)
+
+                    menu.set_value(CREW_RP, STAT_GET_INT("MPPLY_CREW_LOCAL_XP_" .. i))
+                    menu.set_value(CREW_ID, STAT_GET_INT("MPPLY_CREW_" .. i .. "_ID"))
+                    menu.set_value(CREW_CURRENT, STAT_GET_INT("MPPLY_CURRENT_CREW_RANK"))
+
+                ---
+            end
+
+        ---
+
+    ---
+
+    GTAHAXUI_STAT_EDITOR = menu.list(TOOLS, TRANSLATE("GTAHaXUI Stat Editor"), {}, TRANSLATE("GTAHaXUI is a free mod menu for editing stats, globals, and locals from UnknownCheats. Heist Control can help you using customizable GTAHaXUI's stat txt files. Note that you can download the files by googling easily."), function(); end)
+
+        GTAHAXUI_STAT_EDITOR_LIST = menu.list(GTAHAXUI_STAT_EDITOR, TRANSLATE("Load Custom Stat Files"), {"hchaxui"}, TRANSLATE("Supported Stat Types") .. "\n\n" .. "- 'INT32': " .. TRANSLATE("For normal numbers, generally called 'Int(eger)'") .. "\n" .. "- 'INT64': " .. TRANSLATE("For more big numbers") .. "\n" .. "- 'BOOL': " ..  TRANSLATE("'true' or 'false'"), function(); end)
+
+            menu.divider(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Tools"))
+
+                menu.action(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
+                    WRITE_SETTING("Saved Command Name", "hchaxui")
+                    util.restart_script()
+                end)
+
+            ---
+
+            menu.divider(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Load Custom Stat Files"))
+
+                local HaxUIFiles = {} -- { file_name }
+                for idx, file_dir in pairs(filesystem.list_files(FolderDirs.HaxUI)) do
+                    if string.contains(file_dir, ".txt") then 
+                        menu.list(GTAHAXUI_STAT_EDITOR_LIST, DIR_TO_FILE_NAME("GTAHaXUI", file_dir), { "hchaxui" .. idx }, "", function(); end)
+                        table.insert(HaxUIFiles, DIR_TO_FILE_NAME("GTAHaXUI", file_dir))
+                    end
+                end
+
+                for idx1, file_name in pairs(HaxUIFiles) do
+                    local open = io.open(FolderDirs.HaxUI .. file_name .. ".txt", "r")
+                    local Contents = {}
+                    for line in open:lines() do
+                        table.insert(Contents, line)
+                    end
+                    open:close()
+
+                    local StatTypes = { -- https://www.unknowncheats.me/forum/2689198-post2471.html
+                        "INT32",
+                        "INT64",
+                        "BOOL",
+                    }
+                    local HelpTexts = {
+                        Comment = TRANSLATE("Perfect. The file has consisted of the most ideal format. Go ahead!"),
+                        Type = "N/A",
+                        NumOfLine = #Contents,
+                        InvalidLine = 0,
+                        MPx = 0,
+                        MPPLY = 0,
+                    }
+                    for _, file_content in pairs(Contents) do
+                        for __, stat_type in pairs(StatTypes) do
+                            if string.contains(file_content, stat_type) then -- If Heist Control detects GTAHaXUI's file stat type
+                                HelpTexts.Type = stat_type
+                                goto out
+                            end
+                        end
+                    end
+                    for _, file_content in pairs(Contents) do
+                        if string.startswith(file_content, "$MP") then -- If at least one of the valid stats are included
+                            HelpTexts.Type = "AUTO"
+                            goto out
+                        end
+                    end
+                    ::out::
+
+                    local Stats = {} -- { stat_name, value }
+                    for idx2, file_content in pairs(Contents) do
+                        if string.startswith(file_content, "$MPPLY_") then -- If a MPPLY stat
+                            if Contents[idx2+1] ~= nil then
+                                if not string.startswith(Contents[idx2+1], "$MP") then
+                                    local _, i = string.find(file_content, "$MPPLY_")
+                                    local Stat = string.sub(file_content, i - 5, string.len(file_content))
+                                    Stat = string.upper(Stat)
+                                    HelpTexts.MPPLY = HelpTexts.MPPLY + 1
+                                    table.insert(Stats, { Stat, Contents[idx2+1] })
+                                else
+                                    HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
+                                end
+                            end
+                        elseif string.startswith(file_content, "$MP") then -- If a MPx stat
+                            if Contents[idx2+1] ~= nil then
+                                if not string.startswith(Contents[idx2+1], "$MP") then
+                                    local _, i = string.find(file_content, "$MP")
+                                    local Stat = string.sub(file_content, i + 3, string.len(file_content))
+                                    Stat = string.upper(Stat)
+                                    HelpTexts.MPx = HelpTexts.MPx + 1
+                                    table.insert(Stats, { Stat, Contents[idx2+1] })
+                                else
+                                    HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
+                                end
+                            end
+                        else -- If not a stat name
+                            if Contents[idx2-1] ~= nil then -- If not the first line of the txt file
+                                if not string.startswith(Contents[idx2-1], "$MP") then -- Unless the previous line is stat name
+                                    HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
+                                end
+                            end
+                        end
                     end
 
-                ---
+                    if HelpTexts.InvalidLine ~= 0 then
+                        HelpTexts.Comment = TRANSLATE("Seems some of lines are invalid. But it doesn't matter too much. Go ahead.")
+                    end
+                    if HelpTexts.Type == "N/A" then
+                        HelpTexts.Comment = TRANSLATE("Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV.")
+                    end
 
-            ---
+                    local CommandRef = menu.ref_by_command_name("hchaxui" .. idx1)
+                    menu.divider(CommandRef, TRANSLATE("Tools"))
 
-            CASH_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Cash Earned & Spent"), {}, "", function(); end)
-
-                menu.divider(CASH_EDITOR, TRANSLATE("Modify Stat"))
-
-                    CASH_EDITOR_AMOUNT = menu.slider(CASH_EDITOR, TRANSLATE("Cash Amount"), {"hccasheditor"}, "($)", INT_MIN, INT_MAX, 0, 10000, function(); end)
-
-                ---
-
-                menu.divider(CASH_EDITOR, TRANSLATE("Set Stat"))
-
-                    menu.action(CASH_EDITOR, TRANSLATE("Total Earned"), {}, "", function()
-                        STAT_SET_INT("MPPLY_TOTAL_EVC", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Total Spent"), {}, "", function()
-                        STAT_SET_INT("MPPLY_TOTAL_SVC", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-
-                ---
-
-                menu.divider(CASH_EDITOR, TRANSLATE("Related Earned Cash"))
-
-                    menu.action(CASH_EDITOR, TRANSLATE("Jobs"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_JOBS", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Betting"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_BETTING", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Shared"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_SHARED", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Car Sales"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_SELLING_VEH", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Others"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_GOOD_SPORT", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-                    menu.action(CASH_EDITOR, TRANSLATE("Picked Up"), {}, "", function()
-                        STAT_SET_INT("MONEY_EARN_PICKED_UP", menu.get_value(CASH_EDITOR_AMOUNT))
-                        FORCE_CLOUD_SAVE()
-                    end)
-
-                ---
-
-            ---
-
-            CREW_LEVEL_EDITOR = menu.list(PRESET_STAT_EDITOR, TRANSLATE("Crew Level"), {}, "", function(); end)
-
-                for i = 0, 4 do
-                    menu.divider(CREW_LEVEL_EDITOR, TRANSLATE("Crew") .. " " .. i)
-
-                        CREW_RP = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Crew RP"))
-                        CREW_ID = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Crew ID"))
-                        CREW_CURRENT = menu.readonly(CREW_LEVEL_EDITOR, TRANSLATE("Current Crew Level"))
-                        CREW_LEVEL = menu.slider(CREW_LEVEL_EDITOR, TRANSLATE("Choose Crew Level"), { "hccrewlevel" .. i }, "", 1, 8000, 1, 1, function(); end)
-                        menu.action(CREW_LEVEL_EDITOR, TRANSLATE("Set Crew Level"), { "hcsetcrewlevel" .. i }, "", function()
-                            local RpForRank = util.get_rp_required_for_rank(menu.get_value(CREW_LEVEL))
-                            STAT_SET_INT("MPPLY_CREW_LOCAL_XP_" .. i, RpForRank)
+                        menu.action(CommandRef, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
+                            WRITE_SETTING("Saved Command Name", "hchaxui" .. idx1)
+                            util.restart_script()
                         end)
 
-                        menu.set_value(CREW_RP, STAT_GET_INT("MPPLY_CREW_LOCAL_XP_" .. i))
-                        menu.set_value(CREW_ID, STAT_GET_INT("MPPLY_CREW_" .. i .. "_ID"))
-                        menu.set_value(CREW_CURRENT, STAT_GET_INT("MPPLY_CURRENT_CREW_RANK"))
+                        menu.action(CommandRef, TRANSLATE("Apply Stats"), {}, "", function()
+                            if HelpTexts.Type == "N/A" then NOTIFY(HelpTexts.Comment) return end
+                            menu.show_warning(CommandRef, CLICK_MENU, TRANSLATE("Do you sure apply the number of stats?") .. "\n" .. "- " .. HelpTexts.MPx + HelpTexts.MPPLY, function()
+                                for i = 1, #Stats do
+                                    if string.isalpha(string.lower(Stats[i][2])) then -- If stat value is BOOL
+                                        if string.contains(Stats[i][2], "true") then
+                                            STAT_SET_BOOL(Stats[i][1], true)
+                                        elseif string.contains(Stats[i][2], "false") then
+                                            STAT_SET_BOOL(Stats[i][1], false)
+                                        end
+                                    else
+                                        if INT_MIN <= tonumber(Stats[i][2]) or tonumber(Stats[i][2]) <= INT_MAX then -- If stat value is INT32
+                                            STAT_SET_INT(Stats[i][1], tonumber(Stats[i][2]))
+                                        else -- If stat value is INT64
+                                            STAT_SET_INT(Stats[i][1], 0)
+                                            STAT_INCREMENT(Stats[i][1], tonumber(Stats[i][2]))
+                                        end
+                                    end
+                                end
+
+                                NOTIFY(TRANSLATE("Successfully set!"))
+                                FORCE_CLOUD_SAVE()
+                            end, function()
+                                menu.focus(CommandRef)
+                                NOTIFY(TRANSLATE("Successfully cancelled!"))
+                            end)
+                        end)
+
+                        menu.action(CommandRef, TRANSLATE("Delete This File"), {}, "", function()
+                            menu.show_warning(CommandRef, CLICK_MENU, TRANSLATE("Do you sure delete this file? It cannot be recovered!"), function()
+                                local Children = menu.get_children(CommandRef)
+                                for _, child in pairs(Children) do
+                                    menu.delete(child)
+                                end
+                                os.remove(FolderDirs.HaxUI .. file_name .. ".txt")
+
+                                menu.delete(CommandRef)
+                                NOTIFY(TRANSLATE("Successfully deleted!"))
+                            end, function()
+                                menu.trigger_command(CommandRef)
+                                NOTIFY(TRANSLATE("Successfully cancelled!"))
+                            end)
+                        end)
+
+                    ---
+
+                    menu.divider(CommandRef, TRANSLATE("Comment"))
+
+                        menu.action(CommandRef, TRANSLATE("Comment"), {}, HelpTexts.Comment, function(); end)
+
+                    ---
+
+                    menu.divider(CommandRef, TRANSLATE("Information"))
+
+                        menu.action(CommandRef, TRANSLATE("Type") .. ": " .. HelpTexts.Type, {}, TRANSLATE("Except for 'N/A', doesn't matter what it is. Heist Control will make it compatible with GTAV using all methods.") .. "\n\n" .. TRANSLATE("'N/A' means this file isn't for setting stats for GTAHaXUI."), function(); end)
+                        menu.action(CommandRef, TRANSLATE("Total Number of Lines") .. ": " .. HelpTexts.NumOfLine, {}, TRANSLATE("It means the number of lines of the loaded file."), function(); end)
+                        menu.action(CommandRef, TRANSLATE("Number of Invalid Lines") .. ": " .. HelpTexts.InvalidLine, {}, TRANSLATE("Unless this value is '0', some of stats may not be applied, but doesn't matter unless almost of total number of lines are invalid."), function(); end)
+                        menu.action(CommandRef, TRANSLATE("Number of 'MPx' Stats") .. ": " .. HelpTexts.MPx, {}, TRANSLATE("It means the number of 'MP0_ABCDE_FGHIJ' or 'MP1_ABCDE_FGHIJ' format stats."), function(); end)
+                        menu.action(CommandRef, TRANSLATE("Number of 'MPPLY' Stats") .. ": " .. HelpTexts.MPPLY, {}, TRANSLATE("It means the number of 'MPPLY_ABCDE_FGHIJ' format stats."), function(); end)
 
                     ---
                 end
 
             ---
-            
-        ---
-
-        STAT_EDITOR = menu.list(STAT_EDITOR_READER, TRANSLATE("Custom Stat Editor") .. " " .. TRANSLATE("(Risky)"), {}, TRANSLATE("Use at your own risk! Setting certain stats may cause a ban like casino-related stats."), function(); end)
-
-            menu.divider(STAT_EDITOR, TRANSLATE("Modify Stat"))
-
-                STAT_EDITOR_NAME = menu.text_input(STAT_EDITOR, TRANSLATE("Stat Name"), {"hceditname"}, TRANSLATE("Note: MP0_ or MP1_ will be selected by HC automatically, therefore don't write it."), function()
-                    local MenuValue = menu.get_value(STAT_EDITOR_NAME)
-                    local UpperValue = string.upper(MenuValue)
-                    if MenuValue ~= UpperValue then
-                        menu.trigger_commands("hceditname " .. UpperValue)
-                    end
-
-                    local BlacklistedChars = {
-                        "MP0_",
-                        "MP1_",
-                        "MPx_",
-                        "_",
-                    }
-                    for _, keyword in pairs(BlacklistedChars) do
-                        if string.startswith(MenuValue, keyword) then
-                            menu.apply_default_state(STAT_EDITOR_NAME)
-                            NOTIFY(menu.get_help_text(STAT_EDITOR_NAME))
-                            NOTIFY(TRANSLATE("Successfully cancelled!"))
-                        end
-                    end
-                end)
-
-                STAT_EDITOR_VALUE = menu.text_input(STAT_EDITOR, TRANSLATE("Stat Value"), {"hceditvalue"}, "", function(); end)
-
-            ---
-
-            menu.divider(STAT_EDITOR, "Date")
-
-                DATE_YEARS = menu.slider(STAT_EDITOR, TRANSLATE("Years"), {"hcedityears"}, "", 2013, os.date("%Y"), 0, 1, function(); end)
-                DATE_MONTHS = menu.slider(STAT_EDITOR, TRANSLATE("Months"), {"hceditmonths"}, "", 0, 12, 0, 1, function(); end)
-                DATE_DAYS = menu.slider(STAT_EDITOR, TRANSLATE("Days"), {"hceditdays"}, "", 0, 31, 0, 1, function(); end)
-                DATE_HOURS = menu.slider(STAT_EDITOR, TRANSLATE("Hours"), {"hcedithours"}, "", 0, 24, 0, 1, function(); end)
-                DATE_MINS = menu.slider(STAT_EDITOR, TRANSLATE("Mins"), {"hceditmins"}, "", 0, 60, 0, 1, function(); end)
-
-            ---
-
-            menu.divider(STAT_EDITOR, TRANSLATE("Set Stat"))
-
-                menu.action(STAT_EDITOR, "Integer", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "NO_BOUGHT_YUM_SNACKS\n" .. TRANSLATE("Stat Value") .. ": " .. "30", function()
-                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
-                        menu.focus(STAT_EDITOR_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        STAT_SET_INT(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
-                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
-                        FORCE_CLOUD_SAVE()
-                    end
-                end)
-
-                menu.action(STAT_EDITOR, "Boolean", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CL_RACE_MODDED_CAR\n" .. TRANSLATE("Stat Value") .. ": " .. "'true' or 'false'", function()
-                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
-                        menu.focus(STAT_EDITOR_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        if string.contains(menu.get_value(STAT_EDITOR_VALUE), "true") then
-                            STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), true)
-                        elseif string.contains(menu.get_value(STAT_EDITOR_VALUE), "false") then
-                            STAT_SET_BOOL(menu.get_value(STAT_EDITOR_NAME), false)
-                        end 
-                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
-                        FORCE_CLOUD_SAVE()
-                    end
-                end)
-
-                menu.action(STAT_EDITOR, "String", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_NAME\n" .. TRANSLATE("Stat Value") .. ": " .. "STRING", function()
-                    if menu.get_value(STAT_EDITOR_NAME) == "" or menu.get_value(STAT_EDITOR_VALUE) == "" then
-                        menu.focus(STAT_EDITOR_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        STAT_SET_STRING(menu.get_value(STAT_EDITOR_NAME), menu.get_value(STAT_EDITOR_VALUE))
-                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. menu.get_value(STAT_EDITOR_VALUE))
-                        FORCE_CLOUD_SAVE()
-                    end
-                end)
-
-                menu.action(STAT_EDITOR, "Date", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_DATE_CREATED\n" .. TRANSLATE("Stat Value") .. ": " .. TRANSLATE("Years") .. ": 1970, " .. TRANSLATE("Months") .. ": 12, " .. TRANSLATE("Days") .. ": 25", function()
-                    if menu.get_value(STAT_EDITOR_NAME) == "" then
-                        menu.focus(STAT_EDITOR_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        STAT_SET_DATE(menu.get_value(STAT_EDITOR_NAME), menu.get_value(DATE_YEARS), menu.get_value(DATE_MONTHS), menu.get_value(DATE_DAYS), menu.get_value(DATE_HOURS), menu.get_value(DATE_MINS))
-                        NOTIFY(TRANSLATE("Successfully set!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_EDITOR_NAME)) .. "\n" .. TRANSLATE("Years") .. ": " .. menu.get_value(DATE_YEARS) .. "\n" .. TRANSLATE("Months") .. ": " .. menu.get_value(DATE_MONTHS) .. "\n" .. TRANSLATE("Days") .. ": " .. menu.get_value(DATE_DAYS) .. "\n" .. TRANSLATE("Hours") .. ": " .. menu.get_value(DATE_HOURS) .. "\n" .. TRANSLATE("Mins") .. ": " .. menu.get_value(DATE_MINS))
-                        FORCE_CLOUD_SAVE()
-                    end
-                end)
-
-            ---
 
         ---
 
-        STAT_READER = menu.list(STAT_EDITOR_READER, TRANSLATE("Custom Stat Reader"), {}, "", function(); end)
-
-            menu.divider(STAT_READER, TRANSLATE("Modify Stat"))
-
-                STAT_READER_NAME = menu.text_input(STAT_READER, TRANSLATE("Stat Name"), {"hcreadername"}, TRANSLATE("Note: MP0_ or MP1_ will be selected by HC automatically, therefore don't write it."), function()
-                    local MenuValue = menu.get_value(STAT_READER_NAME)
-                    local UpperValue = string.upper(MenuValue)
-                    if MenuValue ~= UpperValue then
-                        menu.trigger_commands("hcreadername " .. UpperValue)
-                    end
-
-                    local BlacklistedChars = {
-                        "MP0_",
-                        "MP1_",
-                        "MPx_",
-                        "_",
-                    }
-                    for _, keyword in pairs(BlacklistedChars) do
-                        if string.startswith(MenuValue, keyword) then
-                            menu.apply_default_state(STAT_READER_NAME)
-                            NOTIFY(menu.get_help_text(STAT_READER_NAME))
-                            NOTIFY(TRANSLATE("Successfully cancelled!"))
-                        end
-                    end
-                end)
-
-            ---
-
-            menu.divider(STAT_READER, TRANSLATE("Settings"))
-
-                ClipboardString = ""
-                menu.toggle_loop(STAT_READER, TRANSLATE("Auto Paste To Stat Name"), {}, TRANSLATE("If your clipboard contains stat name, the strings will be pasted into 'Stat Name' automatically."), function()
-                    local String = util.get_clipboard_text()
-                    if ClipboardString ~= String then
-                        if string.contains(String, "_") and string.len(String) < 40 then
-                            menu.trigger_commands("hcreadername " .. String)
-                        end
-                    end
-                    ClipboardString = String
-                end)
-
-                IS_READER_COPY = menu.toggle(STAT_READER, TRANSLATE("Copy Stat Value"), {}, "", function(); end)
-
-            ---
-
-            menu.divider(STAT_READER, TRANSLATE("Read Stat"))
-
-                menu.action(STAT_READER, "Integer", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "NO_BOUGHT_YUM_SNACKS", function()
-                    if menu.get_value(STAT_READER_NAME) == "" then
-                        menu.focus(STAT_READER_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_INT(menu.get_value(STAT_READER_NAME)))
-                        if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_INT(menu.get_value(STAT_READER_NAME)))
-                        end
-                    end
-                end)
-
-                menu.action(STAT_READER, "Float", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "PLAYER_MENTAL_STATE", function()
-                    if menu.get_value(STAT_READER_NAME) == "" then
-                        menu.focus(STAT_READER_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_FLOAT(menu.get_value(STAT_READER_NAME)))
-                        if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_FLOAT(menu.get_value(STAT_READER_NAME)))
-                        end
-                    end
-                end)
-
-                menu.action(STAT_READER, "Boolean", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CL_RACE_MODDED_CAR", function()
-                    if menu.get_value(STAT_READER_NAME) == "" then
-                        menu.focus(STAT_READER_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_BOOL(menu.get_value(STAT_READER_NAME)))
-                        if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_BOOL(menu.get_value(STAT_READER_NAME)))
-                        end
-                    end
-                end)
-
-                menu.action(STAT_READER, "String", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_NAME", function()
-                    if menu.get_value(STAT_READER_NAME) == "" then
-                        menu.focus(STAT_READER_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. TRANSLATE("Stat Value") .. ": " .. STAT_GET_STRING(menu.get_value(STAT_READER_NAME)))
-                        if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(STAT_GET_STRING(menu.get_value(STAT_READER_NAME)))
-                        end
-                    end
-                end)
-
-                menu.action(STAT_READER, "Date", {}, TRANSLATE("Example Stat") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. "CHAR_DATE_CREATED", function()
-                    if menu.get_value(STAT_READER_NAME) == "" then
-                        menu.focus(STAT_READER_NAME)
-                        NOTIFY(TRANSLATE("You didn't specify the value. Please specify it!"))
-                    else
-                        NOTIFY(TRANSLATE("Successfully read!") .. "\n\n" .. TRANSLATE("Stat Name") .. ": " .. ADD_MP_INDEX(menu.get_value(STAT_READER_NAME)) .. "\n" .. "Years: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Years") .. "\n" .. "Months: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Months") .. "\n" .. "Days: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Days") .. "\n" .. "Hours: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hours") .. "\n" .. "Mins: " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Mins"))
-                        if menu.get_value(IS_READER_COPY) then
-                            util.copy_to_clipboard(TRANSLATE("Years") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Years") .. "\n" .. TRANSLATE("Months") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Months") .. "\n" .. TRANSLATE("Days") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Days") .. "\n" .. TRANSLATE("Hours") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Hours") .. "\n" .. TRANSLATE("Mins") .. ": " .. STAT_GET_DATE(menu.get_value(STAT_READER_NAME), "Mins"))
-                        end
-                    end
-                end)
-
-            ---
-
-        ---
-
-        GTAHAXUI_STAT_EDITOR = menu.list(STAT_EDITOR_READER, TRANSLATE("GTAHaXUI Stat Editor"), {}, TRANSLATE("GTAHaXUI is a free mod menu for editing stats, globals, and locals from UnknownCheats. Heist Control can help you using customizable GTAHaXUI's stat txt files. Note that you can download the files by googling easily."), function(); end)
-
-            GTAHAXUI_STAT_EDITOR_LIST = menu.list(GTAHAXUI_STAT_EDITOR, TRANSLATE("Load Custom Stat Files"), {"hchaxui"}, TRANSLATE("Supported Stat Types") .. "\n\n" .. "- 'INT32': " .. TRANSLATE("For normal numbers, generally called 'Int(eger)'") .. "\n" .. "- 'INT64': " .. TRANSLATE("For more big numbers") .. "\n" .. "- 'BOOL': " ..  TRANSLATE("'true' or 'false'"), function(); end)
-
-                menu.divider(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Tools"))
-
-                    menu.action(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
-                        WRITE_SETTING("Saved Command Name", "hchaxui")
-                        util.restart_script()
-                    end)
-
-                ---
-
-                menu.divider(GTAHAXUI_STAT_EDITOR_LIST, TRANSLATE("Load Custom Stat Files"))
-
-                    local HaxUIFiles = {} -- { file_name }
-                    for idx, file_dir in pairs(filesystem.list_files(FolderDirs.HaxUI)) do
-                        if string.contains(file_dir, ".txt") then 
-                            menu.list(GTAHAXUI_STAT_EDITOR_LIST, DIR_TO_FILE_NAME("GTAHaXUI", file_dir), { "hchaxui" .. idx }, "", function(); end)
-                            table.insert(HaxUIFiles, DIR_TO_FILE_NAME("GTAHaXUI", file_dir))
-                        end
-                    end
-
-                    for idx1, file_name in pairs(HaxUIFiles) do
-                        local open = io.open(FolderDirs.HaxUI .. file_name .. ".txt", "r")
-                        local Contents = {}
-                        for line in open:lines() do
-                            table.insert(Contents, line)
-                        end
-                        open:close()
-
-                        local StatTypes = { -- https://www.unknowncheats.me/forum/2689198-post2471.html
-                            "INT32",
-                            "INT64",
-                            "BOOL",
-                        }
-                        local HelpTexts = {
-                            Comment = TRANSLATE("Perfect. The file has consisted of the most ideal format. Go ahead!"),
-                            Type = "N/A",
-                            NumOfLine = #Contents,
-                            InvalidLine = 0,
-                            MPx = 0,
-                            MPPLY = 0,
-                        }
-                        for _, file_content in pairs(Contents) do
-                            for __, stat_type in pairs(StatTypes) do
-                                if string.contains(file_content, stat_type) then -- If Heist Control detects GTAHaXUI's file stat type
-                                    HelpTexts.Type = stat_type
-                                    goto out
-                                end
-                            end
-                        end
-                        for _, file_content in pairs(Contents) do
-                            if string.startswith(file_content, "$MP") then -- If at least one of the valid stats are included
-                                HelpTexts.Type = "AUTO"
-                                goto out
-                            end
-                        end
-                        ::out::
-
-                        local Stats = {} -- { stat_name, value }
-                        for idx2, file_content in pairs(Contents) do
-                            if string.startswith(file_content, "$MPPLY_") then -- If a MPPLY stat
-                                if Contents[idx2+1] ~= nil then
-                                    if not string.startswith(Contents[idx2+1], "$MP") then
-                                        local _, i = string.find(file_content, "$MPPLY_")
-                                        local Stat = string.sub(file_content, i - 5, string.len(file_content))
-                                        Stat = string.upper(Stat)
-                                        HelpTexts.MPPLY = HelpTexts.MPPLY + 1
-                                        table.insert(Stats, { Stat, Contents[idx2+1] })
-                                    else
-                                        HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
-                                    end
-                                end
-                            elseif string.startswith(file_content, "$MP") then -- If a MPx stat
-                                if Contents[idx2+1] ~= nil then
-                                    if not string.startswith(Contents[idx2+1], "$MP") then
-                                        local _, i = string.find(file_content, "$MP")
-                                        local Stat = string.sub(file_content, i + 3, string.len(file_content))
-                                        Stat = string.upper(Stat)
-                                        HelpTexts.MPx = HelpTexts.MPx + 1
-                                        table.insert(Stats, { Stat, Contents[idx2+1] })
-                                    else
-                                        HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
-                                    end
-                                end
-                            else -- If not a stat name
-                                if Contents[idx2-1] ~= nil then -- If not the first line of the txt file
-                                    if not string.startswith(Contents[idx2-1], "$MP") then -- Unless the previous line is stat name
-                                        HelpTexts.InvalidLine = HelpTexts.InvalidLine + 1
-                                    end
-                                end
-                            end
-                        end
-
-                        if HelpTexts.InvalidLine ~= 0 then
-                            HelpTexts.Comment = TRANSLATE("Seems some of lines are invalid. But it doesn't matter too much. Go ahead.")
-                        end
-                        if HelpTexts.Type == "N/A" then
-                            HelpTexts.Comment = TRANSLATE("Please check this file has been typed for GTAHaXUI. Applying it won't affect anything in GTAV.")
-                        end
-
-                        local CommandRef = menu.ref_by_command_name("hchaxui" .. idx1)
-                        menu.divider(CommandRef, TRANSLATE("Tools"))
-
-                            menu.action(CommandRef, TRANSLATE("Refresh"), {}, TRANSLATE("Refresh the list via restarting Heist Control."), function()
-                                WRITE_SETTING("Saved Command Name", "hchaxui" .. idx1)
-                                util.restart_script()
-                            end)
-
-                            menu.action(CommandRef, TRANSLATE("Apply Stats"), {}, "", function()
-                                if HelpTexts.Type == "N/A" then NOTIFY(HelpTexts.Comment) return end
-                                menu.show_warning(CommandRef, CLICK_MENU, TRANSLATE("Do you sure apply the number of stats?") .. "\n" .. "- " .. HelpTexts.MPx + HelpTexts.MPPLY, function()
-                                    for i = 1, #Stats do
-                                        if string.isalpha(string.lower(Stats[i][2])) then -- If stat value is BOOL
-                                            if string.contains(Stats[i][2], "true") then
-                                                STAT_SET_BOOL(Stats[i][1], true)
-                                            elseif string.contains(Stats[i][2], "false") then
-                                                STAT_SET_BOOL(Stats[i][1], false)
-                                            end
-                                        else
-                                            if INT_MIN <= tonumber(Stats[i][2]) or tonumber(Stats[i][2]) <= INT_MAX then -- If stat value is INT32
-                                                STAT_SET_INT(Stats[i][1], tonumber(Stats[i][2]))
-                                            else -- If stat value is INT64
-                                                STAT_SET_INT(Stats[i][1], 0)
-                                                STAT_INCREMENT(Stats[i][1], tonumber(Stats[i][2]))
-                                            end
-                                        end
-                                    end
-
-                                    NOTIFY(TRANSLATE("Successfully set!"))
-                                    FORCE_CLOUD_SAVE()
-                                end, function()
-                                    menu.focus(CommandRef)
-                                    NOTIFY(TRANSLATE("Successfully cancelled!"))
-                                end)
-                            end)
-
-                            menu.action(CommandRef, TRANSLATE("Delete This File"), {}, "", function()
-                                menu.show_warning(CommandRef, CLICK_MENU, TRANSLATE("Do you sure delete this file? It cannot be recovered!"), function()
-                                    local Children = menu.get_children(CommandRef)
-                                    for _, child in pairs(Children) do
-                                        menu.delete(child)
-                                    end
-                                    os.remove(FolderDirs.HaxUI .. file_name .. ".txt")
-
-                                    menu.delete(CommandRef)
-                                    NOTIFY(TRANSLATE("Successfully deleted!"))
-                                end, function()
-                                    menu.trigger_command(CommandRef)
-                                    NOTIFY(TRANSLATE("Successfully cancelled!"))
-                                end)
-                            end)
-
-                        ---
-
-                        menu.divider(CommandRef, TRANSLATE("Comment"))
-
-                            menu.action(CommandRef, TRANSLATE("Comment"), {}, HelpTexts.Comment, function(); end)
-
-                        ---
-
-                        menu.divider(CommandRef, TRANSLATE("Information"))
-
-                            menu.action(CommandRef, TRANSLATE("Type") .. ": " .. HelpTexts.Type, {}, TRANSLATE("Except for 'N/A', doesn't matter what it is. Heist Control will make it compatible with GTAV using all methods.") .. "\n\n" .. TRANSLATE("'N/A' means this file isn't for setting stats for GTAHaXUI."), function(); end)
-                            menu.action(CommandRef, TRANSLATE("Total Number of Lines") .. ": " .. HelpTexts.NumOfLine, {}, TRANSLATE("It means the number of lines of the loaded file."), function(); end)
-                            menu.action(CommandRef, TRANSLATE("Number of Invalid Lines") .. ": " .. HelpTexts.InvalidLine, {}, TRANSLATE("Unless this value is '0', some of stats may not be applied, but doesn't matter unless almost of total number of lines are invalid."), function(); end)
-                            menu.action(CommandRef, TRANSLATE("Number of 'MPx' Stats") .. ": " .. HelpTexts.MPx, {}, TRANSLATE("It means the number of 'MP0_ABCDE_FGHIJ' or 'MP1_ABCDE_FGHIJ' format stats."), function(); end)
-                            menu.action(CommandRef, TRANSLATE("Number of 'MPPLY' Stats") .. ": " .. HelpTexts.MPPLY, {}, TRANSLATE("It means the number of 'MPPLY_ABCDE_FGHIJ' format stats."), function(); end)
-
-                        ---
-                    end
-
-                ---
-
-            ---
-
-            menu.action(GTAHAXUI_STAT_EDITOR, TRANSLATE("Open Folder for Custom Stat Files"), {}, FolderDirs.HaxUI, function()
-                util.open_folder(FolderDirs.HaxUI)
-            end)
-            
-            menu.hyperlink(GTAHAXUI_STAT_EDITOR, TRANSLATE("Visit GTAHaXUI"), "https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html", "")
-
-        ---
-
-        menu.hyperlink(STAT_EDITOR_READER, TRANSLATE("All Stats List"), "https://gist.github.com/1337Nexo/945fe9724b9dd20d33e7afeabd2746dc", "")
-        menu.hyperlink(STAT_EDITOR_READER, TRANSLATE("Some Useful Stats List"), "https://www.unknowncheats.me/forum/2770402-post3008.html", "")
+        menu.action(GTAHAXUI_STAT_EDITOR, TRANSLATE("Open Folder for Custom Stat Files"), {}, FolderDirs.HaxUI, function()
+            util.open_folder(FolderDirs.HaxUI)
+        end)
+        
+        menu.hyperlink(GTAHAXUI_STAT_EDITOR, TRANSLATE("Visit GTAHaXUI"), "https://www.unknowncheats.me/forum/grand-theft-auto-v/461672-gtahax-1-58-external-thread-3-a.html", "")
         
     ---
 
