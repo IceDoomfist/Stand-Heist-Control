@@ -12,7 +12,7 @@
 
 ## Main Features
 
-> - Officially keep up-to-date translations in 10 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES)
+> - Officially keep up-to-date translations in 11 languages (ZH, FR, DE, IT, JP, KO, PL, PT, RU, ES, VI)
 > - Extra Cayo, Casino, Doomsday and Classic heist features
 > - Instant Finish Heists and Others
 > - Allow you play alone in Casino, Classic, Doomsday heists!
