@@ -659,6 +659,7 @@
 
 
 --- Cayo Perico Heist
+util.yield()
     
     CAYO_PRESETS = menu.list(PERICO_HEIST, TRANSLATE("Automated Presets"), {}, TRANSLATE("You should enable the preset until the end of the heist!") .. "\n\n" .. TRANSLATE("Enabling one of these presets will complete all of setups, and set as max payout, $2.55 Millions. It will be affected to all of heist players."), function(); end)
 
@@ -2168,6 +2169,7 @@
 
 
 --- Diamond Casino Heist
+util.yield()
 
     CasinoPresetTunables = {
         memory.tunable_offset(1277889925),
@@ -3077,6 +3079,7 @@
 
 
 --- Doomsday Heist
+util.yield()
 
     DOOMS_PRESETS = menu.list(DOOMS_HEIST, TRANSLATE("Automated Presets"), {"hcdoomspreset"}, TRANSLATE("You should enable the preset until the end of the heist!") .. "\n\n" .. TRANSLATE("Enabling one of these presets will complete all of setups, and set as max payout, $2.55 Millions. It will be affected to all of heist players."), function(); end)
 
@@ -3390,6 +3393,7 @@
 
 
 --- Classic Heist
+util.yield()
 
     CLASSIC_PRESETS = menu.list(CLASSIC_HEISTS, TRANSLATE("Automated Presets"), {}, TRANSLATE("Compatible with any classic heist and any difficulty level.") .. "\n\n" .. TRANSLATE("Note that you should use this feature when you're on the planning board after watching or skipping the cutscene. It only works if you are host of the heist."), function(); end)
 
@@ -3613,6 +3617,7 @@
 
 
 --- Robberies
+util.yield()
 
     LS_ROBBERY = menu.list(ROBBERYS, TRANSLATE("The Los Santos Tuners Robbery"), {}, "", function(); end)
 
@@ -3830,6 +3835,7 @@
 
 
 --- Missions
+util.yield()
 
     menu.list_action(MISSONS, TRANSLATE("Lowrider"), {"hclowrider"}, "", {
         { 1, TRANSLATE("Community Outreach"), {"communityoutreach"}, "" },
@@ -4001,6 +4007,7 @@
 
 
 --- Master Unlocker
+util.yield()
 
     DLC_UNLOCKER = menu.list(MASTER_UNLOCKER, TRANSLATE("DLCs"), {}, "", function(); end)
 
@@ -4981,6 +4988,7 @@
 
 
 --- Tools
+util.yield()
 
     TUNABLES = menu.list(TOOLS, TRANSLATE("Tunables"), {}, "", function(); end) -- Almost not credited global variables from: https://www.unknowncheats.me/forum/3337151-post1560.html
 
@@ -6341,6 +6349,7 @@
 
 
 --- Setting & About HC
+util.yield()
 
     menu.divider(INFOS, TRANSLATE("Language"))
 
